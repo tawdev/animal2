@@ -1,41 +1,36 @@
-name: 🚀 Deploy to VPS
+name: Deploy Animal Food Express
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
-    name: Deploy to Hostinger VPS
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🔌 Connect & Deploy via SSH
+      - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            set -e
-            echo "📦 Pulling latest code..."
-            cd /var/www/drougrer
+            cd /var/www/animal2
+            
+            # Pull latest changes
             git pull origin main
-
-            echo "🔐 Updating SMTP credentials on VPS..."
-            # Met à jour le mot de passe dans le .env du backend sur le VPS
-            sed -i 's/^SMTP_PASS=.*/SMTP_PASS=ttkzhmwwkfladric/' backend/droguerie-backend/.env
-
-            echo "🔧 Installing frontend dependencies..."
-            npm install --legacy-peer-deps
-
-            echo "🏗️ Building frontend..."
+            
+            # Update Backend
+            cd backend/droguerie-backend
+            npm install
             npm run build
-
-            echo "🔄 Restarting PM2 processes..."
-            pm2 restart droguerie_api --update-env
-            pm2 restart droguerie_front --update-env
+            pm2 restart animal-backend
+            
+            # Update Frontend
+            cd ../..
+            npm install
+            npm run build
+            pm2 restart animal-frontend
+            
+            # Cleanup PM2
             pm2 save
-
-            echo "✅ Deployment complete!"
