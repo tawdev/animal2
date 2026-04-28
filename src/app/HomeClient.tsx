@@ -1,0 +1,756 @@
+'use client';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import {
+  ArrowRight,
+  ChevronRight,
+  Plus,
+  Truck,
+  HandCoins,
+  Headset,
+  Quote,
+  PawPrint,
+  Cat,
+  Dog,
+  Bird,
+  Fish,
+  ShoppingBag,
+  CreditCard,
+  MapPin,
+  Phone,
+  MessageCircle,
+  ThumbsUp,
+  ThumbsDown,
+  ChevronDown,
+  Stethoscope,
+  Package,
+  CheckCircle
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { api, type Category, type Product, type Brand, type BlogPost } from '@/app/lib/api';
+import { useSettings } from '@/app/context/SettingsContext';
+import ProductCard from '@/app/components/ProductCard';
+import BlogCard from '@/app/components/BlogCard';
+
+interface HomeClientProps {
+  initialCategories: Category[];
+  initialPopularProducts: Product[];
+  initialNewProducts: Product[];
+  initialBrands: Brand[];
+  initialBlogs: BlogPost[];
+}
+
+export default function HomeClient({ 
+  initialCategories, 
+  initialPopularProducts, 
+  initialNewProducts, 
+  initialBrands, 
+  initialBlogs 
+}: HomeClientProps) {
+  const { settings } = useSettings();
+  const [categories] = useState<Category[]>(initialCategories);
+  const [activeCategoryId, setActiveCategoryId] = useState<number | null>(initialCategories[0]?.id || null);
+  const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  
+  const [activeTab, setActiveTab] = useState('Populaires');
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>(initialPopularProducts);
+  const [isLoadingFeatured, setIsLoadingFeatured] = useState(false);
+  const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  
+  const [activeIncontournableTab, setActiveIncontournableTab] = useState('Derniers Produits');
+  const [incontournableProducts, setIncontournableProducts] = useState<Product[]>(initialNewProducts);
+  const [isLoadingIncontournable, setIsLoadingIncontournable] = useState(false);
+  
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+
+  // Default WhatsApp Number
+  const whatsappNumber = (settings?.phoneNumber || '212600000000').replace(/\D/g, '');
+
+
+  const [faqs, setFaqs] = useState([
+    {
+      q: "Comment puis-je commander sur Animal Food Express ?",
+      a: "C'est très simple ! Vous pouvez parcourir notre boutique, ajouter des articles à votre panier, puis finaliser votre commande. Elle sera directement envoyée à notre équipe via WhatsApp pour une confirmation instantanée.",
+      likes: 24,
+      dislikes: 2,
+      userVoted: null as 'like' | 'dislike' | null
+    },
+    {
+      q: "Quels sont vos délais de livraison au Maroc ?",
+      a: "Nous livrons partout au Maroc. Pour Casablanca et Rabat, la livraison se fait généralement sous 24h. Pour les autres villes, comptez 48h à 72h ouvrables.",
+      likes: 45,
+      dislikes: 1,
+      userVoted: null as 'like' | 'dislike' | null
+    },
+    {
+      q: "Quelles marques premium proposez-vous ?",
+      a: "Nous travaillons avec les leaders mondiaux comme Royal Canin, Pro Plan, Hill's, Orijen et Acana pour garantir la meilleure nutrition possible à vos animaux.",
+      likes: 38,
+      dislikes: 0,
+      userVoted: null as 'like' | 'dislike' | null
+    },
+    {
+      q: "Puis-je retourner un produit si mon animal ne l'aime pas ?",
+      a: "Oui, nous acceptons les retours sous 7 jours si l'emballage n'a pas été ouvert. Pour les sacs ouverts, contactez notre support pour voir si un échange est possible selon les conditions de la marque.",
+      likes: 12,
+      dislikes: 5,
+      userVoted: null as 'like' | 'dislike' | null
+    }
+  ]);
+
+  // Load votes from localStorage on mount
+  useEffect(() => {
+    const savedVotes = localStorage.getItem('faq_votes');
+    if (savedVotes) {
+      try {
+        const parsedVotes = JSON.parse(savedVotes);
+        setFaqs(prevFaqs => prevFaqs.map((faq, idx) => ({
+          ...faq,
+          userVoted: parsedVotes[idx] || null,
+          // Adjust initial counts based on saved votes
+          likes: parsedVotes[idx] === 'like' ? faq.likes + 1 : faq.likes,
+          dislikes: parsedVotes[idx] === 'dislike' ? faq.dislikes + 1 : faq.dislikes
+        })));
+      } catch (e) {
+        console.error('Failed to parse saved votes', e);
+      }
+    }
+  }, []);
+
+  // Save votes to localStorage whenever they change
+  useEffect(() => {
+    const votesToSave = faqs.map(f => f.userVoted);
+    localStorage.setItem('faq_votes', JSON.stringify(votesToSave));
+  }, [faqs]);
+
+  const handleFaqVote = (index: number, type: 'like' | 'dislike') => {
+    const newFaqs = [...faqs];
+    const faq = newFaqs[index];
+
+    if (faq.userVoted === type) {
+      // Toggle off
+      faq.userVoted = null;
+      if (type === 'like') faq.likes--;
+      else faq.dislikes--;
+    } else {
+      // If already voted for the other type, remove it first
+      if (faq.userVoted === 'like') faq.likes--;
+      if (faq.userVoted === 'dislike') faq.dislikes--;
+
+      // Set new vote
+      faq.userVoted = type;
+      if (type === 'like') faq.likes++;
+      else faq.dislikes++;
+    }
+
+    setFaqs(newFaqs);
+  };
+
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const TESTIMONIALS = [
+    {
+      initial: 'MA',
+      name: 'Mohammed Alami',
+      role: 'Propriétaire de Labrador — Casablanca',
+      content: "La qualité des croquettes est irréprochable. Mes chiens sont en pleine forme depuis que j'achète chez Animal Food Express. Les marques premium sont enfin accessibles. Livraison rapide même en pleine semaine."
+    },
+    {
+      initial: 'KB',
+      name: 'Karim Bensaid',
+      role: "Éleveur Félin — Rabat",
+      content: "Un service client exceptionnel et des accessoires magnifiques. Mes chats adorent leurs nouveaux arbres à chat. Je recommande vivement pour tous les passionnés d'animaux."
+    },
+    {
+      initial: 'FZ',
+      name: 'Fatine Zahra',
+      role: 'Propriétaire — Marrakech',
+      content: "J'ai trouvé tout le nécessaire pour mon premier chiot. Conseils précieux du support technique pour choisir la bonne alimentation. C'est rare de trouver une telle expertise en ligne au Maroc."
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [TESTIMONIALS.length]);
+
+  useEffect(() => {
+    if (featuredProducts.length > 0) {
+      const timer = setInterval(() => {
+        setHeroSlideIndex((prev) => (prev + 1) % Math.min(featuredProducts.length, 5));
+      }, 4000);
+      return () => clearInterval(timer);
+    }
+  }, [featuredProducts]);
+
+  // Combined product fetching logic
+  useEffect(() => {
+    if (activeTab === 'Populaires' && featuredProducts === initialPopularProducts) return;
+    
+    setIsLoadingFeatured(true);
+    let query: any = { page: 1, limit: 12, active: true };
+    if (activeTab === 'Promotions') query.onSale = true;
+    if (activeTab === 'Nouveautés') query.sort = 'createdAt';
+
+    api.getProducts(query)
+      .then(res => {
+        setFeaturedProducts(res.data);
+        setIsLoadingFeatured(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch featured products:', err);
+        setIsLoadingFeatured(false);
+      });
+  }, [activeTab, initialPopularProducts, featuredProducts]);
+
+  useEffect(() => {
+    if (activeCategoryId) {
+      setIsLoadingProducts(true);
+      api.getProducts({ categoryId: activeCategoryId, limit: 12, active: true })
+        .then(res => {
+          setCategoryProducts(res.data);
+          setIsLoadingProducts(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsLoadingProducts(false);
+        });
+    }
+  }, [activeCategoryId]);
+
+  const getCategoryIcon = (name: string) => {
+    const lower = name.toLowerCase();
+    if (lower.includes('chien')) return Dog;
+    if (lower.includes('chat')) return Cat;
+    if (lower.includes('oiseau')) return Bird;
+    if (lower.includes('poisson')) return Fish;
+    return PawPrint;
+  };
+
+  return (
+    <div className="flex-1 flex flex-col bg-white overflow-x-hidden">
+      {/* HERO SECTION */}
+      <section className="relative min-h-screen md:min-h-[90vh] flex items-center overflow-hidden bg-[#0A0A0B]">
+        <div className="absolute inset-0 z-0">
+          <Image 
+            src="/pet_store_hero_v2_1777370410776.png"
+            alt="Animal Food Express Hero"
+            fill
+            priority
+            className="object-cover opacity-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B] via-[#0A0A0B]/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B]/30 via-transparent to-[#0A0A0B]" />
+        </div>
+
+        <div className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 relative z-10 py-20">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
+            <div className="flex-1 space-y-10">
+              <div className="space-y-4">
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 px-4 py-1.5 bg-[#EE8C2B] rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white">N°1 AU MAROC</span>
+                  </div>
+                </motion.div>
+                <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl xl:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic">
+                  NUTRITION <br />
+                  <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.8)' }}>& QUALITÉ</span> <br />
+                  <span className="text-[#EE8C2B]">PREMIUM</span>
+                </motion.h1>
+              </div>
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-lg text-slate-400 font-medium max-w-lg">
+                Animal Food Express — votre source premium pour l'alimentation et le bonheur de vos compagnons. Livraison partout au Maroc.
+              </motion.p>
+              <div className="flex flex-wrap gap-5">
+                <Link href="/products" className="px-10 py-5 bg-[#EE8C2B] text-white rounded-xl font-black uppercase tracking-widest hover:bg-[#d97d20] transition-all transform hover:-translate-y-1">
+                  Voir la boutique
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex-1 w-full lg:max-w-[550px] relative">
+              <div className="relative aspect-[4/5] w-full bg-white/5 rounded-[40px] border border-white/10 p-6 overflow-hidden">
+                <AnimatePresence mode="wait">
+                  {featuredProducts.length > 0 && (
+                    <motion.div 
+                      key={featuredProducts[heroSlideIndex % featuredProducts.length]?.id}
+                      initial={{ opacity: 0, scale: 0.9, x: 50 }}
+                      animate={{ opacity: 1, scale: 1, x: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, x: -50 }}
+                      className="relative w-full h-full"
+                    >
+                      <Link href={`/products/${featuredProducts[heroSlideIndex % featuredProducts.length]?.id}`} className="block w-full h-full relative rounded-[30px] overflow-hidden group">
+                        <Image 
+                          src={featuredProducts[heroSlideIndex % featuredProducts.length]?.imageUrl || "/placeholder.png"} 
+                          alt={featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                        <div className="absolute bottom-6 left-6 right-6">
+                           <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter line-clamp-1">
+                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
+                           </h3>
+                           <div className="text-2xl font-black text-[#EE8C2B] italic">
+                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.price} MAD
+                           </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      <section id="categories" className="py-24 bg-white overflow-hidden">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 mb-16">
+          <div className="text-center">
+            <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Nos Catégories</h2>
+            <div className="w-20 h-1 bg-[#EE8C2B] mx-auto rounded-full mt-4" />
+          </div>
+        </div>
+        
+        <div className="relative flex overflow-x-hidden group">
+          <motion.div 
+            className="flex gap-20 whitespace-nowrap py-10"
+            animate={{ x: [0, -2000] }}
+            transition={{ 
+              x: {
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 30,
+                ease: "linear"
+              }
+            }}
+          >
+            {[...categories, ...categories, ...categories].map((cat, idx) => {
+              const Icon = getCategoryIcon(cat.name);
+              return (
+                <Link key={`${cat.id}-${idx}`} href={`/products?categoryId=${cat.id}`} className="flex flex-col items-center gap-8 shrink-0 transition-transform hover:scale-105">
+                  <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] border-slate-50 hover:border-[#EE8C2B] aspect-square overflow-hidden group/item">
+                    <Icon size={100} className="text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110 transition-all duration-500" />
+                  </div>
+                  <h3 className="text-sm sm:text-xl font-black uppercase tracking-[0.2em] text-slate-800 italic">{cat.name}</h3>
+                </Link>
+              );
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS (REDESIGNED) */}
+      <section className="py-32 bg-white">
+        <div className="mx-auto max-w-[1200px] px-6">
+          <div className="text-center mb-24">
+            <h2 className="text-[42px] md:text-[54px] font-black text-[#1A5319] leading-tight mb-4">La commande en toute simplicité</h2>
+            <p className="text-slate-500 text-lg">Trois étapes simples pour apporter le meilleur de la nutrition directement dans sa gamelle.</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+            {[
+              { 
+                step: '1', 
+                title: 'Séléction Nutrition', 
+                desc: 'Explorez nos recettes approuvées par des vétérinaires et sélectionnez le plan de repas parfait adapté à l\'âge et à la race de votre animal.',
+                icon: ShoppingBag
+              },
+              { 
+                step: '2', 
+                title: 'Préparation Premium', 
+                desc: 'Nous préparons chaque commande avec des ingrédients 100% naturels et tracables. Aucun remplissage, jamais.',
+                icon: PawPrint
+              },
+              { 
+                step: '3', 
+                title: 'Livraison Express', 
+                desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
+                icon: Truck
+              }
+            ].map((item, idx) => (
+              <div key={idx} className="flex flex-col items-center text-center group">
+                <div className="relative mb-12">
+                  {/* Outer Glow/Shadow */}
+                  <div className="absolute inset-0 bg-[#1A5319]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Main Circle */}
+                  <div className="relative w-36 h-36 rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] flex items-center justify-center border-[6px] border-slate-50 z-10 transition-all duration-500 group-hover:scale-110 group-hover:border-[#1A5319]/10">
+                    <item.icon size={48} className="text-[#1A5319]" strokeWidth={1.2} />
+                  </div>
+                  
+                  {/* Step Badge */}
+                  <div className="absolute top-0 -right-2 w-11 h-11 rounded-full bg-[#1A5319] flex items-center justify-center text-white font-black text-base shadow-xl z-20 border-4 border-white">
+                    {item.step}
+                  </div>
+                </div>
+                <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase tracking-tight italic">{item.title}</h3>
+                <p className="text-slate-600 text-[16px] leading-relaxed max-w-[320px] font-medium opacity-80">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-20">
+            <Link href="/products" className="inline-flex items-center gap-2 text-[#1A5319] font-black uppercase tracking-widest text-sm border-b-2 border-[#1A5319] pb-1 hover:gap-4 transition-all">
+              Composer ma première commande <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* POPULAR PRODUCTS */}
+      <section className="py-24 bg-white">
+        <div className="mx-auto max-w-[1580px] px-6 lg:px-10">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+            <h2 className="text-4xl font-black text-slate-900 uppercase italic tracking-tighter">Sélection Premium</h2>
+            <div className="flex gap-6">
+              {['Populaires', 'Promotions', 'Nouveautés'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`text-sm font-black uppercase tracking-widest pb-1 border-b-2 transition-all ${activeTab === tab ? 'border-[#1A5319] text-[#1A5319]' : 'border-transparent text-slate-400'}`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT US */}
+      <section id="about" className="py-24 bg-slate-900 text-white overflow-hidden">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="w-full lg:w-1/2 relative aspect-square rounded-[60px] overflow-hidden">
+              <Image src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&q=80&w=1000" alt="About Animal Food Express" fill className="object-cover" />
+              <div className="absolute inset-0 bg-[#1A5319]/20 mix-blend-overlay" />
+              <div className="absolute bottom-10 left-10 bg-white/10 backdrop-blur-xl p-8 rounded-[32px] border border-white/20">
+                <div className="text-5xl font-black italic tracking-tighter mb-1">10+</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-white/60">Années d&apos;Expertise</div>
+              </div>
+            </div>
+            <div className="w-full lg:w-1/2">
+              <span className="text-[#EE8C2B] font-black uppercase tracking-[0.3em] text-xs mb-6 block">À Propos de Nous</span>
+              <h2 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter mb-10 leading-[0.9]">Passionnés par vos <span className="text-[#1A5319]">animaux</span> depuis 2014</h2>
+              <p className="text-white/60 text-lg font-medium leading-relaxed mb-10">
+                Chez Animal Food Express, nous croyons que chaque animal mérite le meilleur. C&apos;est pourquoi nous sélectionnons rigoureusement les marques les plus prestigieuses au monde pour garantir une santé optimale à vos compagnons.
+              </p>
+              <div className="grid grid-cols-2 gap-8 mb-12">
+                {[
+                  { title: 'Qualité Premium', desc: 'Produits testés et approuvés par des experts.' },
+                  { title: 'Stock Permanent', desc: 'Vos produits préférés toujours disponibles.' }
+                ].map((item, idx) => (
+                  <div key={idx} className="border-l-2 border-[#1A5319] pl-6">
+                    <h4 className="text-lg font-black uppercase italic mb-2">{item.title}</h4>
+                    <p className="text-white/40 text-sm">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+              <Link href="/contact" className="inline-flex items-center gap-4 group">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-slate-900 group-hover:bg-[#EE8C2B] group-hover:text-white transition-all duration-500">
+                  <ArrowRight size={24} />
+                </div>
+                <span className="font-black uppercase tracking-widest text-sm">En savoir plus</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONSEILS D'EXPERTS (SEO SECTION) */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16 mb-20">
+            <div className="w-full lg:w-1/2">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#EE8C2B]/10 text-[#EE8C2B] text-xs font-black uppercase tracking-widest mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#EE8C2B] animate-ping" />
+                Validation Vétérinaire
+              </div>
+              <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase italic tracking-tighter mb-8 leading-[0.9]">Conseils de <span className="text-[#1A5319]">Santé & Bien-être</span></h2>
+              <p className="text-slate-500 text-xl font-medium leading-relaxed max-w-xl">
+                Nos experts et vétérinaires partenaires partagent leurs meilleurs conseils pour assurer une vie longue et saine à vos compagnons. 
+              </p>
+            </div>
+            <div className="w-full lg:w-1/2 grid grid-cols-2 gap-6">
+               <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100">
+                  <div className="w-12 h-12 bg-[#1A5319] rounded-2xl flex items-center justify-center text-white mb-6">
+                    <PawPrint size={24} />
+                  </div>
+                  <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Nutrition</h4>
+                  <p className="text-slate-500 text-sm">Choisir le bon régime selon la race et l&apos;âge.</p>
+               </div>
+               <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 mt-12">
+                  <div className="w-12 h-12 bg-[#EE8C2B] rounded-2xl flex items-center justify-center text-white mb-6">
+                    <Headset size={24} />
+                  </div>
+                  <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Comportement</h4>
+                  <p className="text-slate-500 text-sm">Comprendre les besoins psychologiques de votre animal.</p>
+               </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {[
+              {
+                id: 999,
+                title: "Comment gérer les allergies alimentaires de mon Bulldog ?",
+                slug: "allergies-alimentaires-bulldog",
+                excerpt: "Découvrez les signes d'allergies et comment adapter le régime de votre Bulldog avec des conseils de pro.",
+                author: "Dr. Sarah Alami (Vétérinaire)",
+                category: "CONSEIL EXPERT",
+                imageUrl: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=1000",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                status: 'Published',
+                content: "Contenu détaillé validé par Dr. Sarah..."
+              },
+              {
+                id: 998,
+                title: "Top 5 des jouets d'occupation pour chats d'appartement",
+                slug: "top-5-jouets-chats",
+                excerpt: "Stimulez l'instinct de chasseur de votre chat avec notre sélection de jouets validée par des comportementalistes.",
+                author: "Yassine Drissi (Expert)",
+                category: "BIEN-ÊTRE",
+                imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=1000",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                status: 'Published',
+                content: "Articles complet sur les jouets..."
+              },
+              {
+                id: 997,
+                title: "Hygiène bucco-dentaire : 3 gestes essentiels pour votre chien",
+                slug: "hygiene-dentaire-chien",
+                excerpt: "Prévenez le tartre et les maladies parodontales grâce à ces conseils simples mais vitaux.",
+                author: "Dr. Mehdi Fassi",
+                category: "SANTÉ",
+                imageUrl: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=1000",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                status: 'Published',
+                content: "Conseils santé dentaire..."
+              }
+            ].map((post: BlogPost) => (
+              <BlogCard key={post.id} post={post} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-24 bg-slate-50 overflow-hidden">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-10 text-center">
+          <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic mb-20">Ils nous <span className="text-[#EE8C2B]">font confiance</span></h2>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-2xl font-medium text-slate-700 italic mb-12">&quot;{TESTIMONIALS[activeTestimonial].content}&quot;</p>
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 bg-[#1A5319] text-white rounded-full flex items-center justify-center font-black text-xl mb-4">{TESTIMONIALS[activeTestimonial].initial}</div>
+              <h4 className="text-xl font-black uppercase italic">{TESTIMONIALS[activeTestimonial].name}</h4>
+              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">{TESTIMONIALS[activeTestimonial].role}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section className="py-32 bg-white">
+        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
+          <div className="text-center mb-20">
+            <span className="text-[#EE8C2B] font-black uppercase tracking-[0.3em] text-xs mb-4 block">Aide & Support</span>
+            <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter">Questions Fréquentes</h2>
+          </div>
+
+          <div className="space-y-6">
+            {faqs.map((faq, idx) => (
+              <div 
+                key={idx} 
+                className={`bg-slate-50 rounded-[32px] p-8 border border-slate-100 transition-all duration-500 cursor-pointer overflow-hidden ${activeFaq === idx ? 'bg-white shadow-2xl border-[#1A5319]/10' : 'hover:bg-slate-100/50'}`}
+                onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+              >
+                <div className="flex items-center justify-between gap-6">
+                  <h3 className={`text-xl font-black leading-tight uppercase italic transition-colors ${activeFaq === idx ? 'text-[#1A5319]' : 'text-slate-900'}`}>{faq.q}</h3>
+                  <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${activeFaq === idx ? 'bg-[#1A5319] text-white rotate-180' : 'bg-white text-slate-400 shadow-sm'}`}>
+                    <ChevronDown size={20} strokeWidth={3} />
+                  </div>
+                </div>
+                
+                <AnimatePresence>
+                  {activeFaq === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                      animate={{ height: 'auto', opacity: 1, marginTop: 24 }}
+                      exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <p className="text-slate-600 font-medium leading-relaxed mb-8 border-t border-slate-200/60 pt-6">{faq.a}</p>
+                      
+                      {/* Feedback Buttons */}
+                      <div className="flex items-center justify-between pt-6 border-t border-slate-200/60">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Est-ce que cela vous a aidé ?</span>
+                        <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
+                          <button 
+                            onClick={() => handleFaqVote(idx, 'like')}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border group/btn ${faq.userVoted === 'like' ? 'bg-[#1A5319] text-white border-[#1A5319]' : 'bg-white text-slate-400 border-slate-100 hover:text-[#1A5319] hover:bg-[#1A5319]/5'}`}
+                          >
+                            <ThumbsUp size={16} className={`${faq.userVoted === 'like' ? 'scale-110' : 'group-hover/btn:scale-110'} transition-transform`} />
+                            <span className="text-xs font-black">{faq.likes}</span>
+                          </button>
+                          <button 
+                            onClick={() => handleFaqVote(idx, 'dislike')}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border group/btn ${faq.userVoted === 'dislike' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-400 border-slate-100 hover:text-red-500 hover:bg-red-50'}`}
+                          >
+                            <ThumbsDown size={16} className={`${faq.userVoted === 'dislike' ? 'scale-110' : 'group-hover/btn:scale-110'} transition-transform`} />
+                            <span className="text-xs font-black">{faq.dislikes}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ORDER TRACKING SECTION */}
+      <section className="py-32 bg-slate-50">
+        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
+          <div className="bg-white rounded-[60px] p-12 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
+            {/* Background Decorative element */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#1A5319]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            
+            <div className="relative z-10 text-center mb-16">
+              <span className="text-[#1A5319] font-black uppercase tracking-[0.3em] text-xs mb-4 block">Expédition & Logistique</span>
+              <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter mb-6">Suivez votre <span className="text-[#EE8C2B]">commande</span></h2>
+              <p className="text-slate-500 font-medium max-w-xl mx-auto">Entrez votre numéro de commande pour connaître l&apos;état d&apos;avancement de votre livraison en temps réel.</p>
+            </div>
+
+            <div className="max-w-2xl mx-auto">
+              <div className="flex flex-col md:flex-row gap-4 mb-12">
+                <div className="flex-1 relative">
+                  <Package className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                  <input 
+                    type="text" 
+                    placeholder="Ex: #AFE-2024-8892" 
+                    className="w-full pl-14 pr-6 py-6 bg-slate-50 border border-slate-100 rounded-3xl text-lg font-bold text-slate-900 placeholder:text-slate-300 outline-none focus:bg-white focus:border-[#1A5319]/20 transition-all"
+                  />
+                </div>
+                <button className="px-10 py-6 bg-[#1A5319] text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all active:scale-95">
+                  Suivre
+                </button>
+              </div>
+
+              {/* MOCK TIMELINE (Visible when tracking) */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Confirmée', icon: CheckCircle, active: true, done: true },
+                  { label: 'Préparation', icon: Package, active: true, done: false },
+                  { label: 'En route', icon: Truck, active: false, done: false },
+                  { label: 'Livrée', icon: CheckCircle, active: false, done: false }
+                ].map((step, i) => (
+                  <div key={i} className="flex flex-col items-center text-center group">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${step.done ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : step.active ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
+                      <step.icon size={28} />
+                    </div>
+                    <span className={`text-[11px] font-black uppercase tracking-widest ${step.active || step.done ? 'text-slate-900' : 'text-slate-300'}`}>{step.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col items-center">
+                <p className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-6">Préférer les notifications automatiques ?</p>
+                <a 
+                  href={`https://wa.me/${whatsappNumber}?text=Je%20souhaite%20recevoir%20les%20mises%20à%20jour%20de%20ma%20commande%20sur%20WhatsApp.`}
+                  className="flex items-center gap-4 text-[#25D366] font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
+                >
+                  <div className="w-10 h-10 bg-[#25D366]/10 rounded-full flex items-center justify-center">
+                    <MessageCircle size={18} />
+                  </div>
+                  Activer le suivi WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FINAL CONTACT CTA & DETAILS */}
+      <section className="py-24 bg-white px-6 lg:px-10">
+        <div className="mx-auto max-w-[1400px] mb-20">
+          <div className="bg-[#1A5319] rounded-[60px] p-12 md:p-24 flex flex-col lg:flex-row items-center justify-between text-white shadow-2xl overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
+              <div className="w-full h-full border-[100px] border-white rounded-full translate-x-1/2 -translate-y-1/2" />
+            </div>
+            
+            <div className="max-w-2xl relative z-10">
+              <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-10 leading-[0.85]">On reste en <span className="text-[#EE8C2B]">contact ?</span></h2>
+              <p className="text-white/70 text-xl font-medium mb-12 max-w-lg leading-relaxed">Questions sur une marque ? Conseil nutritionnel ? Notre équipe d&apos;experts est disponible pour vous 7j/7.</p>
+              <div className="flex flex-wrap gap-6">
+                <a href={`https://wa.me/${whatsappNumber}`} className="px-12 py-6 bg-[#25D366] text-white rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl hover:scale-105 transition-all flex items-center gap-4">
+                  <MessageCircle size={24} /> WhatsApp
+                </a>
+                <Link href="/contact" className="px-12 py-6 bg-white text-slate-900 rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl hover:scale-105 transition-all">
+                  Formulaire
+                </Link>
+              </div>
+            </div>
+            
+            <div className="w-full lg:w-1/3 mt-20 lg:mt-0 grid grid-cols-1 gap-10 relative z-10">
+              {[
+                { icon: MapPin, title: 'Boutique', desc: settings?.address || 'Boulevard Zerktouni, Casablanca' },
+                { icon: Phone, title: 'Téléphone', desc: settings?.phoneNumber || '+212 6 00 00 00 00' },
+                { icon: Headset, title: 'Support', desc: settings?.supportEmail || 'contact@animalfoodexpress.ma' }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-6 group">
+                  <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-[#EE8C2B] transition-all">
+                    <item.icon size={28} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black uppercase tracking-widest text-white/50 mb-1">{item.title}</h4>
+                    <p className="text-lg font-bold">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SOS VETERINAIRE FLOATING BUTTON */}
+      <div className="fixed bottom-8 left-8 z-[100] group">
+        <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20 group-hover:opacity-40 transition-opacity" />
+        <a 
+          href={`https://wa.me/${whatsappNumber}?text=Bonjour,%20j'ai%20besoin%20d'un%20conseil%20vétérinaire%20urgent%20pour%20mon%20animal.`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative flex items-center gap-4 bg-white border-2 border-red-500 text-red-500 p-2 pr-6 rounded-full shadow-[0_20px_50px_rgba(239,68,68,0.3)] hover:bg-red-500 hover:text-white transition-all duration-500 group-hover:-translate-y-2"
+        >
+          <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+            <Stethoscope size={24} strokeWidth={2.5} />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Besoin d&apos;aide ?</span>
+            <span className="text-sm font-black uppercase italic leading-none">SOS Vétérinaire</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  );
+}

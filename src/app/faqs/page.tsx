@@ -36,15 +36,19 @@ const faqs = [
         ]
     },
     {
-        category: 'Produits & Garanties',
+        category: 'Produits & Conseils',
         items: [
             {
-                q: 'Les produits sont-ils garantis ?',
-                a: "Tous nos équipements et outils électriques bénéficient d'une garantie constructeur. La durée de la garantie varie selon la marque et le produit."
+                q: 'Comment choisir les bonnes croquettes pour mon animal ?',
+                a: "Le choix dépend de l'âge, de la race et de l'activité de votre compagnon. Nos fiches produits détaillent les bénéfices de chaque gamme, et nos conseillers sont disponibles sur WhatsApp pour vous guider."
             },
             {
-                q: 'Proposez-vous des prix pour les professionnels ?',
-                a: "Absolument. Si vous êtes un professionnel du bâtiment ou un revendeur, contactez notre service commercial pour obtenir des tarifs préférentiels sur les commandes en gros."
+                q: 'Les produits sont-ils certifiés ?',
+                a: "Oui, nous ne sélectionnons que des marques premium (Royal Canin, Pro Plan, etc.) garantissant une traçabilité et une qualité nutritionnelle optimale."
+            },
+            {
+                q: 'Proposez-vous des tarifs pour les éleveurs ?',
+                a: "Tout à fait. Si vous êtes un professionnel ou un éleveur, contactez notre service commercial pour bénéficier de tarifs préférentiels sur les gros volumes."
             }
         ]
     }
@@ -64,7 +68,7 @@ export default function FAQsPage() {
             <div className="bg-white border-b border-slate-200 pt-20 pb-16">
                 <div className="max-w-4xl mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight uppercase italic">
-                        Questions <span className="text-[#BF1737]">Fréquentes</span>
+                        Questions <span className="text-[#1A5319]">Fréquentes</span>
                     </h1>
                     <p className="text-lg text-slate-500 font-medium mb-10 max-w-2xl mx-auto">
                         Trouvez rapidement des réponses à vos questions sur nos produits, la livraison et nos services.
@@ -78,7 +82,7 @@ export default function FAQsPage() {
                             placeholder="Rechercher une réponse..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full h-14 pl-12 pr-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-[#BF1737] focus:ring-4 focus:ring-[#BF1737]/5 transition-all outline-none font-medium"
+                            className="w-full h-14 pl-12 pr-4 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white focus:border-[#1A5319] focus:ring-4 focus:ring-[#1A5319]/5 transition-all outline-none font-medium"
                         />
                     </div>
                 </div>
@@ -98,7 +102,7 @@ export default function FAQsPage() {
                         return (
                             <div key={groupIdx}>
                                 <h2 className="text-xl font-black text-slate-900 uppercase tracking-wider mb-6 flex items-center gap-3">
-                                    <div className="w-8 h-1 bg-[#BF1737] rounded-full"></div>
+                                    <div className="w-8 h-1 bg-[#1A5319] rounded-full"></div>
                                     {group.category}
                                 </h2>
                                 <div className="space-y-4">
@@ -111,18 +115,18 @@ export default function FAQsPage() {
                                         return (
                                             <div 
                                                 key={id} 
-                                                className={`bg-white rounded-2xl border transition-all duration-300 ${isOpen ? 'border-[#BF1737] shadow-lg shadow-[#BF1737]/5' : 'border-slate-200 hover:border-slate-300 shadow-sm'}`}
+                                                className={`bg-white rounded-2xl border transition-all duration-300 ${isOpen ? 'border-[#1A5319] shadow-lg shadow-[#1A5319]/5' : 'border-slate-200 hover:border-slate-300 shadow-sm'}`}
                                             >
                                                 <button 
                                                     onClick={() => !isSearchActive && toggleFaq(id)}
                                                     className={`w-full px-6 py-5 flex items-center justify-between text-left ${isSearchActive ? 'cursor-default' : 'cursor-pointer'}`}
                                                     aria-expanded={isOpen}
                                                 >
-                                                    <span className={`text-[16px] font-bold ${isOpen ? 'text-[#BF1737]' : 'text-slate-800'}`}>
+                                                    <span className={`text-[16px] font-bold ${isOpen ? 'text-[#1A5319]' : 'text-slate-800'}`}>
                                                         {item.q}
                                                     </span>
                                                     {!isSearchActive && (
-                                                        isOpen ? <ChevronUp className="w-5 h-5 text-[#BF1737]" /> : <ChevronDown className="w-5 h-5 text-slate-400" />
+                                                        isOpen ? <ChevronUp className="w-5 h-5 text-[#1A5319]" /> : <ChevronDown className="w-5 h-5 text-slate-400" />
                                                     )}
                                                 </button>
                                                 {isOpen && (
@@ -156,7 +160,7 @@ export default function FAQsPage() {
                     )}
                 </div>
 
-                <div className="mt-16 py-10 px-6 bg-[#BF1737] shadow-xl shadow-[#BF1737]/10 rounded-2xl text-center text-white">
+                <div className="mt-16 py-10 px-6 bg-[#1A5319] shadow-xl shadow-[#1A5319]/10 rounded-2xl text-center text-white">
                     <h3 className="text-2xl md:text-3xl font-bold mb-3 tracking-wide">
                         Vous avez d'autres questions ?
                     </h3>
@@ -164,7 +168,7 @@ export default function FAQsPage() {
                         Notre équipe est là pour vous aider
                     </p>
                     <div className="text-[15px] md:text-base font-medium tracking-wide">
-                        +212 5 22 00 00 00 <span className="mx-2 opacity-50">|</span> contact@drogueriemaroc.com
+                        +212 5 22 00 00 00 <span className="mx-2 opacity-50">|</span> contact@petmarket.ma
                     </div>
                 </div>
             </div>

@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewStatusDto } from './dto/update-review-status.dto';
 import { ReviewStatus } from './review.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -17,6 +18,7 @@ export class ReviewsController {
 
     // Admin: Get all reviews (optionally filtering by status: pending, approved, rejected)
     @Get()
+    @UseGuards(JwtAuthGuard)
     findAll(@Query('status') status?: string) {
         return this.reviewsService.findAll(status);
     }
@@ -29,6 +31,7 @@ export class ReviewsController {
 
     // Admin: Update status (approve/reject)
     @Patch(':id/status')
+    @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     updateStatus(@Param('id') id: string, @Body() updateReviewStatusDto: UpdateReviewStatusDto) {
         return this.reviewsService.updateStatus(Number(id), updateReviewStatusDto);
@@ -36,6 +39,7 @@ export class ReviewsController {
 
     // Admin: Delete review
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     remove(@Param('id') id: string) {
         return this.reviewsService.remove(Number(id));
     }

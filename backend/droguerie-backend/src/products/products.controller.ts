@@ -1,50 +1,34 @@
-import { Controller, Get, Post, Body, Query, Param, Patch, Delete, NotFoundException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, Patch, Delete, NotFoundException, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto, UpdateProductDto } from './dto/create-product.dto';
+import { ProductQueryDto } from './dto/product-query.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) { }
 
     @Get()
-    findAll(
-        @Query('page') page = '1',
-        @Query('limit') limit = '12',
-        @Query('search') search?: string,
-        @Query('categoryId') categoryId?: string,
-        @Query('brandId') brandId?: string,
-        @Query('minPrice') minPrice?: string,
-        @Query('maxPrice') maxPrice?: string,
-        @Query('inStock') inStock?: string,
-        @Query('onSale') onSale?: string,
-        @Query('ecoFriendly') ecoFriendly?: string,
-        @Query('sort') sort?: string,
-        @Query('active') active?: string,
-    ) {
+    findAll(@Query() query: ProductQueryDto) {
         return this.productsService.findAll(
-            Number(page),
-            Number(limit),
-            search,
-            categoryId ? Number(categoryId) : undefined,
-            brandId ? Number(brandId) : undefined,
-            minPrice !== undefined ? Number(minPrice) : undefined,
-            maxPrice !== undefined ? Number(maxPrice) : undefined,
-            inStock === 'true',
-            onSale === 'true',
-            ecoFriendly === 'true',
-            sort,
-            active === 'true'
+            query.page,
+            query.limit,
+            query.search,
+            query.categoryId,
+            query.brandId,
+            query.minPrice,
+            query.maxPrice,
+            query.inStock,
+            query.onSale,
+            query.ecoFriendly,
+            query.sort,
+            query.active
         );
     }
 
     @Get('stats')
     getStats() {
         return this.productsService.getStats();
-    }
-
-    @Post('seed')
-    seed() {
-        return this.productsService.seed();
     }
 
     @Get('tags')
@@ -60,12 +44,14 @@ export class ProductsController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     create(@Body() data: CreateProductDto) {
         return this.productsService.create(data);
     }
 
     @Patch(':id')
+    @UseGuards(JwtAuthGuard)
     @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
     async update(@Param('id') id: string, @Body() data: UpdateProductDto) {
         try {
@@ -76,6 +62,7 @@ export class ProductsController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     remove(@Param('id') id: string) {
         return this.productsService.remove(Number(id));
     }

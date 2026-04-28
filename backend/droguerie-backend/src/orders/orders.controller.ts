@@ -26,9 +26,15 @@ export class OrdersController {
         return this.ordersService.getStats();
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.ordersService.findOne(Number(id));
+    }
+
+    @Get('track/:ref')
+    track(@Param('ref') ref: string) {
+        return this.ordersService.findByReference(ref);
     }
 
     @Post() // Keep public for customers

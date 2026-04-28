@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api, type Product } from '../lib/api';
-import { useWishlist } from '../context/WishlistContext';
-import { useCart } from '../context/CartContext';
-import { useNotification } from '../context/NotificationContext';
+import { api, type Product } from '@/app/lib/api';
+import { useWishlist } from '@/app/context/WishlistContext';
+import { useCart } from '@/app/context/CartContext';
+import { useNotification } from '@/app/context/NotificationContext';
 import { X, Share2, ShoppingCart, Heart, RefreshCw, Star } from 'lucide-react';
 
 export default function WishlistPage() {
@@ -51,7 +51,7 @@ export default function WishlistPage() {
             showToast('Votre liste est vide', 'error');
             return;
         }
-        const text = `Découvrez ma liste de souhaits sur Droguerie :\n` +
+        const text = `Découvrez ma liste de souhaits sur PetMarket :\n` +
             products.map(p => `- ${p.name}`).join('\n') + `\n\nVisitez-nous sur : ${typeof window !== 'undefined' ? window.location.origin : ''}`;
             
         if (navigator.share) {
@@ -107,7 +107,7 @@ export default function WishlistPage() {
                             <Share2 size={15} strokeWidth={2.5} />
                             Partager la liste
                         </button>
-                        <button onClick={handleAddAllToCart} className="flex items-center gap-2 px-5 py-2.5 bg-[#BF1737] text-white rounded-lg text-[13px] font-bold hover:bg-[#9B122D] transition-colors shadow-sm">
+                        <button onClick={handleAddAllToCart} className="flex items-center gap-2 px-5 py-2.5 bg-[#1A5319] text-white rounded-lg text-[13px] font-bold hover:bg-[#004d26] transition-colors shadow-sm">
                             <ShoppingCart size={15} strokeWidth={2.5} />
                             Tout ajouter au panier
                         </button>
@@ -131,8 +131,8 @@ export default function WishlistPage() {
                     </div>
                 ) : products.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <div className="w-20 h-20 rounded-full bg-[#FEF0F2] flex items-center justify-center mb-6">
-                            <ShoppingCart size={36} className="text-[#BF1737] opacity-40" />
+                        <div className="w-20 h-20 rounded-full bg-[#F0FDF4] flex items-center justify-center mb-6">
+                            <ShoppingCart size={36} className="text-[#1A5319] opacity-40" />
                         </div>
                         <h3 className="text-xl font-black text-slate-900 mb-2">Votre liste de souhaits est vide</h3>
                         <p className="text-slate-500 font-medium mb-6 max-w-md">
@@ -140,7 +140,7 @@ export default function WishlistPage() {
                         </p>
                         <Link
                             href="/products"
-                            className="px-6 py-2.5 bg-[#BF1737] text-white font-bold rounded-lg shadow-sm hover:bg-[#9B122D] transition-all"
+                            className="px-6 py-2.5 bg-[#1A5319] text-white font-bold rounded-lg shadow-sm hover:bg-[#004d26] transition-all"
                         >
                             Découvrir nos produits
                         </Link>
@@ -180,7 +180,7 @@ export default function WishlistPage() {
 
                                             {/* Action Buttons (Hover) */}
                                             <div className="absolute bottom-2 right-2 flex flex-col gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 z-10">
-                                                <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1D1636] text-white shadow-md hover:bg-[#BF1737] transition-colors">
+                                                <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1D1636] text-white shadow-md hover:bg-[#1A5319] transition-colors">
                                                     <RefreshCw size={16} strokeWidth={2} />
                                                 </button>
                                             </div>
@@ -195,7 +195,7 @@ export default function WishlistPage() {
                                         {/* Product Info */}
                                         <div className="flex flex-1 flex-col">
                                             <Link href={`/products/${product.id}`}>
-                                                <h3 className="text-[14px] font-medium text-slate-900 leading-tight line-clamp-2 mb-2 group-hover:text-[#BF1737] transition-colors">
+                                                <h3 className="text-[14px] font-medium text-slate-900 leading-tight line-clamp-2 mb-2 group-hover:text-[#1A5319] transition-colors">
                                                     {product.name}
                                                 </h3>
                                             </Link>
@@ -211,7 +211,7 @@ export default function WishlistPage() {
 
                                             <div className="mt-auto flex items-center justify-between">
                                                 <div className="flex flex-col">
-                                                    <span className="text-[15px] font-bold text-[#BF1737]">
+                                                    <span className="text-[15px] font-bold text-[#1A5319]">
                                                         {price.toFixed(2).replace('.', ',')} MAD
                                                     </span>
                                                     {isSale && (
@@ -221,7 +221,19 @@ export default function WishlistPage() {
                                                     )}
                                                 </div>
 
-                                                <button className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#FEF0F2] text-[#BF1737] transition-all hover:bg-[#BF1737] hover:text-white" title="Ajouter au panier">
+                                                <button 
+                                                    onClick={() => {
+                                                        addToCart({
+                                                            productId: Number(product.id),
+                                                            name: product.name,
+                                                            price: product.price,
+                                                            imageUrl: product.imageUrl
+                                                        });
+                                                        showToast(`${product.name} ajouté au panier !`, 'success');
+                                                    }}
+                                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#F0FDF4] text-[#1A5319] transition-all hover:bg-[#1A5319] hover:text-white" 
+                                                    title="Ajouter au panier"
+                                                >
                                                     <ShoppingCart size={18} strokeWidth={2} />
                                                 </button>
                                             </div>
@@ -268,10 +280,10 @@ export default function WishlistPage() {
                                                 </div>
                                             )}
                                         </div>
-                                        <h4 className="text-[13px] font-bold text-slate-900 leading-tight line-clamp-2 mb-1 group-hover:text-[#BF1737] transition-colors h-[32px]">
+                                        <h4 className="text-[13px] font-bold text-slate-900 leading-tight line-clamp-2 mb-1 group-hover:text-[#1A5319] transition-colors h-[32px]">
                                             {product.name}
                                         </h4>
-                                        <span className="text-[14px] font-black text-[#BF1737]">
+                                        <span className="text-[14px] font-black text-[#1A5319]">
                                             {Number(product.price).toFixed(2).replace('.', ',')} MAD
                                         </span>
                                     </Link>

@@ -327,7 +327,7 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4">
                       <div className="size-12 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden border border-slate-200">
                         {product.imageUrl ? (
-                          <img className="w-full h-full object-cover" src={product.imageUrl} alt={product.name} />
+                          <img className="w-full h-full object-contain" src={product.imageUrl} alt={product.name} />
                         ) : (
                           <span className="material-symbols-outlined text-slate-400">image</span>
                         )}
@@ -480,7 +480,7 @@ export default function AdminProductsPage() {
                       value={newProduct.name}
                       onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm transition-all"
-                      placeholder="e.g. Paracetamol 500mg"
+                      placeholder="e.g. Croquettes pour chat"
                     />
                   </div>
                   <div>
@@ -709,6 +709,55 @@ export default function AdminProductsPage() {
                     SÉLECTIONNEZ JUSQU&apos;À 10 IMAGES. LA PREMIÈRE IMAGE SERA UTILISÉE COMME IMAGE PRINCIPALE PAR DÉFAUT.
                     FORMATS ACCEPTÉS : JPG, PNG, WEBP. MAX 5MB PAR FICHIER.
                   </p>
+
+                  {/* OR: URL directe */}
+                  <div className="mt-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex-1 h-px bg-slate-200" />
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">ou ajouter via URL</span>
+                      <div className="flex-1 h-px bg-slate-200" />
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        id="imageUrlInput"
+                        placeholder="https://exemple.com/image.jpg"
+                        className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none text-sm transition-all"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const input = e.currentTarget;
+                            const url = input.value.trim();
+                            if (url) {
+                              setNewProduct(prev => {
+                                const updated = [...prev.imageUrls, url];
+                                return { ...prev, imageUrls: updated, imageUrl: prev.imageUrl || url };
+                              });
+                              input.value = '';
+                            }
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const input = document.getElementById('imageUrlInput') as HTMLInputElement;
+                          const url = input?.value.trim();
+                          if (url) {
+                            setNewProduct(prev => {
+                              const updated = [...prev.imageUrls, url];
+                              return { ...prev, imageUrls: updated, imageUrl: prev.imageUrl || url };
+                            });
+                            input.value = '';
+                          }
+                        }}
+                        className="px-4 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all flex items-center gap-1.5"
+                      >
+                        <span className="material-symbols-outlined text-[18px]">add_link</span>
+                        Ajouter
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

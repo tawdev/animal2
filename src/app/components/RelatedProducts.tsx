@@ -33,7 +33,7 @@ export default function RelatedProducts({ categoryId, currentProductId }: { cate
       <div className="mb-8">
         <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Produits connexes</h3>
         <div className="h-[1px] w-full bg-slate-100 relative">
-          <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#BF1737]"></div>
+          <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
         </div>
       </div>
 

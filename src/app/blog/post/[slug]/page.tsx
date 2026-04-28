@@ -62,7 +62,7 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
         return (
         <div className="bg-slate-950 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-6">
-                    <div className="w-16 h-16 border-[4px] border-[#BF1737] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-[4px] border-[#1A5319] border-t-transparent rounded-full animate-spin"></div>
                     <p className="text-white/40 text-[13px] font-black uppercase tracking-[0.3em] animate-pulse">Chargement de l'article...</p>
                 </div>
             </div>
@@ -77,7 +77,7 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                 </div>
                 <h1 className="text-[32px] font-black text-slate-900 mb-4 uppercase tracking-tight">Article Introuvable</h1>
                 <p className="text-slate-400 mb-10 max-w-sm leading-relaxed font-medium">L'article que vous recherchez a peut-être été déplacé ou supprimé.</p>
-                <Link href="/blog" className="rounded-2xl bg-[#BF1737] px-10 py-4.5 text-[14px] font-black text-white transition-all shadow-xl shadow-[#BF1737]/20 hover:bg-[#A3142F] hover:-translate-y-1">
+                <Link href="/blog" className="rounded-2xl bg-[#1A5319] px-10 py-4.5 text-[14px] font-black text-white transition-all shadow-xl shadow-[#1A5319]/20 hover:bg-[#004d26] hover:-translate-y-1">
                     RETOUR AU BLOG
                 </Link>
             </div>
@@ -87,8 +87,8 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
     // Author data from the post or fallback
     const postAuthor = {
         name: post.author || "Admin",
-        role: "Expert Outillage",
-        bio: `${post.author || "Notre équipe"} est spécialisé dans le domaine de l'outillage professionnel et partage son expertise pour conseiller artisans et bricoleurs passionnés.`,
+        role: "Expert Soins Animaliers",
+        bio: `${post.author || "Notre équipe"} est spécialisé dans le domaine du bien-être animal et partage son expertise pour conseiller les propriétaires d'animaux passionnés.`,
         avatar: "/author-avatar.png"
     };
 
@@ -101,7 +101,7 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
     };
 
     return (
-        <div className="flex-1 flex flex-col bg-[#F9FAFC] font-sans text-slate-900 selection:bg-[#BF1737]/20">
+        <div className="flex-1 flex flex-col bg-[#F9FAFC] font-sans text-slate-900 selection:bg-[#1A5319]/20">
             {/* Dark Hero Section */}
             <motion.section 
               initial={{ opacity: 0 }}
@@ -117,11 +117,11 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                 >
                     <img
                         src={post.imageUrl || '/blog-hero-bg.png'}
-                        className="w-full h-full object-cover mix-blend-luminosity grayscale"
+                        className="w-full h-full object-contain mix-blend-luminosity grayscale"
                         alt=""
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-transparent to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-[#BF1737]/20 to-transparent mix-blend-multiply" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#1A5319]/20 to-transparent mix-blend-multiply" />
                 </motion.div>
 
                 <div className="relative z-10 mx-auto max-w-[1400px] px-6 lg:px-12 w-full flex-1 flex flex-col pt-12 pb-24">
@@ -131,7 +131,7 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                       transition={{ duration: 0.6, delay: 0.3 }}
                     >
                       <Link href="/blog" className="group flex items-center gap-3 text-white/50 hover:text-white transition-all w-fit mb-12">
-                          <div className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#BF1737] group-hover:bg-[#BF1737] transition-all">
+                          <div className="h-10 w-10 rounded-full border border-white/10 flex items-center justify-center group-hover:border-[#1A5319] group-hover:bg-[#1A5319] transition-all">
                               <ArrowLeft size={16} />
                           </div>
                           <span className="text-[12px] font-black uppercase tracking-[0.2em]">Retour au Blog</span>
@@ -145,15 +145,15 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                           transition={{ duration: 0.8, delay: 0.4 }}
                           className="flex flex-wrap items-center gap-4"
                         >
-                            <span className="px-5 py-2 rounded-full bg-[#BF1737] text-[11px] font-black uppercase tracking-[0.2em] text-white shadow-lg">
-                                {post.category || 'CONSEILS PRO'}
+                            <span className="px-5 py-2 rounded-full bg-[#1A5319] text-[11px] font-black uppercase tracking-[0.2em] text-white shadow-lg">
+                                {post.category || 'CONSEILS PETS'}
                             </span>
                             <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[11px] font-black text-white/60 uppercase tracking-widest backdrop-blur-md">
-                                <Clock size={14} className="text-[#BF1737]" strokeWidth={3} />
+                                <Clock size={14} className="text-[#1A5319]" strokeWidth={3} />
                                 {readTime} MIN DE LECTURE
                             </div>
                             <div className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 text-[11px] font-black text-white/60 uppercase tracking-widest backdrop-blur-md">
-                                <Eye size={14} className="text-[#BF1737]" strokeWidth={3} />
+                                <Eye size={14} className="text-[#1A5319]" strokeWidth={3} />
                                 3.2K VUES
                             </div>
                         </motion.div>
@@ -183,18 +183,18 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                           className="pt-10 flex flex-col sm:flex-row sm:items-center justify-between gap-8 border-t border-white/10"
                         >
                             <div className="flex items-center gap-5">
-                                <div className="h-14 w-14 rounded-full bg-[#BF1737] text-white flex items-center justify-center text-xl font-black border-2 border-white/10 uppercase">
+                                <div className="h-14 w-14 rounded-full bg-[#1A5319] text-white flex items-center justify-center text-xl font-black border-2 border-white/10 uppercase">
                                     {(post.author || 'A').charAt(0)}
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="text-white font-black text-[16px] uppercase tracking-wide">{post.author || 'Admin'}</span>
                                     <span className="text-white/40 text-[12px] font-bold uppercase tracking-widest">
-                                        Expert Outillage • {new Date(post.publishDate || post.createdAt).toLocaleDateString('fr-MA', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                        Expert Soins • {new Date(post.publishDate || post.createdAt).toLocaleDateString('fr-MA', { day: 'numeric', month: 'long', year: 'numeric' })}
                                     </span>
                                 </div>
                             </div>
 
-                            <button className="flex items-center gap-4 px-10 py-4.5 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all hover:bg-[#BF1737] hover:border-transparent group">
+                            <button className="flex items-center gap-4 px-10 py-4.5 rounded-2xl bg-white/5 border border-white/10 text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all hover:bg-[#1A5319] hover:border-transparent group">
                                 Partager
                                 <Share2 size={16} className="transition-transform group-hover:rotate-12" strokeWidth={3} />
                             </button>
@@ -215,19 +215,19 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                     <div className="flex-1">
                         {/* Article Lead Section */}
                         <div className="mb-12">
-                            <div className="border-l-4 border-[#BF1737] pl-8 py-2">
+                            <div className="border-l-4 border-[#1A5319] pl-8 py-2">
                                 <p className="text-[22px] md:text-[26px] font-black text-slate-800 leading-tight italic uppercase tracking-tight">
                                     {post.excerpt || "Découvrez notre analyse complète et nos recommandations d'experts."}
                                 </p>
                             </div>
                             <div className="mt-8 flex items-center gap-6 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] border-y border-slate-100 py-4">
                                 <div className="flex items-center gap-2">
-                                    <Clock size={14} className="text-[#BF1737]" />
+                                    <Clock size={14} className="text-[#1A5319]" />
                                     {readTime} MIN DE LECTURE
                                 </div>
                                 <div className="h-4 w-px bg-slate-200" />
                                 <div className="flex items-center gap-2">
-                                    <User size={14} className="text-[#BF1737]" />
+                                    <User size={14} className="text-[#1A5319]" />
                                     PAR {post.author || 'ADMIN'}
                                 </div>
                                 <div className="h-4 w-px bg-slate-200 hidden sm:block" />
@@ -271,8 +271,8 @@ export default function BlogPostDetailsPage({ params }: { params: Promise<{ slug
                 <div className="flex items-center justify-between mb-16">
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-[2.5px] bg-[#BF1737]" />
-                            <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#BF1737]">VOUS POURRIEZ AIMER</span>
+                            <div className="w-10 h-[2.5px] bg-[#1A5319]" />
+                            <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#1A5319]">VOUS POURRIEZ AIMER</span>
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-slate-900 leading-tight uppercase tracking-tight italic">
                             ARTICLES SIMILAIRES

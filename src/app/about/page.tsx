@@ -5,8 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   Award, Truck, ShieldCheck, Users, Star, MapPin, Phone, Clock,
-  ChevronRight, Paintbrush, Wrench, Droplets, Zap, ArrowRight,
-  CheckCircle2, Heart, Target, TrendingUp
+  ChevronRight, Heart, Target, TrendingUp, Dog, Cat, Fish, Bird,
+  CheckCircle2, ArrowRight
 } from 'lucide-react';
 
 // Animated counter hook
@@ -60,54 +60,54 @@ export default function AboutUsPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const stat1 = useCountUp(30, 2000);
-  const stat2 = useCountUp(15000, 2500);
-  const stat3 = useCountUp(500, 2000);
-  const stat4 = useCountUp(98, 2000);
+  const stat1 = useCountUp(25, 2000);
+  const stat2 = useCountUp(5000, 2500);
+  const stat3 = useCountUp(120, 2000);
+  const stat4 = useCountUp(99, 2000);
 
   const values = [
     {
       icon: <Award className="w-8 h-8" />,
-      title: 'Qualité Premium',
-      description: 'Nous sélectionnons rigoureusement chaque produit pour garantir une qualité professionnelle à nos clients.',
+      title: 'Nutrition Premium',
+      description: 'Nous sélectionnons rigoureusement chaque marque de croquettes pour garantir la santé de vos animaux.',
       gradient: 'from-amber-500 to-orange-600',
     },
     {
       icon: <ShieldCheck className="w-8 h-8" />,
-      title: 'Confiance & Fiabilité',
-      description: 'Des marques reconnues et des garanties solides pour chaque achat. Votre satisfaction est notre priorité.',
+      title: 'Bien-être Animal',
+      description: 'Le confort et le bonheur de vos compagnons sont au cœur de notre sélection de jouets et accessoires.',
       gradient: 'from-emerald-500 to-teal-600',
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: 'Expertise Métier',
-      description: 'Notre équipe de spécialistes vous accompagne et vous conseille dans tous vos projets de rénovation.',
+      title: 'Conseils Experts',
+      description: 'Notre équipe de passionnés vous accompagne pour choisir l\'alimentation adaptée à votre compagnon.',
       gradient: 'from-blue-500 to-indigo-600',
     },
     {
       icon: <Truck className="w-8 h-8" />,
-      title: 'Livraison Rapide',
-      description: 'Service de livraison efficace partout au Maroc. Recevez vos commandes directement chez vous.',
+      title: 'Livraison Express',
+      description: 'Service de livraison rapide partout au Maroc. Ne manquez jamais de nourriture pour vos animaux.',
       gradient: 'from-rose-500 to-pink-600',
     },
   ];
 
   const timeline = [
-    { year: '1995', title: 'Les Débuts', desc: 'Ouverture de notre première boutique à Casablanca, spécialisée en produits de quincaillerie.' },
-    { year: '2005', title: 'Expansion', desc: 'Élargissement de notre gamme avec la peinture, plomberie et électricité. 3 nouvelles succursales.' },
-    { year: '2015', title: 'Modernisation', desc: 'Lancement de notre plateforme en ligne et digitalisation de l\'expérience client.' },
-    { year: '2024', title: "Aujourd'hui", desc: 'Leader régional avec +15 000 produits, livraison nationale et service client premium.' },
+    { year: '1999', title: 'La Naissance', desc: 'Ouverture de notre première animalerie à Casablanca, spécialisée en nutrition canine.' },
+    { year: '2008', title: 'Expansion', desc: 'Élargissement aux félins, oiseaux et aquariophilie. Ouverture de 3 nouveaux points de vente.' },
+    { year: '2018', title: 'Digitalisation', desc: 'Lancement de notre boutique en ligne PetMarket pour servir tout le Maroc.' },
+    { year: '2024', title: "Aujourd'hui", desc: 'Leader de la nutrition animale en ligne avec +5 000 produits et livraison express.' },
   ];
 
   const categories = [
-    { icon: <Paintbrush className="w-6 h-6" />, name: 'Peinture', count: '2 500+' },
-    { icon: <Wrench className="w-6 h-6" />, name: 'Outillage', count: '3 200+' },
-    { icon: <Droplets className="w-6 h-6" />, name: 'Plomberie', count: '1 800+' },
-    { icon: <Zap className="w-6 h-6" />, name: 'Électricité', count: '2 400+' },
+    { icon: <Dog className="w-6 h-6" />, name: 'Chiens', count: '1 200+' },
+    { icon: <Cat className="w-6 h-6" />, name: 'Chats', count: '1 500+' },
+    { icon: <Fish className="w-6 h-6" />, name: 'Aquarium', count: '800+' },
+    { icon: <Bird className="w-6 h-6" />, name: 'Oiseaux', count: '600+' },
   ];
 
   return (
-        <div className="flex-1 flex flex-col bg-white">
+    <div className="flex-1 flex flex-col bg-white">
 
       {/* ═══════════ HERO SECTION ═══════════ */}
       <section className="relative h-[620px] overflow-hidden">
@@ -117,8 +117,8 @@ export default function AboutUsPage() {
           style={{ transform: `translateY(${scrollY * 0.3}px)` }}
         >
           <Image
-            src="/store-hero.png"
-            alt="Intérieur de notre magasin"
+            src="/pet_market_store_hero.png"
+            alt="PetMarket Boutique"
             fill
             className="object-cover"
             priority
@@ -131,24 +131,24 @@ export default function AboutUsPage() {
         <div className="relative z-20 h-full flex flex-col items-center justify-center px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 text-sm font-medium mb-8 animate-fade-in">
             <Star className="w-4 h-4 text-amber-400" />
-            Votre partenaire de confiance depuis 1995
+            Votre partenaire animalier de confiance depuis 1999
           </div>
           <h1 className="text-white text-5xl md:text-7xl font-black mb-6 tracking-tight leading-[1.1] max-w-4xl">
             À Propos de
-            <span className="block bg-gradient-to-r from-[#BF1737] to-[#FF6B6B] bg-clip-text text-transparent">
-              Notre Droguerie
+            <span className="block bg-gradient-to-r from-[#1A5319] to-[#2E7D32] bg-clip-text text-transparent">
+              PetMarket
             </span>
           </h1>
           <p className="text-white/80 text-lg md:text-xl font-light leading-relaxed max-w-2xl mb-10">
-            Plus qu&apos;une simple droguerie — un véritable partenaire pour tous vos projets
-            de construction, rénovation et aménagement.
+            Plus qu&apos;une simple boutique — un véritable partenaire pour le bien-être,
+            la nutrition et le bonheur de vos animaux de compagnie.
           </p>
           <div className="flex gap-4">
             <Link
               href="/products"
-              className="group flex items-center gap-2 bg-[#BF1737] text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-[#a01430] transition-all shadow-lg shadow-[#BF1737]/30 hover:shadow-xl hover:shadow-[#BF1737]/40 hover:-translate-y-0.5"
+              className="group flex items-center gap-2 bg-[#1A5319] text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-[#004d26] transition-all shadow-lg shadow-[#1A5319]/30 hover:shadow-xl hover:shadow-[#1A5319]/40 hover:-translate-y-0.5"
             >
-              Découvrir nos produits
+              Voir la boutique
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
@@ -173,17 +173,17 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {[
-              { ref: stat1.ref, count: stat1.count, suffix: '+', label: "Années d'expérience", icon: <Target className="w-5 h-5" /> },
-              { ref: stat2.ref, count: stat2.count.toLocaleString(), suffix: '+', label: 'Produits disponibles', icon: <TrendingUp className="w-5 h-5" /> },
+              { ref: stat1.ref, count: stat1.count, suffix: '+', label: "Années de passion", icon: <Target className="w-5 h-5" /> },
+              { ref: stat2.ref, count: stat2.count.toLocaleString(), suffix: '+', label: 'Produits en stock', icon: <TrendingUp className="w-5 h-5" /> },
               { ref: stat3.ref, count: stat3.count, suffix: '+', label: 'Marques partenaires', icon: <Award className="w-5 h-5" /> },
-              { ref: stat4.ref, count: stat4.count, suffix: '%', label: 'Clients satisfaits', icon: <Heart className="w-5 h-5" /> },
+              { ref: stat4.ref, count: stat4.count, suffix: '%', label: 'Compagnons heureux', icon: <Heart className="w-5 h-5" /> },
             ].map((stat, i) => (
               <div
                 key={i}
                 ref={stat.ref}
                 className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-100 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
               >
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#BF1737]/10 text-[#BF1737] mb-3 group-hover:bg-[#BF1737] group-hover:text-white transition-colors">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-[#1A5319]/10 text-[#1A5319] mb-3 group-hover:bg-[#1A5319] group-hover:text-white transition-colors">
                   {stat.icon}
                 </div>
                 <div className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
@@ -201,34 +201,33 @@ export default function AboutUsPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#BF1737]/10 text-[#BF1737] text-sm font-semibold mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A5319]/10 text-[#1A5319] text-sm font-semibold mb-6">
                 <CheckCircle2 className="w-4 h-4" />
                 Notre Histoire
               </div>
               <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 leading-tight">
-                Une passion pour la <span className="text-[#BF1737]">qualité</span> depuis 3 décennies
+                Une passion pour vos <span className="text-[#1A5319]">compagnons</span> depuis 1999
               </h2>
               <div className="space-y-5 text-slate-600 text-[16px] leading-relaxed">
                 <p>
-                  Fondée en 1995 à Casablanca, notre droguerie est née d&apos;une vision simple :
-                  offrir aux professionnels et particuliers les meilleurs produits de quincaillerie,
-                  peinture, plomberie et électricité, accompagnés d&apos;un conseil expert.
+                  Fondée en 1999 à Casablanca, PetMarket est née d&apos;une passion pour les animaux et d&apos;une vision simple :
+                  offrir aux propriétaires d&apos;animaux les meilleurs produits de nutrition, de soin et d&apos;accessoires, 
+                  accompagnés de conseils d&apos;experts pour garantir le bonheur de leurs compagnons.
                 </p>
                 <p>
-                  Ce qui a commencé comme une petite boutique de quartier est devenu aujourd&apos;hui
-                  une référence incontournable dans le secteur de la distribution de matériaux
-                  et fournitures au Maroc.
+                  Ce qui a commencé comme une animalerie de quartier est devenu aujourd&apos;hui
+                  une référence incontournable de la nutrition animale en ligne au Maroc.
                 </p>
                 <p>
-                  Notre philosophie reste inchangée : <strong>qualité, expertise et proximité</strong>.
-                  Chaque produit est soigneusement sélectionné auprès des meilleures marques
-                  internationales et locales.
+                  Notre philosophie reste inchangée : <strong>bien-être, qualité et proximité</strong>.
+                  Chaque produit est soigneusement sélectionné auprès des meilleures marques internationales 
+                  pour répondre aux besoins spécifiques de chaque animal.
                 </p>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
                 {categories.map((cat, i) => (
-                  <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-700 text-sm font-medium hover:border-[#BF1737]/30 hover:bg-[#BF1737]/5 transition-colors cursor-default">
-                    <span className="text-[#BF1737]">{cat.icon}</span>
+                  <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-100 text-slate-700 text-sm font-medium hover:border-[#1A5319]/30 hover:bg-[#1A5319]/5 transition-colors cursor-default">
+                    <span className="text-[#1A5319]">{cat.icon}</span>
                     {cat.name}
                     <span className="text-slate-400 text-xs">({cat.count})</span>
                   </div>
@@ -238,8 +237,8 @@ export default function AboutUsPage() {
             <div className="relative">
               <div className="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-200/50">
                 <Image
-                  src="/tools-flatlay.png"
-                  alt="Nos outils professionnels"
+                  src="/pet_food_accessories_flatlay.png"
+                  alt="Produits PetMarket"
                   width={600}
                   height={500}
                   className="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-700"
@@ -252,8 +251,8 @@ export default function AboutUsPage() {
                     <CheckCircle2 className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-slate-900">Certifié ISO</div>
-                    <div className="text-xs text-slate-500">Normes internationales</div>
+                    <div className="text-sm font-bold text-slate-900">Qualité Premium</div>
+                    <div className="text-xs text-slate-500">Marques sélectionnées</div>
                   </div>
                 </div>
               </div>
@@ -266,15 +265,15 @@ export default function AboutUsPage() {
       <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#BF1737]/10 text-[#BF1737] text-sm font-semibold mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A5319]/10 text-[#1A5319] text-sm font-semibold mb-4">
               <Heart className="w-4 h-4" />
               Nos Valeurs
             </div>
             <h2 className="text-4xl font-black text-slate-900 mb-4">
-              Ce qui nous <span className="text-[#BF1737]">distingue</span>
+              Ce qui nous <span className="text-[#1A5319]">distingue</span>
             </h2>
             <p className="text-slate-500 max-w-xl mx-auto text-lg">
-              Les principes fondamentaux qui guident chaque décision et chaque interaction avec nos clients.
+              Les principes fondamentaux qui guident notre engagement quotidien envers vos animaux.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -298,18 +297,18 @@ export default function AboutUsPage() {
       <section className="py-24">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#BF1737]/10 text-[#BF1737] text-sm font-semibold mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A5319]/10 text-[#1A5319] text-sm font-semibold mb-4">
               <Clock className="w-4 h-4" />
               Notre Parcours
             </div>
             <h2 className="text-4xl font-black text-slate-900 mb-4">
-              Une histoire de <span className="text-[#BF1737]">croissance</span>
+              Une histoire de <span className="text-[#1A5319]">passion</span>
             </h2>
           </div>
 
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#BF1737] via-[#BF1737]/50 to-slate-200 hidden md:block" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#1A5319] via-[#1A5319]/50 to-slate-200 hidden md:block" />
 
             <div className="space-y-12 md:space-y-0">
               {timeline.map((item, i) => (
@@ -317,14 +316,14 @@ export default function AboutUsPage() {
                   {/* Content side */}
                   <div className={`w-full md:w-[calc(50%-40px)] ${i % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'}`}>
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow">
-                      <span className="inline-block text-[#BF1737] text-sm font-bold mb-2 bg-[#BF1737]/10 px-3 py-1 rounded-full">{item.year}</span>
+                      <span className="inline-block text-[#1A5319] text-sm font-bold mb-2 bg-[#1A5319]/10 px-3 py-1 rounded-full">{item.year}</span>
                       <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
                       <p className="text-slate-500 text-[15px]">{item.desc}</p>
                     </div>
                   </div>
 
                   {/* Center dot */}
-                  <div className="absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#BF1737] border-4 border-white shadow-lg flex items-center justify-center hidden md:flex z-10">
+                  <div className="absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#1A5319] border-4 border-white shadow-lg flex items-center justify-center hidden md:flex z-10">
                     <div className="w-2 h-2 rounded-full bg-white" />
                   </div>
 
@@ -341,7 +340,7 @@ export default function AboutUsPage() {
       <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
         {/* Background pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-[#BF1737] rounded-full blur-3xl" />
+          <div className="absolute top-0 left-0 w-96 h-96 bg-[#1A5319] rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl" />
         </div>
 
@@ -349,15 +348,15 @@ export default function AboutUsPage() {
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl">
               <Image
-                src="/delivery-service.png"
-                alt="Service de livraison"
+                src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=600&h=450"
+                alt="Service de livraison PetMarket"
                 width={600}
                 height={450}
                 className="w-full h-[450px] object-cover"
               />
               {/* Floating badge */}
               <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-md rounded-xl px-4 py-3 border border-white/20">
-                <div className="text-white font-bold text-lg">Livraison 24/48h</div>
+                <div className="text-white font-bold text-lg">Livraison Express</div>
                 <div className="text-white/70 text-sm">Partout au Maroc</div>
               </div>
             </div>
@@ -367,23 +366,23 @@ export default function AboutUsPage() {
                 Nos Services
               </div>
               <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-                Un service <span className="text-[#BF1737]">complet</span> pour vos projets
+                Un service <span className="text-[#1A5319]">dédié</span> à vos animaux
               </h2>
               <p className="text-white/70 text-lg mb-8 leading-relaxed">
-                De la sélection des produits à la livraison, nous vous accompagnons
-                à chaque étape de votre projet.
+                De la sélection de l&apos;alimentation aux accessoires de jeu, nous vous accompagnons
+                pour offrir le meilleur à votre compagnon.
               </p>
               <div className="space-y-4">
                 {[
                   'Livraison rapide partout au Maroc',
-                  'Conseil personnalisé par des experts',
-                  'Service après-vente réactif',
-                  'Garantie sur tous les produits',
-                  'Devis gratuit pour les professionnels',
+                  'Conseils en nutrition personnalisés',
+                  'Service client à votre écoute',
+                  'Marques premium garanties',
+                  'Large choix d\'accessoires et jouets',
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 text-white/90">
-                    <div className="w-6 h-6 rounded-full bg-[#BF1737]/20 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle2 className="w-4 h-4 text-[#BF1737]" />
+                    <div className="w-6 h-6 rounded-full bg-[#1A5319]/20 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-[#1A5319]" />
                     </div>
                     <span className="text-[15px]">{item}</span>
                   </div>
@@ -391,9 +390,9 @@ export default function AboutUsPage() {
               </div>
               <Link
                 href="/contact"
-                className="mt-10 inline-flex items-center gap-2 bg-[#BF1737] text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-[#a01430] transition-all shadow-lg shadow-[#BF1737]/30 hover:shadow-xl group"
+                className="mt-10 inline-flex items-center gap-2 bg-[#1A5319] text-white px-8 py-4 rounded-xl font-bold text-[15px] hover:bg-[#004d26] transition-all shadow-lg shadow-[#1A5319]/30 hover:shadow-xl group"
               >
-                Demander un devis
+                Contactez-nous
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
@@ -405,62 +404,62 @@ export default function AboutUsPage() {
       <section className="py-24 bg-gradient-to-b from-white to-slate-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#BF1737]/10 text-[#BF1737] text-sm font-semibold mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A5319]/10 text-[#1A5319] text-sm font-semibold mb-4">
               <MapPin className="w-4 h-4" />
               Nous Trouver
             </div>
             <h2 className="text-4xl font-black text-slate-900 mb-4">
-              Rendez-nous <span className="text-[#BF1737]">visite</span>
+              Rendez-nous <span className="text-[#1A5319]">visite</span>
             </h2>
             <p className="text-slate-500 max-w-xl mx-auto text-lg">
-              Notre équipe vous accueille du lundi au samedi dans nos locaux.
+              Notre équipe vous accueille du lundi au samedi pour vous conseiller.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow text-center group">
-              <div className="w-14 h-14 rounded-2xl bg-[#BF1737]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#BF1737] group-hover:text-white transition-colors text-[#BF1737]">
+              <div className="w-14 h-14 rounded-2xl bg-[#1A5319]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#1A5319] group-hover:text-white transition-colors text-[#1A5319]">
                 <MapPin className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Adresse</h3>
-              <p className="text-slate-500">Quartier Industriel, <br />Casablanca, Maroc</p>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Boutique</h3>
+              <p className="text-slate-500">Quartier Maârif, <br />Casablanca, Maroc</p>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow text-center group">
-              <div className="w-14 h-14 rounded-2xl bg-[#BF1737]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#BF1737] group-hover:text-white transition-colors text-[#BF1737]">
+              <div className="w-14 h-14 rounded-2xl bg-[#1A5319]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#1A5319] group-hover:text-white transition-colors text-[#1A5319]">
                 <Phone className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Téléphone</h3>
               <p className="text-slate-500">+212 5 22 00 00 00<br />+212 6 00 00 00 00</p>
             </div>
             <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg transition-shadow text-center group">
-              <div className="w-14 h-14 rounded-2xl bg-[#BF1737]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#BF1737] group-hover:text-white transition-colors text-[#BF1737]">
+              <div className="w-14 h-14 rounded-2xl bg-[#1A5319]/10 flex items-center justify-center mx-auto mb-5 group-hover:bg-[#1A5319] group-hover:text-white transition-colors text-[#1A5319]">
                 <Clock className="w-7 h-7" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-2">Horaires</h3>
-              <p className="text-slate-500">Lun – Sam : 8h30 – 19h00<br />Dimanche : Fermé</p>
+              <p className="text-slate-500">Lun – Sam : 9h00 – 20h00<br />Dimanche : Fermé</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ═══════════ CTA ═══════════ */}
-      <section className="py-20 bg-gradient-to-r from-[#BF1737] to-[#d32f5a] relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-r from-[#1A5319] to-[#2E7D32] relative overflow-hidden">
         {/* Decorative circles */}
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white/5" />
         <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full bg-white/5" />
 
         <div className="relative max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-white text-4xl md:text-5xl font-black mb-6 leading-tight">
-            Prêt à démarrer votre prochain projet ?
+            Offrez le meilleur à votre compagnon
           </h2>
           <p className="text-white/80 text-lg mb-10 max-w-2xl mx-auto">
-            Explorez notre catalogue de plus de 15 000 produits et bénéficiez de conseils d&apos;experts
-            pour réussir tous vos travaux.
+            Explorez notre catalogue de plus de 5 000 produits et bénéficiez de conseils d&apos;experts
+            pour la santé et le bien-être de vos animaux.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/products"
-              className="group inline-flex items-center justify-center gap-2 bg-white text-[#BF1737] px-10 py-4 rounded-xl font-bold text-[16px] hover:bg-slate-50 transition-all shadow-xl hover:-translate-y-0.5"
+              className="group inline-flex items-center justify-center gap-2 bg-white text-[#1A5319] px-10 py-4 rounded-xl font-bold text-[16px] hover:bg-slate-50 transition-all shadow-xl hover:-translate-y-0.5"
             >
               Explorer la boutique
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

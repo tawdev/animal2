@@ -4,11 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
-import { api, type Category, type Product } from '../lib/api';
-import { useWishlist } from '../context/WishlistContext';
-import { useCompare } from '../context/CompareContext';
-import { useCart } from '../context/CartContext';
-import { useSettings } from '../context/SettingsContext';
+import { api, type Category, type Product } from '@/app/lib/api';
+import { useWishlist } from '@/app/context/WishlistContext';
+import { useCompare } from '@/app/context/CompareContext';
+import { useCart } from '@/app/context/CartContext';
+import { useSettings } from '@/app/context/SettingsContext';
 import { Search, Heart, GitCompare, ShoppingBag, ChevronDown, Mail, MessageCircle, X, Menu } from 'lucide-react';
 
 export default function Header() {
@@ -92,7 +92,7 @@ export default function Header() {
             <span>
                 {parts.map((part, i) =>
                     part.toLowerCase() === highlight.toLowerCase() ? (
-                        <span key={i} className="text-[#BF1737] font-bold">{part}</span>
+                        <span key={i} className="text-[#1A5319] font-bold">{part}</span>
                     ) : (
                         <span key={i}>{part}</span>
                     )
@@ -112,28 +112,28 @@ export default function Header() {
     };
 
     return (
-        <header className="w-full bg-white sticky top-0 md:relative z-[100] md:z-auto shadow-sm md:shadow-none">
+        <header className="w-full bg-white/95 backdrop-blur-md sticky top-0 z-[100] border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             {/* Top Bar - Hidden on small mobile */}
             <div className="border-b border-slate-200 py-2.5 hidden sm:block">
                 <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
                     <div className="text-[13px] sm:text-[14px] font-medium text-slate-600 truncate">
-                        {settingsLoading ? (
-                            <div className="w-32 h-4 bg-slate-100 animate-pulse rounded" />
+                        {(!mounted || settingsLoading) ? (
+                            'PetMarket'
                         ) : (
-                            settings?.storeName || 'Droguerie Maroc'
+                            settings?.storeName || 'PetMarket'
                         )}
                     </div>
                     <div className="flex items-center gap-4 sm:gap-6">
-                        <Link href="/contact" className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#BF1737] transition-colors">
-                            <Mail size={16} className="text-[#BF1737]" /> <span>Contact</span>
+                        <Link href="/contact" className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#1A5319] transition-colors">
+                            <Mail size={16} className="text-[#1A5319]" /> <span>Contact</span>
                         </Link>
                         <a 
                             href={`https://wa.me/${(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || settings?.phoneNumber || '').replace(/\D/g, '')}`} 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#BF1737] transition-colors"
+                            className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#1A5319] transition-colors"
                         >
-                            <MessageCircle size={16} className="text-[#BF1737]" /> <span>Besoin d&apos;aide ?</span>
+                            <MessageCircle size={16} className="text-[#1A5319]" /> <span>Besoin d&apos;aide ?</span>
                         </a>
                     </div>
                 </div>
@@ -147,7 +147,7 @@ export default function Header() {
                     <div className="flex items-center gap-3">
                         {/* Mobile Menu Button - Displayed on mobile only */}
                         <button 
-                            className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#BF1737] transition-colors"
+                            className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors"
                             onClick={() => {
                                 // Trigger custom event for Navbar to open
                                 document.dispatchEvent(new CustomEvent('open-mobile-menu'));
@@ -158,12 +158,12 @@ export default function Header() {
 
                         <Link href="/" className="shrink-0 group">
                             <div className="relative w-[110px] h-[48px] sm:w-[140px] sm:h-[56px] md:w-[160px] md:h-[64px]">
-                                {settingsLoading ? (
+                                {(!mounted || settingsLoading) ? (
                                     <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
                                 ) : (
                                         <Image
-                                            src={settings?.logoUrl || "/mol2.jpeg"}
-                                            alt={settings?.storeName || "MOL Droguerie – Meilleur Prix"}
+                                            src={settings?.logoUrl || "/logo.png"}
+                                            alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
                                             fill
                                             style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
                                             priority
@@ -182,7 +182,7 @@ export default function Header() {
                             <div className="fixed inset-0 bg-black/5 z-[80]" onClick={() => setShowSuggestions(false)} />
                         )}
 
-                        <div className={`flex w-full items-center rounded-[7px] bg-[#F2F4F7] border border-[#E5E7EB] h-[46px] group transition-all relative z-[90] ${showSuggestions ? 'bg-white ring-8 ring-black/5 border-[#BF1737]/20' : 'focus-within:bg-white focus-within:border-[#BF1737]/30'}`}>
+                        <div className={`flex w-full items-center rounded-[7px] bg-[#F2F4F7] border border-[#E5E7EB] h-[46px] group transition-all relative z-[90] ${showSuggestions ? 'bg-white ring-8 ring-black/5 border-[#1A5319]/20' : 'focus-within:bg-white focus-within:border-[#1A5319]/30'}`}>
                             <input
                                 type="text"
                                 placeholder="Rechercher des produits"
@@ -202,7 +202,7 @@ export default function Header() {
                                         setSearchQuery('');
                                         setSuggestedProducts([]);
                                     }}
-                                    className="p-2 text-slate-400 hover:text-[#BF1737] transition-colors"
+                                    className="p-2 text-slate-400 hover:text-[#1A5319] transition-colors"
                                 >
                                     <X size={16} />
                                 </button>
@@ -240,7 +240,7 @@ export default function Header() {
                                                             setSelectedCategory(cat);
                                                             setIsCategoryOpen(false);
                                                         }}
-                                                        className={`w-full text-left px-5 py-3 text-[14px] font-medium transition-colors hover:bg-slate-50 ${selectedCategory?.id === cat.id ? 'text-[#BF1737] bg-slate-50' : 'text-slate-800'} ${cat.parentId ? 'pl-8 text-[13px] border-l-2 border-transparent' : ''}`}
+                                                        className={`w-full text-left px-5 py-3 text-[14px] font-medium transition-colors hover:bg-slate-50 ${selectedCategory?.id === cat.id ? 'text-[#1A5319] bg-slate-50' : 'text-slate-800'} ${cat.parentId ? 'pl-8 text-[13px] border-l-2 border-transparent' : ''}`}
                                                     >
                                                         {cat.name}
                                                     </button>
@@ -252,7 +252,7 @@ export default function Header() {
 
                                 <button
                                     onClick={handleSearch}
-                                    className="flex h-[34px] w-[34px] shrink-0 items-center justify-center bg-[#BF1737] text-white rounded-[7px] transition-all hover:bg-[#A1132F] active:scale-95 shadow-sm"
+                                    className="flex h-[34px] w-[34px] shrink-0 items-center justify-center bg-[#1A5319] text-white rounded-[7px] transition-all hover:bg-[#004d26] active:scale-95 shadow-sm"
                                 >
                                     <Search size={18} strokeWidth={3} />
                                 </button>
@@ -267,7 +267,7 @@ export default function Header() {
                                     {/* Category Suggestions */}
                                     <div className="mt-2">
                                         <div className="flex items-center gap-3 px-6 py-2 bg-slate-50/50">
-                                            <div className="w-1.5 h-6 bg-[#BF1737] rounded-full"></div>
+                                            <div className="w-1.5 h-6 bg-[#1A5319] rounded-full"></div>
                                             <span className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Suggestions de catégories</span>
                                         </div>
                                         <div className="mt-1">
@@ -281,7 +281,7 @@ export default function Header() {
                                                             setSelectedCategory(cat);
                                                             handleSearch();
                                                         }}
-                                                        className="w-full text-left px-10 py-2.5 text-[14px] font-medium text-slate-600 hover:bg-slate-50 hover:text-[#BF1737] transition-colors"
+                                                        className="w-full text-left px-10 py-2.5 text-[14px] font-medium text-slate-600 hover:bg-slate-50 hover:text-[#1A5319] transition-colors"
                                                     >
                                                         {cat.name}
                                                     </button>
@@ -296,7 +296,7 @@ export default function Header() {
                                     {/* Product Suggestions */}
                                     <div className="mt-4">
                                         <div className="flex items-center gap-3 px-6 py-2 bg-slate-50/50">
-                                            <div className="w-1.5 h-6 bg-[#BF1737] rounded-full"></div>
+                                            <div className="w-1.5 h-6 bg-[#1A5319] rounded-full"></div>
                                             <span className="text-[12px] font-bold text-slate-400 uppercase tracking-wider">Suggestions de produits</span>
                                         </div>
                                         <div className="mt-2 px-6 space-y-1">
@@ -317,10 +317,10 @@ export default function Header() {
                                                         />
                                                     </div>
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="text-[14px] font-medium text-slate-700 truncate group-hover:text-[#BF1737] transition-colors">
+                                                        <span className="text-[14px] font-medium text-slate-700 truncate group-hover:text-[#1A5319] transition-colors">
                                                             {highlightText(product.name, searchQuery)}
                                                         </span>
-                                                        <span className="text-[13px] font-bold text-[#BF1737] mt-0.5">
+                                                        <span className="text-[13px] font-bold text-[#1A5319] mt-0.5">
                                                             {product.price.toLocaleString('fr-MA', { minimumFractionDigits: 2 })} MAD
                                                         </span>
                                                     </div>
@@ -331,7 +331,7 @@ export default function Header() {
                                             )}
                                             {isLoading && (
                                                 <div className="px-4 py-3 flex items-center gap-2 text-[13px] text-slate-400">
-                                                    <div className="w-4 h-4 border-2 border-[#BF1737] border-t-transparent rounded-full animate-spin"></div>
+                                                    <div className="w-4 h-4 border-2 border-[#1A5319] border-t-transparent rounded-full animate-spin"></div>
                                                     Recherche en cours...
                                                 </div>
                                             )}
@@ -340,7 +340,7 @@ export default function Header() {
 
                                     <button
                                         onClick={handleSearch}
-                                        className="w-full mt-4 py-3 border-t border-slate-50 text-[13px] font-bold text-[#BF1737] hover:bg-slate-50 transition-colors uppercase tracking-widest"
+                                        className="w-full mt-4 py-3 border-t border-slate-50 text-[13px] font-bold text-[#1A5319] hover:bg-slate-50 transition-colors uppercase tracking-widest"
                                     >
                                         Voir tous les résultats
                                     </button>
@@ -353,25 +353,25 @@ export default function Header() {
                     <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
                         {/* Mobile Search Button */}
                         <button 
-                            className="md:hidden p-2 text-slate-700 hover:text-[#BF1737] transition-colors"
+                            className="md:hidden p-2 text-slate-700 hover:text-[#1A5319] transition-colors"
                             onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                         >
                             {isMobileSearchOpen ? <X size={22} /> : <Search size={22} />}
                         </button>
 
                         <Link href="/compare" className="group relative transition-all p-1 sm:p-0">
-                            <GitCompare size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#BF1737] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">
+                            <GitCompare size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#1A5319] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">
                                 {mounted ? compareCount : 0}
                             </span>
                         </Link>
                         <Link href="/wishlist" className="group relative transition-all p-1 sm:p-0">
-                            <Heart size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#BF1737] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">{mounted ? wishlistCount : 0}</span>
+                            <Heart size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#1A5319] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">{mounted ? wishlistCount : 0}</span>
                         </Link>
                         <Link href="/cart" className="group relative transition-all p-1 sm:p-0">
-                            <ShoppingBag size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#BF1737] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">
+                            <ShoppingBag size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-1 -top-1 sm:-right-2 sm:-top-2 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-[#1A5319] text-[9px] sm:text-[10px] font-black text-white ring-2 ring-white">
                                 {mounted ? totalItems : 0}
                             </span>
                         </Link>
@@ -400,7 +400,7 @@ export default function Header() {
                                 {searchQuery && (
                                     <button
                                         onClick={() => setSearchQuery('')}
-                                        className="p-2 mr-1 text-slate-400 hover:text-[#BF1737]"
+                                        className="p-2 mr-1 text-slate-400 hover:text-[#1A5319]"
                                     >
                                         <X size={16} />
                                     </button>
@@ -408,7 +408,7 @@ export default function Header() {
                             </div>
                             <button 
                                 onClick={handleSearch}
-                                className="ml-2 h-[46px] px-5 bg-[#BF1737] text-white rounded-[7px] font-bold text-sm"
+                                className="ml-2 h-[46px] px-5 bg-[#1A5319] text-white rounded-[7px] font-bold text-sm"
                             >
                                 OK
                             </button>

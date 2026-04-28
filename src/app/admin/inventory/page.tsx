@@ -200,7 +200,7 @@ export default function AdminInventoryPage() {
                                                 <div className="flex items-center gap-4">
                                                     <div className="size-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
                                                         {product.imageUrl ? (
-                                                            <img src={product.imageUrl} alt={product.name} className="size-full object-cover" />
+                                                            <img src={product.imageUrl} alt={product.name} className="size-full object-contain" />
                                                         ) : (
                                                             <div className="size-full flex items-center justify-center text-slate-400">
                                                                 <span className="material-symbols-outlined text-[20px]">image</span>

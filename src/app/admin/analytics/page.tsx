@@ -108,7 +108,7 @@ export default function AdminAnalyticsPage() {
                 <header className="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
                     <div>
                         <h2 className="text-[32px] font-black text-slate-900 leading-tight">Analytics Overview</h2>
-                        <p className="text-slate-400 font-bold mt-1">Real-time performance metrics for your hardware store.</p>
+                        <p className="text-slate-400 font-bold mt-1">Métriques de performance en temps réel pour votre animalerie.</p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
                         {['Last 30 Days', 'Last 90 Days', 'Year to Date'].map(range => (
@@ -317,7 +317,7 @@ export default function AdminAnalyticsPage() {
                                             <div className="flex items-center gap-4">
                                                 <div className="size-12 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
                                                     {product.imageUrl ? (
-                                                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                                                        <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain" />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
                                                             <span className="material-symbols-outlined text-[18px]">package_2</span>
@@ -383,7 +383,7 @@ export default function AdminAnalyticsPage() {
                     <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] animate-in fade-in slide-in-from-top-4 duration-500">
                         <div className="size-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 relative">
                             <span className="material-symbols-outlined text-[48px] text-slate-300">inventory_2</span>
-                            <div className="absolute -top-1 -right-1 size-6 bg-[#BF1737] rounded-full flex items-center justify-center border-4 border-white">
+                            <div className="absolute -top-1 -right-1 size-6 bg-[#1A5319] rounded-full flex items-center justify-center border-4 border-white">
                                 <span className="material-symbols-outlined text-[12px] text-white font-black">close</span>
                             </div>
                         </div>
@@ -394,7 +394,7 @@ export default function AdminAnalyticsPage() {
                         <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
                             <a
                                 href="/admin/products"
-                                className="px-10 py-4 bg-[#BF1737] text-white text-[13px] font-black rounded-2xl hover:bg-[#A3142F] transition-all transform hover:-translate-y-1 active:scale-95 shadow-xl shadow-[#BF1737]/20 flex items-center gap-2 uppercase tracking-widest"
+                                className="px-10 py-4 bg-[#1A5319] text-white text-[13px] font-black rounded-2xl hover:bg-[#004d26] transition-all transform hover:-translate-y-1 active:scale-95 shadow-xl shadow-[#1A5319]/20 flex items-center gap-2 uppercase tracking-widest"
                             >
                                 <span className="material-symbols-outlined text-[18px]">add</span>
                                 Add First Product

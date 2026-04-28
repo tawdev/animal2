@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShoppingCart, Trash2, Plus, Minus, ArrowRight, MessageCircle, X, MapPin, User, Phone, CheckCircle2, FileText } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import { useNotification } from '../context/NotificationContext';
-import { generateWhatsAppLink } from '../lib/whatsapp';
-import { api } from '../lib/api';
+import { useCart } from '@/app/context/CartContext';
+import { useNotification } from '@/app/context/NotificationContext';
+import { generateWhatsAppLink } from '@/app/lib/whatsapp';
+import { api } from '@/app/lib/api';
 
 export default function ShoppingCartPage() {
     const { cartItems, totalPrice, totalItems, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -22,7 +22,7 @@ export default function ShoppingCartPage() {
         phone: '',
         address: ''
     });
-    const [settings, setSettings] = useState<any>(null);
+    const [settings, setSettings] = useState<any>(null); // Keeping as any for now to avoid breaking state, or use StoreSettings | null
 
     useEffect(() => {
         api.getSettings().then(setSettings).catch(console.error);
@@ -36,7 +36,7 @@ export default function ShoppingCartPage() {
             const now = new Date();
             const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
             const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-            const invoiceNumber = `FAC-${datePart}-${randomPart}`;
+            const invoiceNumber = `DEV-${datePart}-${randomPart}`;
 
             // Build full order payload for invoice (local)
             const orderPayload = {
@@ -68,7 +68,7 @@ export default function ShoppingCartPage() {
 
             // 2. Persist to localStorage for immediate invoice page view
             try {
-                localStorage.setItem('droguerie_last_order', JSON.stringify(orderPayload));
+                localStorage.setItem('petmarket_last_order', JSON.stringify(orderPayload));
             } catch (e) {
                 console.error('Could not save order to localStorage', e);
             }
@@ -87,9 +87,9 @@ export default function ShoppingCartPage() {
                 clearCart();
             }, 1000);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Order creation failed:', error);
-            const errorMsg = error.message || 'Une erreur est survenue lors de la création de la commande.';
+            const errorMsg = error instanceof Error ? error.message : 'Une erreur est survenue lors de la création de la commande.';
             showToast(`${errorMsg} Veuillez réessayer.`, 'error');
             setIsLoading(false);
         }
@@ -105,7 +105,7 @@ export default function ShoppingCartPage() {
                 <p className="text-slate-500 mb-8 max-w-md text-center font-medium">Découvrez nos produits et commencez vos achats dès maintenant.</p>
                 <Link
                     href="/products"
-                    className="flex items-center gap-2 bg-[#BF1737] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#a01430] transition-colors shadow-xl shadow-[#BF1737]/20"
+                    className="flex items-center gap-2 bg-[#1A5319] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#004d26] transition-colors shadow-xl shadow-[#1A5319]/20"
                 >
                     Voir la boutique <ArrowRight size={16} />
                 </Link>
@@ -123,16 +123,16 @@ export default function ShoppingCartPage() {
                 <p className="text-slate-500 mb-2 max-w-md text-center font-medium">
                     Votre commande a été envoyée sur WhatsApp. Nous vous contacterons très prochainement.
                 </p>
-                <p className="text-[#BF1737] font-bold text-sm mb-8 text-center">
-                    Votre facture a été générée automatiquement.
+                <p className="text-[#1A5319] font-bold text-sm mb-8 text-center">
+                    Votre devis a été généré automatiquement.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
                     <Link
-                        href="/invoice"
-                        className="flex items-center justify-center gap-2 bg-[#BF1737] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#a01430] transition-colors shadow-lg shadow-[#BF1737]/20 flex-1"
+                        href="/devis"
+                        className="flex items-center justify-center gap-2 bg-[#1A5319] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#004d26] transition-colors shadow-lg shadow-[#1A5319]/20 flex-1"
                     >
                         <FileText size={16} />
-                        Voir ma Facture
+                        Voir mon Devis
                     </Link>
                     <button
                         onClick={() => { setIsConfirmed(false); clearCart(); }}
@@ -157,9 +157,9 @@ export default function ShoppingCartPage() {
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-12 border-b border-slate-100 pb-8">
                     <h1 className="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tighter">
-                        Votre <span className="text-[#BF1737]">Panier</span>
+                        Votre <span className="text-[#1A5319]">Panier</span>
                     </h1>
-                    <div className="h-2 w-2 rounded-full bg-[#BF1737]" />
+                    <div className="h-2 w-2 rounded-full bg-[#1A5319]" />
                     <span className="text-slate-400 font-bold uppercase tracking-widest text-xs hidden md:inline">
                         {totalItems} Article{totalItems > 1 ? 's' : ''}
                     </span>
@@ -173,7 +173,7 @@ export default function ShoppingCartPage() {
                                 {/* Delete Hover Overlay (Mobile/Desktop friendly) */}
                                 <button
                                     onClick={() => removeFromCart(item.productId)}
-                                    className="absolute top-4 right-4 text-slate-300 hover:text-[#BF1737] transition-colors p-2"
+                                    className="absolute top-4 right-4 text-slate-300 hover:text-[#1A5319] transition-colors p-2"
                                 >
                                     <Trash2 size={20} />
                                 </button>
@@ -190,15 +190,15 @@ export default function ShoppingCartPage() {
 
                                 {/* Details */}
                                 <div className="flex-1 min-w-0">
-                                    <Link href={`/products/${item.productId}`} className="text-xl font-bold text-slate-900 hover:text-[#BF1737] transition-colors block mb-2 truncate">
+                                    <Link href={`/products/${item.productId}`} className="text-xl font-bold text-slate-900 hover:text-[#1A5319] transition-colors block mb-2 truncate">
                                         {item.name}
                                     </Link>
                                     <div className="flex items-center gap-6 mb-4">
                                         <div className="flex items-center gap-1">
-                                            <span className="text-[#BF1737] font-black text-lg">
+                                            <span className="text-[#1A5319] font-black text-lg">
                                                 {Number(item.price).toFixed(2).replace('.', ',')}
                                             </span>
-                                            <span className="text-[#BF1737] text-xs font-black">MAD</span>
+                                            <span className="text-[#1A5319] text-xs font-black">MAD</span>
                                         </div>
                                     </div>
 
@@ -234,7 +234,7 @@ export default function ShoppingCartPage() {
                         ))}
 
                         <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
-                            <Link href="/products" className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-[#BF1737] flex items-center gap-2 transition-colors">
+                            <Link href="/products" className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-[#1A5319] flex items-center gap-2 transition-colors">
                                 <ArrowRight size={14} className="rotate-180" /> Continuer vos achats
                             </Link>
                             <button
@@ -250,7 +250,7 @@ export default function ShoppingCartPage() {
                     <div className="lg:col-span-4 lg:sticky lg:top-28 h-fit">
                         <div className="bg-slate-900 rounded-[32px] p-8 text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden">
                             {/* Decorative Red Accent */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#BF1737] rounded-full blur-[80px] opacity-20 pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#1A5319] rounded-full blur-[80px] opacity-20 pointer-events-none" />
 
                             <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 relative z-10">Récapitulatif</h2>
 
@@ -261,13 +261,13 @@ export default function ShoppingCartPage() {
                                 </div>
                                 <div className="flex justify-between items-center text-slate-400 font-bold uppercase tracking-widest text-[10px]">
                                     <span>Livraison</span>
-                                    <span className="text-[#BF1737]">GRATUITE</span>
+                                    <span className="text-[#1A5319]">{Number(totalPrice) >= 600 ? 'GRATUITE' : '35,00 MAD'}</span>
                                 </div>
                                 <div className="pt-6 mt-6 border-t border-white/10 flex justify-between items-end">
                                     <div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#BF1737] mb-1">Total à payer</p>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1A5319] mb-1">Total à payer</p>
                                         <p className="text-4xl font-black tracking-tighter">
-                                            {Number(totalPrice).toFixed(2).replace('.', ',')} <span className="text-lg">MAD</span>
+                                            {(Number(totalPrice) + (Number(totalPrice) >= 600 ? 0 : 35)).toFixed(2).replace('.', ',')} <span className="text-lg">MAD</span>
                                         </p>
                                     </div>
                                 </div>
@@ -275,7 +275,7 @@ export default function ShoppingCartPage() {
 
                             <button
                                 onClick={() => setIsCheckingOut(true)}
-                                className="w-full bg-[#BF1737] hover:bg-[#a01430] text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#BF1737]/30 group"
+                                className="w-full bg-[#1A5319] hover:bg-[#004d26] text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#1A5319]/30 group"
                             >
                                 <MessageCircle size={18} className="group-hover:scale-110 transition-transform" />
                                 Commander via WhatsApp
@@ -302,7 +302,7 @@ export default function ShoppingCartPage() {
 
                     {/* Modal Content */}
                     <div className="bg-white w-full max-w-lg rounded-[32px] overflow-hidden relative z-10 shadow-2xl animate-in zoom-in-95 fade-in duration-300">
-                        <div className="bg-[#BF1737] p-8 text-white relative">
+                        <div className="bg-[#1A5319] p-8 text-white relative">
                             <button
                                 onClick={() => setIsCheckingOut(false)}
                                 className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors"
@@ -326,7 +326,7 @@ export default function ShoppingCartPage() {
                                         <input
                                             type="text"
                                             placeholder="Votre nom complet"
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#BF1737]/20 focus:border-[#BF1737] transition-all outline-none"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#1A5319]/20 focus:border-[#1A5319] transition-all outline-none"
                                             value={customerInfo.name}
                                             onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
                                         />
@@ -334,14 +334,14 @@ export default function ShoppingCartPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block px-1">Email (Obligatoire pour la facture)</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block px-1">Email (Obligatoire pour le devis)</label>
                                     <div className="relative">
                                         <FileText className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
                                         <input
                                             type="email"
                                             placeholder="votre@email.com"
                                             required
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#BF1737]/20 focus:border-[#BF1737] transition-all outline-none"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#1A5319]/20 focus:border-[#1A5319] transition-all outline-none"
                                             value={customerInfo.email}
                                             onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
                                         />
@@ -355,7 +355,7 @@ export default function ShoppingCartPage() {
                                         <input
                                             type="text"
                                             placeholder="Votre numéro de téléphone"
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#BF1737]/20 focus:border-[#BF1737] transition-all outline-none"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#1A5319]/20 focus:border-[#1A5319] transition-all outline-none"
                                             value={customerInfo.phone}
                                             onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
                                         />
@@ -369,7 +369,7 @@ export default function ShoppingCartPage() {
                                         <input
                                             type="text"
                                             placeholder="Ville, Quartier..."
-                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#BF1737]/20 focus:border-[#BF1737] transition-all outline-none"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-xl py-4 pl-12 pr-4 text-slate-900 font-bold focus:ring-2 focus:ring-[#1A5319]/20 focus:border-[#1A5319] transition-all outline-none"
                                             value={customerInfo.address}
                                             onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
                                         />
@@ -380,7 +380,7 @@ export default function ShoppingCartPage() {
                             <button
                                 onClick={() => {
                                     if (!customerInfo.email || !customerInfo.email.includes('@')) {
-                                        showToast('Veuillez entrer une adresse email valide pour recevoir votre facture.', 'error');
+                                        showToast('Veuillez entrer une adresse email valide pour recevoir votre devis.', 'error');
                                         return;
                                     }
                                     handleCheckout();

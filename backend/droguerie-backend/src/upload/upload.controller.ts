@@ -1,9 +1,10 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, BadRequestException, Req } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, BadRequestException, Req, UseGuards } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { mkdirSync } from 'fs';
 import type { Request } from 'express';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 // Use process.cwd() to get the project root accurately
 const UPLOADS_DIR = join(process.cwd(), 'uploads');
@@ -12,6 +13,7 @@ const UPLOADS_DIR = join(process.cwd(), 'uploads');
 mkdirSync(UPLOADS_DIR, { recursive: true });
 
 @Controller('upload')
+@UseGuards(JwtAuthGuard)
 export class UploadController {
     @Post()
     @UseInterceptors(

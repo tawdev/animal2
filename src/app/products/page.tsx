@@ -3,14 +3,14 @@
 import { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { api, type Product, type Category, type Brand } from '../lib/api';
-import { useWishlist } from '../context/WishlistContext';
-import { useCompare } from '../context/CompareContext';
+import { api, type Product, type Category, type Brand } from '@/app/lib/api';
+import { useWishlist } from '@/app/context/WishlistContext';
+import { useCompare } from '@/app/context/CompareContext';
 import { ShoppingCart, ChevronRight, ChevronDown, MessageCircle, Filter, SlidersHorizontal, Sliders, X, ArrowUpDown, LayoutGrid, List } from 'lucide-react';
-import ProductRating from '../components/ProductRating';
-import ProductCard from '../components/ProductCard';
-import { useCart } from '../context/CartContext';
-import { generateWhatsAppLink } from '../lib/whatsapp';
+import ProductRating from '@/app/components/ProductRating';
+import ProductCard from '@/app/components/ProductCard';
+import { useCart } from '@/app/context/CartContext';
+import { generateWhatsAppLink } from '@/app/lib/whatsapp';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ─── Sub-Components ─────────────────────────────────────────────────────────────────
@@ -43,12 +43,12 @@ function CategoryTreeItem({
         <button
           onClick={handleToggle}
           className={`flex-1 flex items-center gap-3 py-2 text-[15px] transition-all text-left ${isSelected
-            ? 'font-bold text-[#BF1737]'
-            : 'font-normal text-slate-500 hover:text-slate-900 focus:text-[#BF1737]'
+            ? 'font-bold text-[#1A5319]'
+            : 'font-normal text-slate-500 hover:text-slate-900 focus:text-[#1A5319]'
             }`}
           style={{ paddingLeft: `${level * 20}px` }}
         >
-          <span className={`transition-colors flex items-center justify-center shrink-0 ${isSelected ? 'text-[#BF1737]' : 'text-slate-400 group-hover:text-slate-600'}`}>
+          <span className={`transition-colors flex items-center justify-center shrink-0 ${isSelected ? 'text-[#1A5319]' : 'text-slate-400 group-hover:text-slate-600'}`}>
             {hasChildren && isOpen ? <ChevronDown size={14} strokeWidth={2.5} /> : <ChevronRight size={14} strokeWidth={2.5} />}
           </span>
           <span className="truncate">{category.name}</span>
@@ -217,7 +217,7 @@ function ProductListingContent() {
           key={i}
           onClick={() => setPage(i)}
           className={`flex h-10 w-10 items-center justify-center rounded-xl text-[14px] font-bold shadow-sm transition-colors ${page === i
-            ? 'bg-[#BF1737] text-white shadow-[#BF1737]/20'
+            ? 'bg-[#1A5319] text-white shadow-[#1A5319]/20'
             : 'bg-white text-slate-600 hover:bg-slate-50'
             }`}
         >
@@ -264,23 +264,23 @@ function ProductListingContent() {
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-white font-sans text-slate-900 selection:bg-[#BF1737]/20 selection:text-slate-900">
+    <div className="flex-1 flex flex-col bg-white font-sans text-slate-900 selection:bg-[#1A5319]/20 selection:text-slate-900">
 
       {/* Mobile Sticky Filter Bar - Visible only on mobile/tablet */}
       <div className="xl:hidden sticky top-[115px] sm:top-[135px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 px-4 shadow-sm">
         <div className="flex items-center gap-3">
           <button 
             onClick={() => setIsSidebarOpen(true)}
-            className="flex-1 flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#BF1737] transition-all"
+            className="flex-1 flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#1A5319] transition-all"
           >
-            <Filter size={18} className="text-[#BF1737]" />
+            <Filter size={18} className="text-[#1A5319]" />
             Filtrer
           </button>
           
           <div className="flex-1 relative">
             <button 
                 onClick={() => setIsSortOpen(!isSortOpen)}
-                className="w-full flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#BF1737] transition-all"
+                className="w-full flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#1A5319] transition-all"
             >
                 <ArrowUpDown size={18} className="text-slate-400" />
                 <span>{
@@ -302,7 +302,7 @@ function ProductListingContent() {
                       setSort(option.value);
                       setIsSortOpen(false);
                     }}
-                    className={`w-full text-left px-5 py-3 text-[14px] font-medium transition-colors hover:bg-slate-50 ${sort === option.value ? 'text-[#BF1737] bg-slate-50/50' : 'text-slate-600'}`}
+                    className={`w-full text-left px-5 py-3 text-[14px] font-medium transition-colors hover:bg-slate-50 ${sort === option.value ? 'text-[#1A5319] bg-slate-50/50' : 'text-slate-600'}`}
                   >
                     {option.label}
                   </button>
@@ -327,7 +327,7 @@ function ProductListingContent() {
             overflow-y-auto xl:overflow-visible custom-scrollbar
           `}>
             {/* Mobile Sidebar Header */}
-            <div className="xl:hidden flex items-center justify-between p-5 border-b border-slate-100 bg-[#BF1737] text-white">
+            <div className="xl:hidden flex items-center justify-between p-5 border-b border-slate-100 bg-[#1A5319] text-white">
                 <div className="flex items-center gap-2">
                     <Sliders size={20} />
                     <span className="text-[17px] font-black uppercase tracking-widest">Filtres</span>
@@ -343,16 +343,16 @@ function ProductListingContent() {
                 <div className="mb-6">
                   <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Parcourir les catégories</h3>
                   <div className="h-[1px] w-full bg-slate-100 relative">
-                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#BF1737]"></div>
+                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
                 <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                   <div className="space-y-1">
                     <button
                       onClick={() => setCategoryId(null)}
-                      className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${categoryId === null ? 'font-bold text-[#BF1737]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+                      className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${categoryId === null ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                     >
-                      <span className={`material-symbols-outlined text-[18px] ${categoryId === null ? 'text-[#BF1737]' : 'text-slate-400'}`}>grid_view</span> Tous les produits
+                      <span className={`material-symbols-outlined text-[18px] ${categoryId === null ? 'text-[#1A5319]' : 'text-slate-400'}`}>grid_view</span> Tous les produits
                     </button>
                     {categoryTree.map(cat => (
                       <CategoryTreeItem
@@ -371,14 +371,14 @@ function ProductListingContent() {
                 <div className="mb-6 mt-10">
                   <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Marques</h3>
                   <div className="h-[1px] w-full bg-slate-100 relative">
-                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#BF1737]"></div>
+                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
                 <div className="h-[200px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
                   <div className="space-y-1">
                     <button
                       onClick={() => setBrandId(null)}
-                      className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === null ? 'font-bold text-[#BF1737]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+                      className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === null ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                     >
                       Toutes les marques
                     </button>
@@ -386,7 +386,7 @@ function ProductListingContent() {
                       <button
                         key={brand.id}
                         onClick={() => setBrandId(brand.id)}
-                        className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === brand.id ? 'font-bold text-[#BF1737]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
+                        className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === brand.id ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                       >
                         {brand.name}
                       </button>
@@ -400,7 +400,7 @@ function ProductListingContent() {
                 <div className="mb-8">
                   <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Filtres</h3>
                   <div className="h-[1px] w-full bg-slate-100 relative">
-                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#BF1737]"></div>
+                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
 
@@ -413,7 +413,7 @@ function ProductListingContent() {
                         type="text"
                         value={minPrice?.toLocaleString() || '0'}
                         onChange={(e) => setMinPrice(Number(e.target.value.replace(/\D/g, '')))}
-                        className="w-full h-12 rounded-xl border border-slate-200 bg-white text-center text-[15px] font-medium text-slate-900 outline-none focus:border-[#BF1737] transition-colors"
+                        className="w-full h-12 rounded-xl border border-slate-200 bg-white text-center text-[15px] font-medium text-slate-900 outline-none focus:border-[#1A5319] transition-colors"
                       />
                     </div>
                     <span className="text-slate-400 font-bold">—</span>
@@ -422,14 +422,14 @@ function ProductListingContent() {
                         type="text"
                         value={maxPrice?.toLocaleString() || '1000'}
                         onChange={(e) => setMaxPrice(Number(e.target.value.replace(/\D/g, '')))}
-                        className="w-full h-12 rounded-xl border border-slate-200 bg-white text-center text-[15px] font-medium text-slate-900 outline-none focus:border-[#BF1737] transition-colors"
+                        className="w-full h-12 rounded-xl border border-slate-200 bg-white text-center text-[15px] font-medium text-slate-900 outline-none focus:border-[#1A5319] transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="relative h-1 w-full bg-slate-200 rounded-full">
                     <div
-                      className="absolute h-full bg-[#BF1737] rounded-full"
+                      className="absolute h-full bg-[#1A5319] rounded-full"
                       style={{
                         left: `${((minPrice || 0) / 1000) * 100}%`,
                         right: `${100 - (((maxPrice || 1000) / 1000) * 100)}%`
@@ -458,11 +458,11 @@ function ProductListingContent() {
 
                     {/* Visual Thumbs */}
                     <div
-                      className="absolute top-1/2 -translate-y-1/2 -ml-2 h-4 w-4 rounded-full bg-[#BF1737] ring-4 ring-[#BF1737]/20 cursor-pointer shadow-sm pointer-events-none z-20"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-2 h-4 w-4 rounded-full bg-[#1A5319] ring-4 ring-[#1A5319]/20 cursor-pointer shadow-sm pointer-events-none z-20"
                       style={{ left: `${((minPrice || 0) / 1000) * 100}%` }}
                     ></div>
                     <div
-                      className="absolute top-1/2 -translate-y-1/2 -ml-2 h-4 w-4 rounded-full bg-[#BF1737] ring-4 ring-[#BF1737]/20 cursor-pointer shadow-sm pointer-events-none z-20"
+                      className="absolute top-1/2 -translate-y-1/2 -ml-2 h-4 w-4 rounded-full bg-[#1A5319] ring-4 ring-[#1A5319]/20 cursor-pointer shadow-sm pointer-events-none z-20"
                       style={{ left: `${((maxPrice || 1000) / 1000) * 100}%` }}
                     ></div>
                   </div>
@@ -475,7 +475,7 @@ function ProductListingContent() {
                 <div className="space-y-4">
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" className="hidden" checked={inStock} onChange={(e) => setInStock(e.target.checked)} />
-                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${inStock ? 'border-[#BF1737] bg-[#BF1737]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
+                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${inStock ? 'border-[#1A5319] bg-[#1A5319]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
                       {inStock && <span className="material-symbols-outlined text-[14px] text-white font-bold">check</span>}
                     </div>
                     <span className={`text-[14px] font-bold transition-colors ${inStock ? 'text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>In Stock</span>
@@ -483,7 +483,7 @@ function ProductListingContent() {
 
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" className="hidden" checked={onSale} onChange={(e) => setOnSale(e.target.checked)} />
-                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${onSale ? 'border-[#BF1737] bg-[#BF1737]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
+                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${onSale ? 'border-[#1A5319] bg-[#1A5319]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
                       {onSale && <span className="material-symbols-outlined text-[14px] text-white font-bold">check</span>}
                     </div>
                     <span className={`text-[14px] font-bold transition-colors ${onSale ? 'text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>On Sale</span>
@@ -491,7 +491,7 @@ function ProductListingContent() {
 
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" className="hidden" checked={ecoFriendly} onChange={(e) => setEcoFriendly(e.target.checked)} />
-                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${ecoFriendly ? 'border-[#BF1737] bg-[#BF1737]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
+                    <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${ecoFriendly ? 'border-[#1A5319] bg-[#1A5319]' : 'border-slate-200 bg-white group-hover:border-slate-300'}`}>
                       {ecoFriendly && <span className="material-symbols-outlined text-[14px] text-white font-bold">check</span>}
                     </div>
                     <span className={`text-[14px] font-bold transition-colors ${ecoFriendly ? 'text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>Eco-Friendly</span>
@@ -504,7 +504,7 @@ function ProductListingContent() {
                 <div className="mb-6">
                   <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Derniers produits</h3>
                   <div className="h-[1px] w-full bg-slate-100 relative">
-                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#BF1737]"></div>
+                    <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
 
@@ -514,9 +514,9 @@ function ProductListingContent() {
                     const oldPrice = product.oldPrice ? Number(product.oldPrice) : null;
                     return (
                       <a key={product.id} href={`/products/${product.id}`} className="flex gap-4 group">
-                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md border border-slate-300 bg-[#F8F9FA] p-1 transition-all group-hover:border-[#BF1737]/20 group-hover:shadow-md">
+                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md border border-slate-300 bg-[#F8F9FA] p-1 transition-all group-hover:border-[#1A5319]/20 group-hover:shadow-md">
                           {product.imageUrl ? (
-                            <img src={product.imageUrl} alt={product.name} className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" />
+                            <img src={product.imageUrl} alt={product.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                           ) : (
                             <div className="flex h-full w-full items-center justify-center text-slate-300">
                               <span className="material-symbols-outlined text-[32px]">image</span>
@@ -524,10 +524,10 @@ function ProductListingContent() {
                           )}
                         </div>
                         <div className="flex flex-col justify-center min-w-0">
-                          <h4 className="text-[14px] font-bold text-slate-900 leading-tight mb-1 line-clamp-2 transition-colors group-hover:text-[#BF1737]">{product.name}</h4>
+                          <h4 className="text-[14px] font-bold text-slate-900 leading-tight mb-1 line-clamp-2 transition-colors group-hover:text-[#1A5319]">{product.name}</h4>
                           <ProductRating productId={product.id} className="mb-1" starSize={14} textSize="text-[11px]" />
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[14px] font-black text-[#BF1737]">{price.toFixed(2).replace('.', ',')} MAD</span>
+                            <span className="text-[14px] font-black text-[#1A5319]">{price.toFixed(2).replace('.', ',')} MAD</span>
                             {oldPrice && oldPrice > price && (
                               <span className="text-[12px] font-medium text-slate-400 line-through">{(oldPrice).toFixed(2).replace('.', ',')} MAD</span>
                             )}
@@ -543,7 +543,7 @@ function ProductListingContent() {
               <div className="xl:hidden pt-4 pb-10">
                 <button 
                     onClick={() => setIsSidebarOpen(false)}
-                    className="w-full py-4 bg-[#BF1737] text-white font-black rounded-2xl shadow-lg shadow-[#BF1737]/20 uppercase tracking-widest"
+                    className="w-full py-4 bg-[#1A5319] text-white font-black rounded-2xl shadow-lg shadow-[#1A5319]/20 uppercase tracking-widest"
                 >
                     Afficher les produits
                 </button>
@@ -562,18 +562,18 @@ function ProductListingContent() {
 
               <div className="hidden xl:flex flex-wrap items-center gap-3">
                 {/* View Mode Toggle Pill */}
-                <div className="flex items-center gap-1 bg-[#F0F2F5] p-1 rounded-full border border-slate-100 hover:border-[#BF1737] shadow-inner mr-2">
+                <div className="flex items-center gap-1 bg-[#F0F2F5] p-1 rounded-full border border-slate-100 hover:border-[#1A5319] shadow-inner mr-2">
                   <button
                     onClick={() => setViewMode('grid')}
                     className={`p-2 rounded-full transition-all duration-300 flex items-center justify-center ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <span className={`material-symbols-outlined text-[20px] ${viewMode === 'grid' ? 'text-[#BF1737]' : ''}`}>grid_view</span>
+                    <span className={`material-symbols-outlined text-[20px] ${viewMode === 'grid' ? 'text-[#1A5319]' : ''}`}>grid_view</span>
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-2 rounded-full transition-all duration-300 flex items-center justify-center ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <span className={`material-symbols-outlined text-[20px] ${viewMode === 'list' ? 'text-[#BF1737]' : ''}`}>view_list</span>
+                    <span className={`material-symbols-outlined text-[20px] ${viewMode === 'list' ? 'text-[#1A5319]' : ''}`}>view_list</span>
                   </button>
                 </div>
 
@@ -582,7 +582,7 @@ function ProductListingContent() {
                   <button
                     onClick={() => setIsSortOpen(!isSortOpen)}
                     onBlur={() => setTimeout(() => setIsSortOpen(false), 200)}
-                    className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white py-2 pl-4 pr-3 text-[13px] font-bold text-slate-700 outline-none hover:border-[#BF1737] transition-all cursor-pointer min-w-[140px] justify-between focus:border-[#BF1737] focus:ring-1 focus:ring-[#BF1737]/20"
+                    className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white py-2 pl-4 pr-3 text-[13px] font-bold text-slate-700 outline-none hover:border-[#1A5319] transition-all cursor-pointer min-w-[140px] justify-between focus:border-[#1A5319] focus:ring-1 focus:ring-[#1A5319]/20"
                   >
                     <span>{
                       sort === 'newest' ? 'Derniers' :
@@ -614,7 +614,7 @@ function ProductListingContent() {
                             setSort(option.value);
                             setIsSortOpen(false);
                           }}
-                          className={`w-full text-left px-5 py-2.5 text-[14px] font-medium transition-colors hover:bg-slate-50 ${sort === option.value ? 'text-[#BF1737] bg-slate-50/50' : 'text-slate-600'}`}
+                          className={`w-full text-left px-5 py-2.5 text-[14px] font-medium transition-colors hover:bg-slate-50 ${sort === option.value ? 'text-[#1A5319] bg-slate-50/50' : 'text-slate-600'}`}
                         >
                           {option.label}
                         </button>
@@ -628,7 +628,7 @@ function ProductListingContent() {
                   <button
                     onClick={() => setIsLimitOpen(!isLimitOpen)}
                     onBlur={() => setTimeout(() => setIsLimitOpen(false), 200)}
-                    className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white py-2 pl-4 pr-3 text-[13px] font-bold text-slate-700 outline-none hover:border-[#BF1737] transition-all cursor-pointer min-w-[70px] justify-between focus:border-[#BF1737] focus:ring-1 focus:ring-[#BF1737]/20"
+                    className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white py-2 pl-4 pr-3 text-[13px] font-bold text-slate-700 outline-none hover:border-[#1A5319] transition-all cursor-pointer min-w-[70px] justify-between focus:border-[#1A5319] focus:ring-1 focus:ring-[#1A5319]/20"
                   >
                     <span>{limit}</span>
                     <span className={`material-symbols-outlined text-slate-400 transition-transform duration-300 ${isLimitOpen ? 'rotate-180' : ''}`}>expand_more</span>
@@ -646,7 +646,7 @@ function ProductListingContent() {
                             setLimit(val);
                             setIsLimitOpen(false);
                           }}
-                          className={`w-full text-left px-5 py-2.5 text-[14px] font-medium transition-colors hover:bg-slate-50 ${limit === val ? 'text-[#BF1737] bg-slate-50/50' : 'text-slate-600'}`}
+                          className={`w-full text-left px-5 py-2.5 text-[14px] font-medium transition-colors hover:bg-slate-50 ${limit === val ? 'text-[#1A5319] bg-slate-50/50' : 'text-slate-600'}`}
                         >
                           {val}
                         </button>
@@ -681,7 +681,7 @@ function ProductListingContent() {
                 <p className="text-[14px] sm:text-[16px] text-slate-500 font-medium">Try adjusting your filters or search terms.</p>
                 <button 
                     onClick={() => { setCategoryId(null); setBrandId(null); setSearch(''); setMinPrice(null); setMaxPrice(null); setInStock(false); setOnSale(false); setEcoFriendly(false); }} 
-                    className="mt-6 px-6 py-2.5 bg-[#BF1737] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity"
+                    className="mt-6 px-6 py-2.5 bg-[#1A5319] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity"
                 >
                     Clear Filters
                 </button>

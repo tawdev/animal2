@@ -92,6 +92,19 @@ export class OrdersService {
         return order;
     }
 
+    async findByReference(ref: string): Promise<Order> {
+        const order = await this.orderRepository.findOne({ 
+            where: [
+                { invoiceReference: ref },
+                { id: Number(ref) || -1 }
+            ] 
+        });
+        if (!order) {
+            throw new NotFoundException(`Order with reference ${ref} not found`);
+        }
+        return order;
+    }
+
     async create(orderData: CreateOrderDto): Promise<Order> {
         const order = this.orderRepository.create(orderData);
         // Default to PENDING if not provided

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "./components/ThemeProvider";
-import PublicShell from "./components/PublicShell";
-import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishlistContext";
-import { CompareProvider } from "./context/CompareContext";
-import { SettingsProvider } from "./context/SettingsContext";
+import { ThemeProvider } from "@/app/components/ThemeProvider";
+import PublicShell from "@/app/components/PublicShell";
+import { CartProvider } from "@/app/context/CartContext";
+import { WishlistProvider } from "@/app/context/WishlistContext";
+import { CompareProvider } from "@/app/context/CompareContext";
+import { SettingsProvider } from "@/app/context/SettingsContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,8 +15,38 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Droguerie – Home Essentials",
-  description: "Premium hardware, cleaning supplies, and professional tools for modern living.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://animalfoodexpress.ma'),
+  title: {
+    default: 'Animal Food Express – Votre Animalerie Premium au Maroc',
+    template: '%s | Animal Food Express'
+  },
+  description: 'Découvrez Animal Food Express, la boutique en ligne n°1 au Maroc pour l\'alimentation et les accessoires premium pour chiens, chats, oiseaux et poissons. Livraison rapide partout au Maroc.',
+  keywords: ['animalerie maroc', 'nourriture chien maroc', 'nourriture chat maroc', 'accessoires animaux maroc', 'animal food express', 'pet market maroc'],
+  authors: [{ name: 'Animal Food Express' }],
+  creator: 'Animal Food Express',
+  publisher: 'Animal Food Express',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
+    description: 'Boutique en ligne spécialisée en alimentation et accessoires pour animaux au Maroc.',
+    url: 'https://animalfoodexpress.ma',
+    siteName: 'Animal Food Express',
+    locale: 'fr_MA',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Animal Food Express Maroc',
+    description: 'Alimentation et accessoires premium pour vos animaux.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  }
 };
 
 import { AuthProvider } from "./context/AuthContext";

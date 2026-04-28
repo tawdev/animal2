@@ -14,7 +14,7 @@ export default function BlogSocialShare() {
     return (
         <section className="bg-[#0D0D0D] py-16 px-6 lg:px-10 rounded-[4rem] mx-auto max-w-[1400px] mb-20 overflow-hidden relative group">
             {/* Background Accent */}
-            <div className="absolute top-1/2 left-0 w-64 h-64 bg-[#BF1737] opacity-[0.03] rounded-full -translate-x-[40%] -translate-y-1/2 blur-3xl group-hover:opacity-[0.06] transition-opacity" />
+            <div className="absolute top-1/2 left-0 w-64 h-64 bg-[#1A5319] opacity-[0.03] rounded-full -translate-x-[40%] -translate-y-1/2 blur-3xl group-hover:opacity-[0.06] transition-opacity" />
             
             <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
                 <div className="text-center lg:text-left space-y-4">
@@ -22,7 +22,7 @@ export default function BlogSocialShare() {
                         CET ARTICLE VOUS A ÉTÉ UTILE ?
                     </h2>
                     <p className="text-white/30 text-[14px] font-medium tracking-tight uppercase">
-                        Partagez-le avec vos collègues ou laissez-nous un commentaire !
+                        Partagez-le avec vos amis ou laissez-nous un commentaire !
                     </p>
                 </div>
 

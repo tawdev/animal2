@@ -44,7 +44,7 @@ function InvoiceContent() {
                 try {
                     const data = await api.getOrderById(orderId);
                     setOrder({
-                        invoiceNumber: data.invoiceReference || `FAC-${data.id}`,
+                        invoiceNumber: data.invoiceReference || `DEV-${data.id}`,
                         date: data.createdAt,
                         items: Array.isArray(data.items) ? data.items : [],
                         totalPrice: Number(data.totalPrice),
@@ -58,7 +58,7 @@ function InvoiceContent() {
                     console.error("Erreur backend:", error);
                 }
             } else {
-                const storedOrder = localStorage.getItem('droguerie_last_order');
+                const storedOrder = localStorage.getItem('petmarket_last_order');
                 if (storedOrder) {
                     try {
                         setOrder(JSON.parse(storedOrder));
@@ -80,7 +80,7 @@ function InvoiceContent() {
     if (!isClient || loading) {
         return (
         <div className="flex items-center justify-center bg-slate-50">
-                <Loader2 size={40} className="text-[#BF1737] animate-spin" />
+                <Loader2 size={40} className="text-[#1A5319] animate-spin" />
             </div>
         );
     }
@@ -91,13 +91,13 @@ function InvoiceContent() {
                 <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6">
                     <FileText size={40} className="text-red-300" />
                 </div>
-                <h1 className="text-3xl font-black text-slate-900 mb-4 uppercase tracking-tighter text-center">Aucune facture trouvée</h1>
+                <h1 className="text-3xl font-black text-slate-900 mb-4 uppercase tracking-tighter text-center">Aucun devis trouvé</h1>
                 <p className="text-slate-500 mb-8 max-w-md text-center font-medium">
                     Nous n'avons trouvé aucune trace de cette commande.
                 </p>
                 <Link 
                     href="/products" 
-                    className="flex items-center gap-2 bg-[#BF1737] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#a01430] transition-colors shadow-lg shadow-[#BF1737]/20"
+                    className="flex items-center gap-2 bg-[#1A5319] text-white px-8 py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#004d26] transition-colors shadow-lg shadow-[#1A5319]/20"
                 >
                     <ArrowLeft size={16} /> Retour à la boutique
                 </Link>
@@ -124,7 +124,7 @@ function InvoiceContent() {
                     </Link>
                     <button 
                         onClick={generatePDF}
-                        className="flex items-center gap-2 bg-[#BF1737] text-white px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#a01430] transition-colors shadow-md shadow-[#BF1737]/20"
+                        className="flex items-center gap-2 bg-[#1A5319] text-white px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#004d26] transition-colors shadow-md shadow-[#1A5319]/20"
                     >
                         <Download size={16} />
                         Télécharger en PDF
@@ -140,25 +140,25 @@ function InvoiceContent() {
                             <div className="mb-6 md:mb-0">
                                 <div className="flex items-center gap-3 mb-4">
                                      <div className="relative w-12 h-12 flex-shrink-0">
-                                        <div className="w-full h-full bg-[#BF1737] rounded-xl flex items-center justify-center">
+                                        <div className="w-full h-full bg-[#1A5319] rounded-xl flex items-center justify-center">
                                             <Store size={24} className="text-white" />
                                         </div>
                                     </div>
                                     <div>
-                                        <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900 leading-none">Droguerie <span className="text-[#BF1737]">Maroc</span></h1>
-                                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">L'excellence au quotidien</p>
+                                        <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900 leading-none">Pet<span className="text-[#1A5319]">Market</span></h1>
+                                        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mt-1">Nutrition & Bien-être Premium</p>
                                     </div>
                                 </div>
                                 <div className="text-sm font-medium text-slate-500 space-y-1">
-                                    <p>123 Boulevard Hassan II</p>
-                                    <p>Casablanca, 20000, Maroc</p>
-                                    <p>Tél: +212 7 73 66 24 87</p>
-                                    <p>Email: contact@drogueriemaroc.com</p>
+                                    <p>Boulevard Al Massira Al Khadra</p>
+                                    <p>Casablanca, 20100, Maroc</p>
+                                    <p>Tél: +212 5 22 00 00 00</p>
+                                    <p>Email: contact@petmarket.ma</p>
                                 </div>
                             </div>
                             
                             <div className="text-left md:text-right">
-                                <h2 className="text-4xl font-black uppercase tracking-tighter text-slate-200 mb-2">Facture</h2>
+                                <h2 className="text-4xl font-black uppercase tracking-tighter text-slate-200 mb-2">Devis</h2>
                                 <div className="space-y-1">
                                     <p className="text-sm font-bold text-slate-900">N° {order.invoiceNumber}</p>
                                     <p className="text-sm font-medium text-slate-500">Date : {orderDate}</p>
@@ -170,7 +170,7 @@ function InvoiceContent() {
                         {(order.customerInfo.name || order.customerInfo.phone || order.customerInfo.address) && (
                             <div className="mb-10 p-6 bg-slate-50 rounded-2xl border border-slate-100">
                                 <h3 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
-                                    <User size={14} /> Facturé à
+                                    <User size={14} /> Devis pour
                                 </h3>
                                 <div className="grid sm:grid-cols-2 gap-4 text-sm font-medium text-slate-700">
                                     {order.customerInfo.name && (
@@ -197,7 +197,7 @@ function InvoiceContent() {
                         <div className="mb-10 overflow-x-auto">
                             <table className="w-full text-left border-collapse min-w-[500px]">
                                 <thead>
-                                    <tr className="border-b-2 border-slate-200 text-xs font-black uppercase tracking-widest text-[#BF1737]">
+                                    <tr className="border-b-2 border-slate-200 text-xs font-black uppercase tracking-widest text-[#1A5319]">
                                         <th className="py-4 px-2">Description</th>
                                         <th className="py-4 px-2 text-center">Qté</th>
                                         <th className="py-4 px-2 text-right">Prix U.</th>
@@ -221,16 +221,20 @@ function InvoiceContent() {
                         <div className="flex justify-end">
                             <div className="w-full sm:w-1/2 md:w-1/3 space-y-4 text-sm">
                                 <div className="flex justify-between font-bold text-slate-500 px-2">
-                                    <span>Sous-total HT</span>
+                                    <span>Sous-total</span>
                                     <span>{order.totalPrice.toFixed(2).replace('.', ',')} MAD</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-slate-500 px-2 pb-4 border-b border-slate-200">
+                                <div className="flex justify-between font-bold text-slate-500 px-2">
                                     <span>TVA (0%)</span>
                                     <span>0,00 MAD</span>
                                 </div>
+                                <div className="flex justify-between font-bold text-slate-500 px-2 pb-4 border-b border-slate-200">
+                                    <span>Livraison</span>
+                                    <span>{order.totalPrice >= 600 ? 'OFFERTE' : '35,00 MAD'}</span>
+                                </div>
                                 <div className="flex justify-between items-center text-xl font-black text-slate-900 px-2 pt-2">
-                                    <span className="text-[#BF1737]">Total TTC</span>
-                                    <span>{order.totalPrice.toFixed(2).replace('.', ',')} MAD</span>
+                                    <span className="text-[#1A5319]">Total TTC</span>
+                                    <span>{(order.totalPrice + (order.totalPrice >= 600 ? 0 : 35)).toFixed(2).replace('.', ',')} MAD</span>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +242,7 @@ function InvoiceContent() {
                         {/* Footer Notes */}
                         <div className="mt-16 pt-8 border-t border-slate-100 text-center text-xs font-medium text-slate-400">
                             <p className="mb-1 font-bold text-slate-500 uppercase tracking-widest">Merci pour votre commande</p>
-                            <p>Cette facture certifie la bonne réception de votre demande.</p>
+                            <p>Ce devis certifie la bonne réception de votre demande.</p>
                             <p className="mt-2 text-[10px]">Généré le {new Date().toLocaleString('fr-FR')}</p>
                         </div>
                     </div>
@@ -252,7 +256,7 @@ export default function InvoicePage() {
     return (
         <Suspense fallback={
             <div className="flex items-center justify-center bg-slate-50">
-                <Loader2 size={40} className="text-[#BF1737] animate-spin" />
+                <Loader2 size={40} className="text-[#1A5319] animate-spin" />
             </div>
         }>
             <InvoiceContent />

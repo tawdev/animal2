@@ -13,7 +13,7 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'droguerie_wishlist';
+const STORAGE_KEY = 'petmarket_wishlist';
 
 function loadWishlist(): number[] {
     if (typeof window === 'undefined') return [];

@@ -16,6 +16,9 @@ export class Category {
     isActive: boolean;
 
     @Column({ nullable: true })
+    imageUrl: string;
+
+    @Column({ nullable: true })
     parentId: number;
 
     @ManyToOne(() => Category, (category) => category.children, { onDelete: 'SET NULL' })

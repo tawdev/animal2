@@ -84,7 +84,7 @@ export default function BlogListingSidebar({
             {toc && toc.length > 0 && (
                 <div className="bg-white rounded-[24px] p-8 blog-card-shadow border border-slate-200 transition-all hover:border-slate-300">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-1 h-6 rounded-full bg-[#BF1737]" />
+                        <div className="w-1 h-6 rounded-full bg-[#1A5319]" />
                         <h4 className="text-[15px] font-black text-slate-900 uppercase tracking-tight">
                             Sommaire
                         </h4>
@@ -94,7 +94,7 @@ export default function BlogListingSidebar({
                             <a 
                                 key={idx}
                                 href={`#${item.id}`}
-                                className="block py-2 text-[14px] font-bold text-slate-500 hover:text-[#BF1737] hover:translate-x-1 transition-all"
+                                className="block py-2 text-[14px] font-bold text-slate-500 hover:text-[#1A5319] hover:translate-x-1 transition-all"
                             >
                                 <span className="opacity-30 mr-2">0{idx + 1}.</span> {item.text}
                             </a>
@@ -109,16 +109,16 @@ export default function BlogListingSidebar({
                     <div className="flex flex-col items-center text-center">
                         <div className="relative mb-6">
                             <div className="size-24 rounded-full bg-slate-100 p-1.5 border border-slate-200">
-                                <div className="size-full rounded-full bg-[#BF1737] flex items-center justify-center text-white text-3xl font-black uppercase">
+                                <div className="size-full rounded-full bg-[#1A5319] flex items-center justify-center text-white text-3xl font-black uppercase">
                                     {author.name.charAt(0)}
                                 </div>
                             </div>
-                            <div className="absolute -bottom-1 -right-1 size-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[#BF1737] shadow-sm">
+                            <div className="absolute -bottom-1 -right-1 size-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-[#1A5319] shadow-sm">
                                 <span className="material-symbols-outlined text-[16px] font-black">verified</span>
                             </div>
                         </div>
                         <h4 className="text-[18px] font-black text-slate-900 uppercase tracking-tight mb-1">{author.name}</h4>
-                        <span className="text-[11px] font-black text-[#BF1737] uppercase tracking-[0.2em] mb-4">{author.role}</span>
+                        <span className="text-[11px] font-black text-[#1A5319] uppercase tracking-[0.2em] mb-4">{author.role}</span>
                         <p className="text-[14px] font-medium text-slate-500 leading-relaxed">
                             {author.bio}
                         </p>
@@ -134,7 +134,7 @@ export default function BlogListingSidebar({
             }`}>
                 {/* Visual Header Block — Only for Light Variant */}
                 {variant === 'light' && (
-                    <div className="h-32 bg-gradient-to-br from-[#BF1737] to-[#8C1028] relative overflow-hidden">
+                    <div className="h-32 bg-gradient-to-br from-[#1A5319] to-[#004d26] relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl" />
                         <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full -translate-x-1/2 translate-y-1/2 blur-xl" />
                     </div>
@@ -160,8 +160,8 @@ export default function BlogListingSidebar({
                             <input
                                 className={`w-full rounded-2xl border px-6 py-4.5 text-[15px] font-bold outline-none transition-all text-center ${
                                     variant === 'dark'
-                                    ? 'bg-white/5 border-white/10 text-white placeholder-white/20 focus:bg-white/10 focus:ring-4 focus:ring-[#BF1737]/20 focus:border-[#BF1737]/40'
-                                    : 'bg-[#F8FAFC] border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-4 focus:ring-[#BF1737]/10 focus:border-[#BF1737]/20'
+                                    ? 'bg-white/5 border-white/10 text-white placeholder-white/20 focus:bg-white/10 focus:ring-4 focus:ring-[#1A5319]/20 focus:border-[#1A5319]/40'
+                                    : 'bg-[#F8FAFC] border-slate-200 text-slate-900 placeholder-slate-400 focus:bg-white focus:ring-4 focus:ring-[#1A5319]/10 focus:border-[#1A5319]/20'
                                 }`}
                                 placeholder={variant === 'dark' ? 'votre@email.com' : 'Votre email'}
                                 type="email"
@@ -174,7 +174,7 @@ export default function BlogListingSidebar({
                         <button
                             type="submit"
                             disabled={newsletterStatus === 'loading'}
-                            className="w-full rounded-2xl bg-[#BF1737] py-4.5 text-[13px] font-black text-white uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#D41C3D] hover:scale-[1.02] shadow-xl shadow-[#BF1737]/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
+                            className="w-full rounded-2xl bg-[#1A5319] py-4.5 text-[13px] font-black text-white uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#004d26] hover:scale-[1.02] shadow-xl shadow-[#1A5319]/20 active:scale-[0.98] flex items-center justify-center gap-2 disabled:opacity-60"
                         >
                             {newsletterStatus === 'loading' ? (
                                 <div className="h-5 w-5 border-[3px] border-white border-t-transparent rounded-full animate-spin" />
@@ -220,7 +220,7 @@ export default function BlogListingSidebar({
             {(articleTags || tags.length > 0) && (
                 <div className="bg-white rounded-[24px] p-8 blog-card-shadow border border-slate-200 transition-all hover:border-slate-300">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-1 h-6 rounded-full bg-[#BF1737]" />
+                        <div className="w-1 h-6 rounded-full bg-[#1A5319]" />
                         <h4 className="text-[15px] font-black text-slate-900 uppercase tracking-tight">
                             {articleTags ? 'Mots-clés Article' : 'Tags Populaires'}
                         </h4>
@@ -242,8 +242,8 @@ export default function BlogListingSidebar({
                                             onClick={() => onTagClick?.(t)}
                                             className={`px-4 py-2 rounded-full text-[13px] font-semibold transition-all border ${
                                                 activeTag === t 
-                                                    ? 'bg-[#BF1737] text-white border-[#BF1737] shadow-lg shadow-[#BF1737]/15' 
-                                                    : 'bg-slate-50 text-slate-600 hover:bg-[#BF1737]/5 hover:text-[#BF1737] border-slate-200 hover:border-[#BF1737]/15'
+                                                    ? 'bg-[#1A5319] text-white border-[#1A5319] shadow-lg shadow-[#1A5319]/15' 
+                                                    : 'bg-slate-50 text-slate-600 hover:bg-[#1A5319]/5 hover:text-[#1A5319] border-slate-200 hover:border-[#1A5319]/15'
                                             }`}
                                         >
                                             #{t}
@@ -274,7 +274,7 @@ export default function BlogListingSidebar({
                                         <img
                                             src={post.imageUrl.startsWith('http') ? post.imageUrl : `${process.env.NEXT_PUBLIC_API_URL}${post.imageUrl}`}
                                             alt={post.title}
-                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                            className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                                         />
                                     ) : (
                                         <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
@@ -283,7 +283,7 @@ export default function BlogListingSidebar({
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h5 className="text-[14px] font-bold text-slate-800 leading-snug line-clamp-2 group-hover:text-[#BF1737] transition-colors">
+                                    <h5 className="text-[14px] font-bold text-slate-800 leading-snug line-clamp-2 group-hover:text-[#1A5319] transition-colors">
                                         {post.title}
                                     </h5>
                                     <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1.5 block">
@@ -299,10 +299,10 @@ export default function BlogListingSidebar({
             {/* Astuce du Moment — Dynamic — Hidden on detail pages if hideTip is true */}
             {activeTip && !hideTip && (
                 <div className="bg-[#0D0D0D] rounded-[32px] p-9 text-white shadow-2xl relative overflow-hidden group border border-white/5">
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#BF1737] opacity-[0.06] rounded-full translate-x-[20%] -translate-y-[20%] blur-3xl group-hover:opacity-[0.12] transition-opacity" />
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-[#1A5319] opacity-[0.06] rounded-full translate-x-[20%] -translate-y-[20%] blur-3xl group-hover:opacity-[0.12] transition-opacity" />
                     
                     <div className="relative z-10">
-                        <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#BF1737] mb-6 block drop-shadow-[0_0_10px_rgba(191,23,55,0.3)]">
+                        <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#1A5319] mb-6 block drop-shadow-[0_0_10px_rgba(26,83,25,0.3)]">
                             Astuce du Moment
                         </span>
                         <p className="text-[17px] font-medium text-white/90 leading-relaxed mb-8">
@@ -310,7 +310,7 @@ export default function BlogListingSidebar({
                         </p>
                         <div className="border-t border-white/10 pt-6">
                             <p className="text-[14px] font-medium text-white/40">
-                                Par <span className="text-[#BF1737] font-bold">{activeTip.authorName},</span>{' '}
+                                Par <span className="text-[#1A5319] font-bold">{activeTip.authorName},</span>{' '}
                                 <span className="text-white/30">{activeTip.authorRole}</span>
                             </p>
                         </div>

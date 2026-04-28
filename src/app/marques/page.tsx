@@ -42,7 +42,7 @@ export default function MarquesPage() {
         return (
             <div className="flex-1 bg-white flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-[#1e4d2b]/10 border-t-[#1e4d2b] rounded-full animate-spin"></div>
+                    <div className="w-12 h-12 border-4 border-[#1A5319]/10 border-t-[#1A5319] rounded-full animate-spin"></div>
                     <span className="text-slate-400 font-medium text-sm animate-pulse uppercase tracking-widest">Chargement...</span>
                 </div>
             </div>
@@ -62,7 +62,7 @@ export default function MarquesPage() {
                     <h1 className="text-[32px] md:text-[36px] font-black text-slate-900 tracking-tight leading-none mb-4">
                         Toutes nos Marques
                     </h1>
-                    <div className="h-1.5 w-24 bg-[#1e4d2b] rounded-full opacity-30" />
+                    <div className="h-1.5 w-24 bg-[#1A5319] rounded-full opacity-30" />
                 </motion.div>
 
                 {/* Grid */}
@@ -96,8 +96,8 @@ export default function MarquesPage() {
                                                 className="max-w-[140px] md:max-w-[160px] max-h-[80px] md:max-h-[100px] object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-out"
                                             />
                                         ) : (
-                                            <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white group-hover:border-[#1e4d2b]/20 transition-all duration-500">
-                                                <span className="text-2xl font-black text-slate-300 uppercase group-hover:text-[#1e4d2b]">
+                                            <div className="w-16 h-16 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white group-hover:border-[#1A5319]/20 transition-all duration-500">
+                                                <span className="text-2xl font-black text-slate-300 uppercase group-hover:text-[#1A5319]">
                                                     {brand.name.charAt(0)}
                                                 </span>
                                             </div>
@@ -106,10 +106,10 @@ export default function MarquesPage() {
 
                                     {/* Brand Name */}
                                     <div className="text-center group-hover:translate-y-[-4px] transition-transform duration-500">
-                                        <span className="text-[15px] font-bold text-slate-800 tracking-tight group-hover:text-[#1e4d2b] transition-colors">
+                                        <span className="text-[15px] font-bold text-slate-800 tracking-tight group-hover:text-[#1A5319] transition-colors">
                                             {brand.name}
                                         </span>
-                                        <div className="mt-1 h-0.5 w-0 bg-[#1e4d2b] mx-auto group-hover:w-full transition-all duration-500 rounded-full" />
+                                        <div className="mt-1 h-0.5 w-0 bg-[#1A5319] mx-auto group-hover:w-full transition-all duration-500 rounded-full" />
                                     </div>
                                 </Link>
                             </motion.div>

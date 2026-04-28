@@ -99,7 +99,7 @@ export default function BlogListingPage() {
             window.scrollTo({ top: 400, behavior: 'smooth' });
           }}
           disabled={page === 1}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white hover:border-[#BF1737] hover:text-[#BF1737] transition-all disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white hover:border-[#1A5319] hover:text-[#1A5319] transition-all disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500"
         >
           <ChevronLeft size={18} />
         </button>
@@ -113,8 +113,8 @@ export default function BlogListingPage() {
                 window.scrollTo({ top: 400, behavior: 'smooth' });
               }}
               className={`flex h-10 w-10 items-center justify-center rounded-xl text-[14px] font-black transition-all ${page === i
-                ? 'bg-[#BF1737] text-white shadow-lg shadow-[#BF1737]/20 scale-110'
-                : 'border border-slate-200 bg-white text-slate-500 hover:border-[#BF1737] hover:text-[#BF1737]'
+                ? 'bg-[#1A5319] text-white shadow-lg shadow-[#1A5319]/20 scale-110'
+                : 'border border-slate-200 bg-white text-slate-500 hover:border-[#1A5319] hover:text-[#1A5319]'
                 }`}
             >
               {i}
@@ -128,7 +128,7 @@ export default function BlogListingPage() {
             window.scrollTo({ top: 400, behavior: 'smooth' });
           }}
           disabled={page === totalPages}
-          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white hover:border-[#BF1737] hover:text-[#BF1737] transition-all disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white hover:border-[#1A5319] hover:text-[#1A5319] transition-all disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500"
         >
           <ChevronRight size={18} />
         </button>
@@ -141,7 +141,7 @@ export default function BlogListingPage() {
     .slice(0, 3);
 
   return (
-    <div className="flex-1 flex flex-col bg-[#F9FAFC] font-sans text-slate-900 selection:bg-[#BF1737]/20">
+    <div className="flex-1 flex flex-col bg-[#F9FAFC] font-sans text-slate-900 selection:bg-[#1A5319]/20">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -167,8 +167,8 @@ export default function BlogListingPage() {
                         onClick={() => setSelectedCategory(cat)}
                         className={`px-5 py-2 rounded-full text-[12px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${
                             selectedCategory === cat 
-                            ? 'bg-[#BF1737] text-white' 
-                            : 'text-slate-500 hover:text-[#BF1737] hover:bg-slate-50'
+                            ? 'bg-[#1A5319] text-white' 
+                            : 'text-slate-500 hover:text-[#1A5319] hover:bg-slate-50'
                         }`}
                       >
                           {cat}
@@ -183,10 +183,10 @@ export default function BlogListingPage() {
                       <button 
                         onClick={() => setIsSortOpen(!isSortOpen)}
                         onBlur={() => setTimeout(() => setIsSortOpen(false), 200)}
-                        className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 rounded-lg text-[11px] font-black text-slate-900 uppercase tracking-widest hover:border-[#BF1737] hover:text-[#BF1737] transition-all bg-white"
+                        className="flex items-center gap-2 px-3 py-1.5 border border-slate-200 rounded-lg text-[11px] font-black text-slate-900 uppercase tracking-widest hover:border-[#1A5319] hover:text-[#1A5319] transition-all bg-white"
                       >
                           {sortBy === 'recent' ? 'Plus récent' : 'Plus ancien'}
-                          <span className={`material-symbols-outlined text-[16px] transition-transform duration-300 ${isSortOpen ? 'rotate-180 text-[#BF1737]' : 'text-slate-400'}`}>
+                          <span className={`material-symbols-outlined text-[16px] transition-transform duration-300 ${isSortOpen ? 'rotate-180 text-[#1A5319]' : 'text-slate-400'}`}>
                               keyboard_arrow_down
                           </span>
                       </button>
@@ -206,8 +206,8 @@ export default function BlogListingPage() {
                                     }}
                                     className={`w-full text-left px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
                                         sortBy === option.value 
-                                        ? 'bg-slate-50 text-[#BF1737]' 
-                                        : 'text-slate-600 hover:bg-slate-50 hover:text-[#BF1737]'
+                                        ? 'bg-slate-50 text-[#1A5319]' 
+                                        : 'text-slate-600 hover:bg-slate-50 hover:text-[#1A5319]'
                                     }`}
                                   >
                                       {option.label}
@@ -231,11 +231,11 @@ export default function BlogListingPage() {
         >
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-[2.5px] bg-[#BF1737]" />
-              <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#BF1737]">ARTICLES RECENTS</span>
+              <div className="w-10 h-[2.5px] bg-[#1A5319]" />
+              <span className="text-[13px] font-black uppercase tracking-[0.3em] text-[#1A5319]">ARTICLES RECENTS</span>
             </div>
             <h2 className="text-[42px] font-black text-slate-900 leading-tight uppercase tracking-tight italic">
-              {selectedTag ? `#${selectedTag}` : (debouncedSearch ? `RESULTATS POUR "${debouncedSearch}"` : 'TOUT SAVOIR SUR L\'OUTILLAGE')}
+              {selectedTag ? `#${selectedTag}` : (debouncedSearch ? `RESULTATS POUR "${debouncedSearch}"` : 'TOUT SAVOIR SUR VOS ANIMAUX')}
             </h2>
             {selectedTag && (
                 <button 
@@ -250,13 +250,13 @@ export default function BlogListingPage() {
           <div className="flex gap-4">
             <button
               onClick={() => setViewMode('grid')}
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${viewMode === 'grid' ? 'bg-[#BF1737] text-white shadow-lg shadow-[#BF1737]/20 rotate-[-12deg]' : 'border border-slate-200 bg-white text-slate-400 hover:bg-slate-50'}`}
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${viewMode === 'grid' ? 'bg-[#1A5319] text-white shadow-lg shadow-[#1A5319]/20 rotate-[-12deg]' : 'border border-slate-200 bg-white text-slate-400 hover:bg-slate-50'}`}
             >
               <Grid size={22} strokeWidth={2.5} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${viewMode === 'list' ? 'bg-[#BF1737] text-white shadow-lg shadow-[#BF1737]/20 rotate-[12deg]' : 'border border-slate-200 bg-white text-slate-400 hover:bg-slate-50'}`}
+              className={`flex h-14 w-14 items-center justify-center rounded-2xl transition-all ${viewMode === 'list' ? 'bg-[#1A5319] text-white shadow-lg shadow-[#1A5319]/20 rotate-[12deg]' : 'border border-slate-200 bg-white text-slate-400 hover:bg-slate-50'}`}
             >
               <ListIcon size={22} strokeWidth={2.5} />
             </button>
@@ -289,7 +289,7 @@ export default function BlogListingPage() {
                 <p className="text-[16px] font-medium text-slate-400 leading-relaxed">
                   Désolé, nous n&apos;avons trouvé aucun article correspondant à votre recherche. Essayez d&apos;autres mots-clés ou explorez nos guides populaires.
                 </p>
-                <button onClick={() => setSearch('')} className="mt-10 px-8 py-4 bg-[#BF1737] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-[#BF1737]/10 transition-all hover:-translate-y-1 active:scale-95">
+                <button onClick={() => setSearch('')} className="mt-10 px-8 py-4 bg-[#1A5319] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-[#1A5319]/10 transition-all hover:-translate-y-1 active:scale-95">
                   VOIR TOUS LES ARTICLES
                 </button>
               </div>

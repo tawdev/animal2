@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Heart, RefreshCw } from 'lucide-react';
 import ProductRating from './ProductRating';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
-import { useCompare } from '../context/CompareContext';
+import { useCart } from '@/app/context/CartContext';
+import { useWishlist } from '@/app/context/WishlistContext';
+import { useCompare } from '@/app/context/CompareContext';
 import { motion } from 'framer-motion';
-import { type Product } from '../lib/api';
+import { type Product } from '@/app/lib/api';
 
 interface ProductCardProps {
   product: Product;
@@ -59,10 +60,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
     return () => clearInterval(interval);
   }, [isHovered, allImages.length]);
 
-  const getImageUrl = (url: string) => {
-    if (!url) return 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80';
-    return url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL}${url}`;
-  };
+  const fallbackImage = 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80';
 
   const isList = viewMode === 'list';
 
@@ -83,8 +81,8 @@ export default function ProductCard({ product, className = '', imageClassName = 
         href={`/products/${product.id}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`group/card flex transition-all hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] relative h-full bg-white border border-slate-200 rounded-[8px] p-3 sm:p-4 ${isList
-          ? 'flex-row w-full gap-4 sm:gap-6 items-start'
+        className={`group/card flex transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative h-full bg-white border border-slate-100 rounded-[24px] overflow-hidden ${isList
+          ? 'flex-row w-full gap-4 sm:gap-6 items-start p-3 sm:p-4'
           : 'flex-col w-full max-w-[280px]'
           }`}
       >
@@ -92,16 +90,15 @@ export default function ProductCard({ product, className = '', imageClassName = 
       <div className={`relative flex flex-col ${isList ? 'shrink-0 pr-8' : 'w-full mb-3'}`}>
 
         {/* Image Container */}
-        {/* Image / Media Container - FORCED ANCHOR */}
         <div 
-          className={`relative transition-all duration-500 overflow-hidden bg-white rounded-[8px] shrink-0 grid ${isList
-            ? 'w-[100px] h-[100px] sm:w-[140px] sm:h-[140px]'
-            : 'aspect-square w-full'
+          className={`relative transition-all duration-500 overflow-hidden bg-white shrink-0 grid ${isList
+            ? 'w-[100px] h-[100px] sm:w-[140px] sm:h-[140px] rounded-[16px]'
+            : 'aspect-square w-full rounded-t-[24px]'
             } ${imageClassName}`}
           style={{ position: 'relative', transform: 'translateZ(0)' }}
         >
           
-          {/* Sale Badge - Stacked via grid/absolute combo with forced parent anchor */}
+          {/* Sale Badge */}
           {isOnSale && (
             <div className="absolute top-2 left-2 z-40 bg-[#0bc241] text-white px-2 py-1.5 rounded-[6px] text-[10px] font-black shadow-lg leading-none tracking-wider uppercase pointer-events-none">
               -{oldPrice ? Math.round(((oldPrice - price) / oldPrice) * 100) : 17}%
@@ -114,20 +111,23 @@ export default function ProductCard({ product, className = '', imageClassName = 
           >
             {allImages.length > 0 ? (
               allImages.map((url, idx) => (
-                <div key={idx} className="flex-shrink-0 w-full h-full flex items-center justify-center p-4 bg-white transition-all duration-300">
-                  <img
-                    src={getImageUrl(url)}
+                <div key={idx} className="flex-shrink-0 w-full h-full relative bg-white transition-all duration-300">
+                  <Image
+                    src={url || fallbackImage}
                     alt={`${product.name} - image ${idx + 1}`}
-                    className="max-w-full max-h-full object-contain mix-blend-multiply transition-transform duration-500 lg:group-hover/card:scale-[1.05]"
+                    fill
+                    sizes={isList ? "(max-width: 640px) 100px, 140px" : "280px"}
+                    className="object-cover transition-transform duration-500 lg:group-hover/card:scale-[1.05]"
                   />
                 </div>
               ))
             ) : (
-              <div className="flex-shrink-0 w-full h-full flex items-center justify-center p-4 bg-white">
-                <img
-                  src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80"
+              <div className="flex-shrink-0 w-full h-full relative bg-white">
+                <Image
+                  src={fallbackImage}
                   alt={product.name}
-                  className="max-w-full max-h-full object-contain mix-blend-multiply"
+                  fill
+                  className="object-cover"
                 />
               </div>
             )}
@@ -138,7 +138,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
         {isList && (
           <div className="absolute right-0 top-0 z-30 flex gap-1 sm:gap-1.5 flex-col">
             <button 
-              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#BF1737] border border-[#BF1737] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#BF1737] hover:border-[#BF1737] hover:text-white'}`}
+              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
               onClick={(e) => { 
                 e.preventDefault(); 
                 e.stopPropagation(); 
@@ -153,7 +153,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
               )}
             </button>
             <button 
-              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#BF1737] border border-[#BF1737] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#BF1737] hover:border-[#BF1737] hover:text-white'}`}
+              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
               onClick={(e) => { 
                 e.preventDefault(); 
                 e.stopPropagation(); 
@@ -168,10 +168,25 @@ export default function ProductCard({ product, className = '', imageClassName = 
       </div>
 
       {/* Info Container */}
-      <div className={`flex flex-col flex-1 min-w-0 ${isList ? 'h-full pt-0.5 sm:pt-1' : 'h-full pt-1.5'}`}>
-        <h3 className={`font-medium text-slate-800 line-clamp-2 sm:line-clamp-2 leading-[1.4] transition-colors group-hover/card:text-[#BF1737] mb-1 sm:mb-2 pb-0.5 ${isList ? 'text-[14px] sm:text-[17px]' : 'text-[13px] sm:text-[15px] min-h-[40px] sm:min-h-[46px]'}`}>
+      <div className={`flex flex-col flex-1 min-w-0 ${isList ? 'h-full pt-0.5 sm:pt-1' : 'h-full px-4 pt-4 pb-5'}`}>
+        <h3 className={`font-black text-slate-900 line-clamp-2 sm:line-clamp-2 leading-[1.3] transition-colors group-hover/card:text-[#1A5319] mb-1 sm:mb-2 uppercase tracking-tight italic ${isList ? 'text-[14px] sm:text-[17px]' : 'text-[13px] sm:text-[15px] min-h-[40px] sm:min-h-[46px]'}`}>
           {product.name}
         </h3>
+
+        {/* Size Badge Extraction */}
+        {(() => {
+          const weightMatch = product.name.match(/(\d+(?:\.\d+)?\s*(?:kg|g|ml|l|L))/i);
+          if (weightMatch) {
+            return (
+              <div className="mb-2">
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-slate-100 text-slate-500 uppercase tracking-tighter">
+                  {weightMatch[1].toUpperCase()}
+                </span>
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         {/* Rating Area */}
         <div className="mb-2 sm:mb-4 opacity-70">
@@ -183,7 +198,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
           <>
             {/* Price Area List */}
             <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-2.5 mb-2 sm:mb-4">
-              <span className="font-medium text-[#BF1737] leading-none text-[15px] sm:text-[18px]">
+              <span className="font-medium text-[#1A5319] leading-none text-[15px] sm:text-[18px]">
                 {price.toLocaleString('fr-MA', { minimumFractionDigits: 2 }).replace('.', ',')} <span className="text-[13px] sm:text-[15px]">MAD</span>
               </span>
               {isOnSale && oldPrice && (
@@ -206,7 +221,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
                     imageUrl: product.imageUrl
                   });
                 }}
-                className="rounded-[6px] bg-[#BF1737] text-white px-3 py-1.5 sm:px-5 sm:py-2 font-bold sm:font-medium text-[12px] sm:text-[14px] hover:bg-[#A3142F] transition-colors shadow-sm"
+                className="rounded-[6px] bg-[#1A5319] text-white px-3 py-1.5 sm:px-5 sm:py-2 font-bold sm:font-medium text-[12px] sm:text-[14px] hover:bg-[#004d26] transition-colors shadow-sm"
               >
                 Ajouter au panier
               </button>
@@ -223,7 +238,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
               ) : (
                 <span className="leading-none text-[11px] sm:text-[12px] mb-1 sm:mb-1.5 opacity-0 select-none">0</span>
               )}
-              <span className="font-medium text-[#BF1737] leading-none text-[14px] sm:text-[16px] truncate">
+              <span className="font-medium text-[#1A5319] leading-none text-[14px] sm:text-[16px] truncate">
                 {price.toLocaleString('fr-MA', { minimumFractionDigits: 2 }).replace('.', ',')} MAD
               </span>
             </div>
@@ -239,7 +254,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
                   imageUrl: product.imageUrl
                 });
               }}
-              className="rounded-[8px] flex items-center justify-center transition-colors duration-300 w-8 h-8 sm:w-9 sm:h-9 bg-[#BF1737]/10 text-[#BF1737] lg:group-hover/card:bg-[#BF1737] lg:group-hover/card:text-white shrink-0"
+              className="rounded-[8px] flex items-center justify-center transition-colors duration-300 w-8 h-8 sm:w-9 sm:h-9 bg-[#1A5319]/10 text-[#1A5319] lg:group-hover/card:bg-[#1A5319] lg:group-hover/card:text-white shrink-0"
             >
               <ShoppingCart size={16} strokeWidth={2.5} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
@@ -251,7 +266,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
       {!isList && (
         <div className="absolute right-2 top-2 sm:right-3 sm:top-3 z-30 flex gap-1.5 flex-col">
           <button 
-            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#BF1737] border border-[#BF1737] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#BF1737] hover:border-[#BF1737] hover:text-white'}`}
+            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
             onClick={(e) => { 
               e.preventDefault(); 
               e.stopPropagation(); 
@@ -266,7 +281,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
             )}
           </button>
           <button 
-            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#BF1737] border border-[#BF1737] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#BF1737] hover:border-[#BF1737] hover:text-white'}`}
+            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
             onClick={(e) => { 
               e.preventDefault(); 
               e.stopPropagation(); 

@@ -74,13 +74,13 @@ export default function ProductImageZoom({ src, alt }: ProductImageZoomProps) {
                     ref={imgRef}
                     src={src}
                     alt={alt}
-                    className="max-w-full max-h-full object-contain transition-transform duration-300"
+                    className="w-full h-full object-cover transition-transform duration-300"
                 />
                 
                 {/* Lens Overlay */}
                 {showZoom && !isMobile && (
                     <div 
-                        className="absolute bg-[#BF1737]/10 border border-[#BF1737]/30 pointer-events-none z-10"
+                        className="absolute bg-[#1A5319]/10 border border-[#1A5319]/30 pointer-events-none z-10"
                         style={{
                             width: lensPos.width,
                             height: lensPos.height,

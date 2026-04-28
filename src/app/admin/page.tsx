@@ -96,7 +96,7 @@ export default function AdminDashboardPage() {
     <main className="flex-1 flex flex-col overflow-y-auto no-scrollbar bg-white" onClick={() => setShowResults(false)}>
       <header className="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-40 shrink-0">
         <div className="flex items-center gap-2">
-          <h2 className="text-slate-900 text-lg font-bold">Dashboard Overview</h2>
+          <h2 className="text-slate-900 text-lg font-bold">Tableau de bord PetMarket</h2>
         </div>
         <div className="flex items-center gap-6">
           <div className="relative w-64 lg:w-80 hidden md:block" onClick={(e) => e.stopPropagation()}>
@@ -170,7 +170,7 @@ export default function AdminDashboardPage() {
                           >
                             <div className="size-8 rounded-lg bg-slate-100 overflow-hidden relative border border-slate-200">
                               {product.imageUrl ? (
-                                <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />
+                                <Image src={product.imageUrl} alt={product.name} fill className="object-contain" />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-slate-400">
                                   <span className="material-symbols-outlined text-[18px]">image</span>

@@ -69,7 +69,7 @@ export default function ScrollToTop() {
                     />
                     {/* Progress circle */}
                     <circle
-                        stroke="#BF1737"
+                        stroke="#1A5319"
                         fill="transparent"
                         strokeWidth={strokeWidth}
                         strokeDasharray={circumference + ' ' + circumference}
@@ -83,7 +83,7 @@ export default function ScrollToTop() {
                 </svg>
                 
                 <ArrowUp 
-                    className="w-5 h-5 text-[#BF1737] relative z-10 transition-transform duration-300 group-hover:-translate-y-1" 
+                    className="w-5 h-5 text-[#1A5319] relative z-10 transition-transform duration-300 group-hover:-translate-y-1" 
                     strokeWidth={2.5}
                 />
             </div>

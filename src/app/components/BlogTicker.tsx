@@ -4,23 +4,23 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 
 const TICKER_ITEMS = [
-    'CONSEILS PRO',
-    'OUTILLAGE',
-    'DROGUERIE MAROC',
-    'CONSEILS PRO',
-    'OUTILLAGE',
-    'DROGUERIE MAROC',
-    'CONSEILS PRO',
-    'OUTILLAGE',
-    'DROGUERIE MAROC',
-    'CONSEILS PRO',
-    'OUTILLAGE',
-    'DROGUERIE MAROC',
+    'CONSEILS SOINS',
+    'NUTRITION PETS',
+    'PETMARKET MAROC',
+    'CONSEILS SOINS',
+    'NUTRITION PETS',
+    'PETMARKET MAROC',
+    'CONSEILS SOINS',
+    'NUTRITION PETS',
+    'PETMARKET MAROC',
+    'CONSEILS SOINS',
+    'NUTRITION PETS',
+    'PETMARKET MAROC',
 ];
 
 export default function BlogTicker() {
     return (
-        <div className="bg-[#BF1737] py-2 overflow-hidden whitespace-nowrap border-y border-white/10 relative z-20">
+        <div className="bg-[#1A5319] py-2 overflow-hidden whitespace-nowrap border-y border-white/10 relative z-20">
             <div className="flex animate-marquee gap-16 items-center">
                 {/* Double the items to ensure seamless loop */}
                 {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (

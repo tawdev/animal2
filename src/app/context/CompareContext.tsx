@@ -14,7 +14,7 @@ interface CompareContextType {
 
 const CompareContext = createContext<CompareContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'droguerie_compare';
+const STORAGE_KEY = 'petmarket_compare';
 const MAX_COMPARE = 4;
 
 function loadCompare(): number[] {

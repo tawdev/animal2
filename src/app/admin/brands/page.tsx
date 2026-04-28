@@ -137,26 +137,42 @@ export default function AdminBrandsPage() {
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5">Logo</label>
-                            <div className="flex items-center gap-4">
-                                {formData.logoUrl && (
-                                    <div className="w-20 h-20 rounded-lg border border-slate-200 overflow-hidden bg-white flex items-center justify-center p-2">
-                                        <img
-                                            src={formData.logoUrl.startsWith('http') ? formData.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${formData.logoUrl}`}
-                                            alt="Logo preview"
-                                            className="max-w-full max-h-full object-contain"
+                            <div className="space-y-3">
+                                {/* Upload file */}
+                                <div className="flex items-center gap-4">
+                                    {formData.logoUrl && (
+                                        <div className="w-20 h-20 rounded-lg border border-slate-200 overflow-hidden bg-white flex items-center justify-center p-2">
+                                            <img
+                                                src={formData.logoUrl.startsWith('http') ? formData.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${formData.logoUrl}`}
+                                                alt="Logo preview"
+                                                className="max-w-full max-h-full object-contain"
+                                            />
+                                        </div>
+                                    )}
+                                    <label className="cursor-pointer flex items-center gap-2 px-4 py-2.5 border border-dashed border-slate-300 rounded-lg text-sm text-slate-600 hover:border-primary hover:text-primary transition-colors">
+                                        <span className="material-symbols-outlined text-[20px]">upload</span>
+                                        {uploading ? 'Uploading...' : 'Choisir un fichier'}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="hidden"
                                         />
-                                    </div>
-                                )}
-                                <label className="cursor-pointer flex items-center gap-2 px-4 py-2.5 border border-dashed border-slate-300 rounded-lg text-sm text-slate-600 hover:border-primary hover:text-primary transition-colors">
-                                    <span className="material-symbols-outlined text-[20px]">upload</span>
-                                    {uploading ? 'Uploading...' : 'Choisir une image'}
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className="hidden"
-                                    />
-                                </label>
+                                    </label>
+                                </div>
+                                {/* OR URL */}
+                                <div className="flex items-center gap-3">
+                                    <div className="flex-1 h-px bg-slate-200" />
+                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">ou URL</span>
+                                    <div className="flex-1 h-px bg-slate-200" />
+                                </div>
+                                <input
+                                    type="url"
+                                    value={formData.logoUrl.startsWith('http') ? formData.logoUrl : ''}
+                                    onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+                                    placeholder="https://exemple.com/logo.png"
+                                    className="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                                />
                             </div>
                         </div>
 

@@ -21,6 +21,8 @@ export default function AdminSettingsPage() {
         address: '',
         logoUrl: null,
         description: '',
+        facebookUrl: null,
+        instagramUrl: null,
         updatedAt: ''
     });
     const [initialSettings, setInitialSettings] = useState<StoreSettings | null>(null);
@@ -122,7 +124,7 @@ export default function AdminSettingsPage() {
             {/* Header */}
             <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-10 py-6">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Store Settings</h1>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Paramètres de la boutique</h1>
                 </div>
             </header>
 
@@ -187,17 +189,52 @@ export default function AdminSettingsPage() {
                                 />
                             </div>
 
+                            {/* Social Media Links */}
+                            <div className="pt-8 mb-4 border-t border-slate-100">
+                                <h4 className="text-[13px] font-bold text-slate-600 mb-4 flex items-center gap-2">
+                                    <span>🔗</span> Réseaux Sociaux
+                                </h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[13px] font-bold text-slate-600 flex items-center gap-2">
+                                            <span className="w-5 h-5 bg-blue-600 rounded flex items-center justify-center text-white text-[10px] font-black">f</span>
+                                            Lien Facebook
+                                        </label>
+                                        <input
+                                            type="url"
+                                            value={settings.facebookUrl || ''}
+                                            onChange={(e) => setSettings({ ...settings, facebookUrl: e.target.value || null })}
+                                            placeholder="https://www.facebook.com/votrepage"
+                                            className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 text-[14px] font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[13px] font-bold text-slate-600 flex items-center gap-2">
+                                            <span className="w-5 h-5 bg-gradient-to-br from-purple-500 to-pink-500 rounded flex items-center justify-center text-white text-[10px] font-black">IG</span>
+                                            Lien Instagram
+                                        </label>
+                                        <input
+                                            type="url"
+                                            value={settings.instagramUrl || ''}
+                                            onChange={(e) => setSettings({ ...settings, instagramUrl: e.target.value || null })}
+                                            placeholder="https://www.instagram.com/votrepage"
+                                            className="w-full h-11 px-4 rounded-xl bg-white border border-slate-200 text-[14px] font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="pt-8 mb-4 border-t border-slate-100">
                                 <h4 className="text-[13px] font-bold text-slate-600 mb-4">Store Logo</h4>
                                 <div className="flex items-start gap-4">
                                     {/* Logo Preview */}
                                     <div className="size-[88px] rounded-xl bg-[#2a303c] flex items-center justify-center border border-slate-800 overflow-hidden shrink-0 mt-1 relative group">
                                         {settings.logoUrl ? (
-                                            <img src={settings.logoUrl} alt="Store Logo" className="w-full h-full object-cover" />
+                                            <img src={settings.logoUrl} alt="Store Logo" className="w-full h-full object-contain" />
                                         ) : (
                                             <div className="flex flex-col items-center">
                                                 <span className="material-symbols-outlined text-[#10B981] text-2xl mb-1">spa</span>
-                                                <span className="text-[6px] font-bold text-slate-300 tracking-wider uppercase">Droguerie</span>
+                                                <span className="text-[6px] font-bold text-slate-300 tracking-wider uppercase">PetMarket</span>
                                             </div>
                                         )}
                                         {isUploading && (

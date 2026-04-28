@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }, [pathname]);
 
     return (
-        <div className="light bg-[#F8FAFC] text-slate-900 antialiased min-h-screen" style={{ '--primary': '#BF1737' } as React.CSSProperties}>
+        <div className="light bg-[#F8FAFC] text-slate-900 antialiased min-h-screen" style={{ '--primary': '#1A5319' } as React.CSSProperties}>
             <div className="flex h-screen overflow-hidden">
                 {/* Mobile Backdrop Overlay */}
                 {sidebarOpen && (
@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <div className="relative shrink-0" style={{ width: 120, height: 48 }}>
                                 <img
                                     src={settings?.logoUrl || "/mol.jpeg"}
-                                    alt={settings?.storeName || "MOL Droguerie Admin"}
+                                    alt={settings?.storeName || "PetMarket Admin"}
                                     className="w-full h-full object-contain"
                                     style={{ mixBlendMode: 'multiply' }}
                                 />
@@ -99,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                         {item.label}
                                     </span>
                                     {isActive && (
-                                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(191,23,55,0.4)]" />
+                                        <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(26,83,25,0.4)]" />
                                     )}
                                 </Link>
                             );

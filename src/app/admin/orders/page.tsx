@@ -119,7 +119,7 @@ export default function AdminOrdersPage() {
       if (newStatus === 'confirmed') {
         const order = orders.find(o => o.id === orderId);
         if (!order?.email) {
-          const userEmail = window.prompt("L'email du client est manquant. Veuillez le saisir pour envoyer la facture :");
+          const userEmail = window.prompt("L'email du client est manquant. Veuillez le saisir pour envoyer le devis :");
           if (!userEmail || !userEmail.includes('@')) {
             showToast("Une adresse email valide est requise pour confirmer la commande.", 'error');
             return;
@@ -131,7 +131,7 @@ export default function AdminOrdersPage() {
       await api.updateOrderStatus(orderId, newStatus, email);
 
       if (newStatus === 'confirmed') {
-        showToast('Commande confirmée ! La facture a été envoyée par email au client.', 'success');
+        showToast('Commande confirmée ! Le devis a été envoyé par email au client.', 'success');
       }
       loadData();
     } catch (err: any) {
@@ -145,7 +145,7 @@ export default function AdminOrdersPage() {
     try {
       setActionLoading(orderId);
       await api.resendInvoice(orderId);
-      showToast('Facture renvoyée avec succès !', 'success');
+      showToast('Devis renvoyé avec succès !', 'success');
     } catch (err: any) {
       showToast(`Erreur: ${err.message}`, 'error');
     } finally {
@@ -163,7 +163,7 @@ export default function AdminOrdersPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Gestion des Commandes</h2>
-          <p className="text-slate-500 mt-1 font-medium italic">Suivez et gérez les flux de ventes de votre droguerie.</p>
+          <p className="text-slate-500 mt-1 font-medium italic">Suivez et gérez les flux de ventes de votre boutique.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative hidden sm:block">
@@ -316,7 +316,7 @@ export default function AdminOrdersPage() {
 
                                 <div className="pt-2">
                                   <a
-                                    href={`https://wa.me/${order.phone?.replace(/\s+/g, '')}?text=${encodeURIComponent(`Bonjour ${order.customerName || ''}, je vous contacte concernant votre commande ${order.invoiceReference || `#${order.id}`} sur Droguerie Maroc.`)}`}
+                                    href={`https://wa.me/${order.phone?.replace(/\s+/g, '')}?text=${encodeURIComponent(`Bonjour ${order.customerName || ''}, je vous contacte concernant votre commande ${order.invoiceReference || `#${order.id}`} sur PetMarket Maroc.`)}`}
                                     target="_blank"
                                     className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-100 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-100 transition-all"
                                   >
@@ -350,15 +350,15 @@ export default function AdminOrdersPage() {
                                     <FileText size={18} />
                                   </div>
                                   <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Référence Facture</p>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Référence Devis</p>
                                     <p className="text-xs font-bold text-slate-900">{order.invoiceReference || 'N/A'}</p>
                                   </div>
                                 </div>
                                 <div className="flex gap-2">
                                   <Link
-                                    href={`/invoice?orderId=${order.id}`}
-                                    className="p-2 text-slate-400 hover:text-[#BF1737] transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest border border-slate-100 rounded-lg"
-                                    title="Ouvrir la facture"
+                                    href={`/devis?orderId=${order.id}`}
+                                    className="p-2 text-slate-400 hover:text-[#1A5319] transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest border border-slate-100 rounded-lg"
+                                    title="Ouvrir le devis"
                                   >
                                     <Eye size={16} /> Aperçu
                                   </Link>
@@ -367,7 +367,7 @@ export default function AdminOrdersPage() {
                                       onClick={() => handleResendInvoice(order.id)}
                                       disabled={actionLoading === order.id}
                                       className="p-2 text-slate-400 hover:text-blue-600 transition-all flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest border border-slate-100 rounded-lg"
-                                      title="Renvoyer la facture par email"
+                                      title="Renvoyer le devis par email"
                                     >
                                       <RefreshCw size={16} className={actionLoading === order.id ? 'animate-spin' : ''} /> Renvoyer
                                     </button>
@@ -382,7 +382,7 @@ export default function AdminOrdersPage() {
                                     onClick={() => handleUpdateStatus(order.id, 'confirmed')}
                                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-blue-100 flex flex-col items-center leading-tight"
                                   >
-                                    <span>Confirmer & Envoyer Facture</span>
+                                    <span>Confirmer & Envoyer Devis</span>
                                   </button>
                                 )}
                                 {order.status === 'confirmed' && (

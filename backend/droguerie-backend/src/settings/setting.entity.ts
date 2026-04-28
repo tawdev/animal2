@@ -23,6 +23,12 @@ export class Setting {
   @Column({ type: 'text', nullable: true })
   description: string;
 
+  @Column({ nullable: true })
+  facebookUrl: string;
+
+  @Column({ nullable: true })
+  instagramUrl: string;
+
   @UpdateDateColumn()
   updatedAt: Date;
 }

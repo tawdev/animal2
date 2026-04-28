@@ -1,19 +1,27 @@
-    'use client';
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, ShieldCheck, Headphones, CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSettings } from '../context/SettingsContext';
 
 export default function ContactPage() {
-    const storeName = process.env.NEXT_PUBLIC_STORE_NAME || "Showroom Marrakech";
-    const storeAddressLine1 = process.env.NEXT_PUBLIC_COORDONNEES_ADDRESS || process.env.NEXT_PUBLIC_STORE_ADDRESS_LINE1 || "Avenue Achjar";
-    const storeAddressLine2 = process.env.NEXT_PUBLIC_COORDONNEES_CITY || process.env.NEXT_PUBLIC_STORE_ADDRESS_LINE2 || "Marrakech, Maroc";
-    const mapQuery = process.env.NEXT_PUBLIC_MAP_QUERY || "Avenue Achjar Marrakech";
+    const { settings, loading: settingsLoading } = useSettings();
+    const [mounted, setMounted] = useState(false);
 
-    const coordPhone = process.env.NEXT_PUBLIC_COORDONNEES_PHONE || "+212 522 XX XX XX";
-    const coordPhoneHours = process.env.NEXT_PUBLIC_COORDONNEES_PHONE_HOURS || "Lun-Sam 8h à 19h";
-    const coordEmail = process.env.NEXT_PUBLIC_COORDONNEES_EMAIL || "contact@moldroguerie.ma";
-    const coordEmailDesc = process.env.NEXT_PUBLIC_COORDONNEES_EMAIL_DESC || "Réponse sous 24h ouvrées";
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    const storeName = settings?.storeName || "Animal Food Express";
+    const storeAddressLine1 = settings?.address || "48 Lot IGUIDER, Allal El Fassi, Marrakech";
+    const storeAddressLine2 = "Marrakech, Maroc";
+    const mapQuery = "48 Lot IGUIDER, Allal El Fassi, Marrakech";
+
+    const coordPhone = settings?.phoneNumber || "+212 6 00 00 00 00";
+    const coordPhoneHours = "Lun-Sam 8h à 19h";
+    const coordEmail = settings?.supportEmail || "contact@animalfood.com";
+    const coordEmailDesc = "Réponse sous 24h ouvrées";
 
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
@@ -25,9 +33,7 @@ export default function ContactPage() {
         const formData = new FormData(formTarget);
         
         try {
-            // L'email du destinataire est stocké dans les variables d'environnement (.env.local)
-            // Ceci est une bonne pratique pour éviter de coder en dur l'email dans le code
-            const targetEmail = process.env.NEXT_PUBLIC_CONTACT_FORM_EMAIL || 'simohmdsawi22@gmail.com';
+            const targetEmail = settings?.supportEmail || 'contact@animalfood.com';
             
             const response = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
                 method: "POST",
@@ -51,6 +57,14 @@ export default function ContactPage() {
         }
     };
 
+    if (!mounted || settingsLoading) {
+        return (
+            <div className="flex-1 flex items-center justify-center bg-slate-50 min-h-screen">
+                <div className="w-10 h-10 border-4 border-[#1A5319] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex-1 flex flex-col bg-slate-50 min-h-screen">
             {/* Header Section */}
@@ -62,10 +76,10 @@ export default function ContactPage() {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-6 tracking-tight uppercase italic">
-                        Contactez <span className="text-[#BF1737]">Nous</span>
+                        Contactez <span className="text-[#1A5319]">Nous</span>
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium leading-relaxed italic">
-                        Une question sur nos produits ou besoin d'un conseil professionnel pour votre projet ? Nos experts sont à votre écoute 7j/7.
+                        Une question sur nos produits ou besoin d'un conseil en nutrition pour votre animal ? Nos experts de <span className="text-[#1A5319] font-black">{storeName}</span> sont à votre écoute 7j/7.
                     </p>
                 </div>
             </motion.div>
@@ -78,7 +92,7 @@ export default function ContactPage() {
                       transition={{ duration: 0.8, delay: 0.2 }}
                       className="bg-white rounded-[40px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 md:p-12 transition-all hover:shadow-2xl relative overflow-hidden"
                     >
-                        <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase italic tracking-tight underline decoration-[#BF1737]/20 decoration-4 underline-offset-8">
+                        <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase italic tracking-tight underline decoration-[#1A5319]/20 decoration-4 underline-offset-8">
                             Envoyez-nous un message
                         </h3>
                         
@@ -105,7 +119,7 @@ export default function ContactPage() {
                                     <input 
                                         name="name"
                                         required
-                                        className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#BF1737] focus:ring-4 focus:ring-[#BF1737]/5 transition-all outline-none font-medium text-slate-900" 
+                                        className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1A5319] focus:ring-4 focus:ring-[#1A5319]/5 transition-all outline-none font-medium text-slate-900" 
                                         placeholder="Votre nom" 
                                         type="text" 
                                     />
@@ -115,7 +129,7 @@ export default function ContactPage() {
                                     <input 
                                         name="email"
                                         required
-                                        className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#BF1737] focus:ring-4 focus:ring-[#BF1737]/5 transition-all outline-none font-medium text-slate-900" 
+                                        className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1A5319] focus:ring-4 focus:ring-[#1A5319]/5 transition-all outline-none font-medium text-slate-900" 
                                         placeholder="email@exemple.com" 
                                         type="email" 
                                     />
@@ -126,7 +140,7 @@ export default function ContactPage() {
                                 <input 
                                     name="_subject"
                                     required
-                                    className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#BF1737] focus:ring-4 focus:ring-[#BF1737]/5 transition-all outline-none font-medium text-slate-900" 
+                                    className="w-full h-14 px-6 rounded-2xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#1A5319] focus:ring-4 focus:ring-[#1A5319]/5 transition-all outline-none font-medium text-slate-900" 
                                     placeholder="De quoi souhaitez-vous discuter ?" 
                                     type="text" 
                                 />
@@ -136,14 +150,14 @@ export default function ContactPage() {
                                 <textarea 
                                     name="message"
                                     required
-                                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-6 py-4 focus:bg-white focus:border-[#BF1737] focus:ring-4 focus:ring-[#BF1737]/5 transition-all outline-none resize-none font-medium text-slate-900" 
+                                    className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-6 py-4 focus:bg-white focus:border-[#1A5319] focus:ring-4 focus:ring-[#1A5319]/5 transition-all outline-none resize-none font-medium text-slate-900" 
                                     placeholder="Dites-nous tout..." 
                                     rows={6}
                                 ></textarea>
                             </div>
                             <button 
                                 disabled={status === 'loading'}
-                                className="w-full h-16 bg-[#BF1737] hover:bg-[#A3122C] disabled:bg-[#BF1737]/70 disabled:cursor-not-allowed disabled:scale-100 text-white font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#BF1737]/20 flex items-center justify-center gap-3 uppercase tracking-widest text-sm" 
+                                className="w-full h-16 bg-[#1A5319] hover:bg-[#004d26] disabled:bg-[#1A5319]/70 disabled:cursor-not-allowed disabled:scale-100 text-white font-black rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-[#1A5319]/20 flex items-center justify-center gap-3 uppercase tracking-widest text-sm" 
                                 type="submit"
                             >
                                 {status === 'loading' ? (
@@ -157,7 +171,7 @@ export default function ContactPage() {
                             </button>
                         </form>
                     </motion.section>
-
+ 
                     {/* Info Section */}
                     <motion.section 
                       initial={{ opacity: 0, x: 30 }}
@@ -166,60 +180,59 @@ export default function ContactPage() {
                       className="space-y-10"
                     >
                         <div className="bg-slate-900 rounded-[40px] p-10 text-white relative overflow-hidden shadow-2xl">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#BF1737] opacity-10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                            <h3 className="text-xl font-black mb-10 uppercase italic tracking-tight border-l-4 border-[#BF1737] pl-4">Coordonnées</h3>
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-[#1A5319] opacity-10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                            <h3 className="text-xl font-black mb-10 uppercase italic tracking-tight border-l-4 border-[#1A5319] pl-4">Coordonnées</h3>
                             
                             <div className="space-y-8">
                                 <div className="flex gap-5 group">
-                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#BF1737] border border-white/10 group-hover:bg-[#BF1737] group-hover:text-white transition-all">
+                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#1A5319] border border-white/10 group-hover:bg-[#1A5319] group-hover:text-white transition-all">
                                         <Phone size={24} />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-[#BF1737] uppercase tracking-[0.2em] mb-1">Téléphone</p>
+                                        <p className="text-[10px] font-black text-[#1A5319] uppercase tracking-[0.2em] mb-1">Téléphone</p>
                                         <p className="text-lg font-bold text-white">{coordPhone}</p>
                                         <p className="text-xs text-slate-400 font-medium italic">{coordPhoneHours}</p>
                                     </div>
                                 </div>
-
+ 
                                 <div className="flex gap-5 group">
-                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#BF1737] border border-white/10 group-hover:bg-[#BF1737] group-hover:text-white transition-all">
+                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#1A5319] border border-white/10 group-hover:bg-[#1A5319] group-hover:text-white transition-all">
                                         <Mail size={24} />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-[#BF1737] uppercase tracking-[0.2em] mb-1">Email</p>
+                                        <p className="text-[10px] font-black text-[#1A5319] uppercase tracking-[0.2em] mb-1">Email</p>
                                         <p className="text-lg font-bold text-white">{coordEmail}</p>
                                         <p className="text-xs text-slate-400 font-medium italic">{coordEmailDesc}</p>
                                     </div>
                                 </div>
-
+ 
                                 <div className="flex gap-5 group">
-                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#BF1737] border border-white/10 group-hover:bg-[#BF1737] group-hover:text-white transition-all">
+                                    <div className="shrink-0 h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-[#1A5319] border border-white/10 group-hover:bg-[#1A5319] group-hover:text-white transition-all">
                                         <MapPin size={24} />
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-[#BF1737] uppercase tracking-[0.2em] mb-1">Adresse</p>
+                                        <p className="text-[10px] font-black text-[#1A5319] uppercase tracking-[0.2em] mb-1">Adresse</p>
                                         <p className="text-lg font-bold text-white">{storeAddressLine1}</p>
-                                        <p className="text-xs text-slate-400 font-medium italic">{storeAddressLine2}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+ 
                         {/* Trust Badge Card */}
                         <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-20 h-20 bg-[#BF1737]/5 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div className="absolute top-0 right-0 w-20 h-20 bg-[#1A5319]/5 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
                             <div className="flex items-center gap-3 mb-4">
-                                <ShieldCheck className="text-[#BF1737]" size={28} />
+                                <ShieldCheck className="text-[#1A5319]" size={28} />
                                 <h4 className="font-black text-slate-900 uppercase italic tracking-tight">Expertise Garantie</h4>
                             </div>
                             <p className="text-[15px] text-slate-500 font-medium leading-relaxed italic">
-                                Nos experts en magasin sont à votre disposition pour des conseils personnalisés sur vos projets de rénovation, peinture ou plomberie.
+                                Nos experts en nutrition sont à votre disposition pour des conseils personnalisés sur la santé et le bien-être de vos animaux.
                             </p>
                         </div>
-
+ 
                         {/* WhatsApp Shortcuts */}
                         <a 
-                            href={`https://wa.me/${(process.env.NEXT_PUBLIC_WHATSAPP_ASSISTANCE_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '').replace(/\D/g, '')}?text=${encodeURIComponent("Bonjour, je souhaite discuter avec un expert.")}`}
+                            href={`https://wa.me/${coordPhone.replace(/\D/g, '')}?text=${encodeURIComponent("Bonjour, je souhaite discuter avec un expert.")}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center justify-between p-6 bg-[#25D366]/5 border border-[#25D366]/20 rounded-3xl group hover:bg-[#25D366] transition-all"
@@ -249,7 +262,7 @@ export default function ContactPage() {
                     className="mt-24 rounded-[48px] overflow-hidden shadow-2xl border-8 border-white relative h-[500px] w-full bg-slate-100 group"
                 >
                     <iframe 
-                        src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                        src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery + " (Animal Food Express)")}&t=&z=15&ie=UTF8&iwloc=B&output=embed`}
                         className="absolute inset-0 w-full h-full"
                         style={{ border: 0 }}
                         loading="lazy"

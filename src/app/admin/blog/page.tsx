@@ -42,7 +42,7 @@ export default function AdminBlogPage() {
     const [tipForm, setTipForm] = useState({
         content: '',
         authorName: '',
-        authorRole: 'Expert Outillage',
+        authorRole: 'Expert Soins Animaliers',
         isActive: true
     });
 
@@ -356,7 +356,7 @@ export default function AdminBlogPage() {
                         <button
                             onClick={() => {
                                 setEditingTip(null);
-                                setTipForm({ content: '', authorName: '', authorRole: 'Expert Outillage', isActive: true });
+                                setTipForm({ content: '', authorName: '', authorRole: 'Expert Soins Animaliers', isActive: true });
                                 setIsTipModalOpen(true);
                             }}
                             className="bg-primary hover:opacity-90 text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 shadow-xl shadow-primary/10 transition-all active:scale-95"
@@ -442,7 +442,7 @@ export default function AdminBlogPage() {
                                                     <td className="px-5 sm:px-8 py-4 sm:py-6">
                                                         <div className="flex items-center gap-3 sm:gap-4">
                                                             <div className="size-10 sm:size-12 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0 border border-slate-200">
-                                                                {post.imageUrl ? <img src={post.imageUrl} className="size-full object-cover" /> : <div className="size-full flex items-center justify-center text-slate-400"><span className="material-symbols-outlined text-[18px] sm:text-[20px]">image</span></div>}
+                                                                {post.imageUrl ? <img src={post.imageUrl} className="size-full object-contain" /> : <div className="size-full flex items-center justify-center text-slate-400"><span className="material-symbols-outlined text-[18px] sm:text-[20px]">image</span></div>}
                                                             </div>
                                                             <div className="max-w-[150px] sm:max-w-[300px]">
                                                                 <p className="text-[13px] sm:text-[14px] font-bold text-slate-900 line-clamp-1" title={post.title}>{post.title}</p>
@@ -792,7 +792,7 @@ export default function AdminBlogPage() {
                                         <div className="relative group aspect-[16/7] rounded-[32px] bg-white border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-green-500/50 shadow-sm cursor-pointer">
                                             {form.imageUrl ? (
                                                 <>
-                                                    <img src={form.imageUrl} className="size-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Preview" />
+                                                    <img src={form.imageUrl} className="size-full object-contain transition-transform duration-700 group-hover:scale-105" alt="Preview" />
                                                     <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                                                         <div className="px-6 py-3 bg-white text-slate-900 rounded-xl font-black text-[12px] uppercase tracking-wider">Changer l'image</div>
                                                     </div>
@@ -813,6 +813,32 @@ export default function AdminBlogPage() {
                                                 </div>
                                             )}
                                             <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer z-30" />
+                                        </div>
+                                        {/* OR: URL directe */}
+                                        <div className="mt-4">
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="flex-1 h-px bg-slate-200" />
+                                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">ou coller une URL</span>
+                                                <div className="flex-1 h-px bg-slate-200" />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <input
+                                                    type="url"
+                                                    value={form.imageUrl}
+                                                    onChange={(e) => setForm(prev => ({ ...prev, imageUrl: e.target.value }))}
+                                                    placeholder="https://exemple.com/image.jpg"
+                                                    className="flex-1 px-5 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-green-500/10 focus:border-green-500 outline-none text-[14px] font-medium transition-all shadow-sm"
+                                                />
+                                                {form.imageUrl && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setForm(prev => ({ ...prev, imageUrl: '' }))}
+                                                        className="px-4 py-3 bg-slate-100 text-slate-500 rounded-2xl text-sm font-bold hover:bg-slate-200 transition-all"
+                                                    >
+                                                        <span className="material-symbols-outlined text-[18px]">close</span>
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

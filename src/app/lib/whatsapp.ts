@@ -1,5 +1,5 @@
 /**
- * Utility to generate WhatsApp order links for DroguerieApp
+ * Utility to generate WhatsApp order links for PetMarketApp
  */
 
 export interface OrderDetails {
@@ -44,13 +44,17 @@ function sanitizePhoneNumber(phone: string): string {
 }
 
 export function generateWhatsAppLink(order: OrderDetails, customNumber?: string): string {
-    const header = "🛒 *NOUVELLE COMMANDE - DROGUERIEAPP*\n\n";
+    const header = "🛒 *NOUVELLE COMMANDE - PETMARKET*\n\n";
 
     const itemsList = order.items
         .map(item => `• *${item.name}*\n  Quantité: ${item.quantity}\n  Prix: ${Number(item.price).toFixed(2)} MAD`)
         .join("\n\n");
 
-    const footer = `\n\n💰 *TOTAL: ${Number(order.totalPrice).toFixed(2)} MAD*`;
+    const deliveryFee = Number(order.totalPrice) >= 600 ? 0 : 35;
+    const deliveryText = deliveryFee > 0 ? `\n🚚 *LIVRAISON: ${deliveryFee.toFixed(2)} MAD*` : `\n🚚 *LIVRAISON: OFFERTE*`;
+    const finalTotal = Number(order.totalPrice) + deliveryFee;
+
+    const footer = `${deliveryText}\n💰 *TOTAL FINAL: ${finalTotal.toFixed(2)} MAD*`;
 
     let customerSection = "";
     if (order.customerInfo && (order.customerInfo.name || order.customerInfo.phone || order.customerInfo.address)) {
@@ -60,7 +64,7 @@ export function generateWhatsAppLink(order: OrderDetails, customNumber?: string)
         if (order.customerInfo.address) customerSection += `Adresse: ${order.customerInfo.address}\n`;
     }
 
-    const fullMessage = `${header}${itemsList}${footer}${customerSection}\n\n_Commande générée via DroguerieApp_`;
+    const fullMessage = `${header}${itemsList}${footer}${customerSection}\n\n_Commande générée via PetMarket_`;
 
     const encodedMessage = encodeURIComponent(fullMessage);
     const finalNumber = sanitizePhoneNumber(customNumber || DEFAULT_WHATSAPP_NUMBER);

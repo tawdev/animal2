@@ -15,7 +15,7 @@ export class ReviewsService {
     async create(createReviewDto: CreateReviewDto): Promise<Review> {
         const review = this.reviewRepository.create({
             ...createReviewDto,
-            status: ReviewStatus.PENDING, // Force pending via logic as well as schema
+            status: ReviewStatus.APPROVED, // Auto-approve: reviews are published immediately
         });
         return this.reviewRepository.save(review);
     }

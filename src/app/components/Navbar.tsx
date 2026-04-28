@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Menu, Home, Store, ShieldCheck, Info, Mail, ChevronRight, X, Heart, GitCompare, ShoppingBag, Newspaper, ChevronDown } from 'lucide-react';
+import { Menu, Home, Store, ShieldCheck, Info, Mail, ChevronRight, X, Heart, GitCompare, ShoppingBag, Newspaper, ChevronDown, Truck } from 'lucide-react';
 import { api, type Category } from '../lib/api';
 import { useWishlist } from '../context/WishlistContext';
 import { useCompare } from '../context/CompareContext';
@@ -83,6 +83,7 @@ export default function Navbar() {
         { name: 'À Propos', href: '/about', icon: <Info size={18} /> },
         { name: 'Contact', href: '/contact', icon: <Mail size={18} /> },
         { name: 'Blog', href: '/blog', icon: <Newspaper size={18} /> },
+        { name: 'Suivi', href: '/track', icon: <Truck size={18} /> },
     ];
 
     return (
@@ -97,7 +98,7 @@ export default function Navbar() {
                                 setHoveredCatId(null);
                                 setHoveredSubCatId(null);
                             }}
-                            className="flex items-center justify-between gap-4 bg-[#BF1737] px-5 h-[50px] text-white font-bold text-[13px] uppercase tracking-wider rounded-[8px] hover:bg-opacity-95 transition-all group min-w-[240px]"
+                            className="flex items-center justify-between gap-4 bg-[#1A5319] px-5 h-[50px] text-white font-bold text-[13px] uppercase tracking-wider rounded-[8px] hover:bg-opacity-95 transition-all group min-w-[240px]"
                         >
                             TOUTES LES CATÉGO...
                             {isMenuOpen ? (
@@ -135,16 +136,16 @@ export default function Navbar() {
                                                     }}
                                                     onClick={() => setIsMenuOpen(false)}
                                                     className={`relative flex items-center justify-between px-6 py-[12px] text-[15px] transition-all duration-200 ${isHovered
-                                                        ? 'text-[#BF1737] font-semibold bg-slate-50/40'
-                                                        : 'text-[#333] font-medium hover:text-[#BF1737]'
+                                                        ? 'text-[#1A5319] font-semibold bg-slate-50/40'
+                                                        : 'text-[#333] font-medium hover:text-[#1A5319]'
                                                         }`}
                                                 >
-                                                    <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-[4px] h-7 rounded-r-full transition-all duration-200 ${isHovered ? 'bg-[#BF1737] opacity-100' : 'bg-transparent opacity-0'}`}></div>
+                                                    <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-[4px] h-7 rounded-r-full transition-all duration-200 ${isHovered ? 'bg-[#1A5319] opacity-100' : 'bg-transparent opacity-0'}`}></div>
                                                     <div className="flex items-center gap-4">
                                                         <span>{cat.name}</span>
                                                     </div>
                                                     {hasChildren && (
-                                                        <ChevronRight size={16} strokeWidth={isHovered ? 2.5 : 2} className={`transition-colors duration-200 ${isHovered ? 'text-[#BF1737]' : 'text-[#ccc]'}`} />
+                                                        <ChevronRight size={16} strokeWidth={isHovered ? 2.5 : 2} className={`transition-colors duration-200 ${isHovered ? 'text-[#1A5319]' : 'text-[#ccc]'}`} />
                                                     )}
                                                 </Link>
                                             );
@@ -156,7 +157,7 @@ export default function Navbar() {
                                             href="/products?sort=newest"
                                             onClick={() => setIsMenuOpen(false)}
                                             onMouseEnter={() => { setTimeout(() => { setHoveredCatId(null); setHoveredSubCatId(null); }, 100); }}
-                                            className="flex items-center px-12 py-[12px] text-[15px] font-semibold text-[#333] hover:text-[#BF1737] bg-transparent hover:bg-slate-50/40 transition-colors"
+                                            className="flex items-center px-12 py-[12px] text-[15px] font-semibold text-[#333] hover:text-[#1A5319] bg-transparent hover:bg-slate-50/40 transition-colors"
                                         >
                                             Nouveautés
                                         </Link>
@@ -164,7 +165,7 @@ export default function Navbar() {
                                             href="/products?onSale=true"
                                             onClick={() => setIsMenuOpen(false)}
                                             onMouseEnter={() => { setTimeout(() => { setHoveredCatId(null); setHoveredSubCatId(null); }, 100); }}
-                                            className="flex items-center px-12 py-[12px] text-[15px] font-semibold text-[#333] hover:text-[#BF1737] bg-transparent hover:bg-slate-50/40 transition-colors"
+                                            className="flex items-center px-12 py-[12px] text-[15px] font-semibold text-[#333] hover:text-[#1A5319] bg-transparent hover:bg-slate-50/40 transition-colors"
                                         >
                                             Promotions
                                         </Link>
@@ -187,13 +188,13 @@ export default function Navbar() {
                                                     }}
                                                     onClick={() => setIsMenuOpen(false)}
                                                     className={`flex items-center justify-between px-6 py-[12px] text-[13px] transition-all duration-200 ${isSubHovered
-                                                        ? 'text-[#BF1737] font-semibold bg-slate-50/60 rounded-r-lg'
-                                                        : 'text-[#5A626A] font-medium hover:text-[#BF1737] hover:bg-slate-50/30'
+                                                        ? 'text-[#1A5319] font-semibold bg-slate-50/60 rounded-r-lg'
+                                                        : 'text-[#5A626A] font-medium hover:text-[#1A5319] hover:bg-slate-50/30'
                                                         }`}
                                                 >
                                                     <span>{sub.name}</span>
                                                     {hasGrandChildren && (
-                                                        <ChevronRight size={16} strokeWidth={isSubHovered ? 2.5 : 2} className={`transition-colors duration-200 ${isSubHovered ? 'text-[#BF1737]' : 'text-transparent'}`} />
+                                                        <ChevronRight size={16} strokeWidth={isSubHovered ? 2.5 : 2} className={`transition-colors duration-200 ${isSubHovered ? 'text-[#1A5319]' : 'text-transparent'}`} />
                                                     )}
                                                 </Link>
                                             );
@@ -208,7 +209,7 @@ export default function Navbar() {
                                                 key={grandChild.id}
                                                 href={`/products?categoryId=${grandChild.id}`}
                                                 onClick={() => setIsMenuOpen(false)}
-                                                className="flex items-center px-6 py-[12px] text-[15px] transition-all duration-200 text-[#5A626A] font-medium hover:text-[#BF1737] hover:bg-slate-50/60 rounded-r-lg"
+                                                className="flex items-center px-6 py-[12px] text-[15px] transition-all duration-200 text-[#5A626A] font-medium hover:text-[#1A5319] hover:bg-slate-50/60 rounded-r-lg"
                                             >
                                                 {grandChild.name}
                                             </Link>
@@ -228,7 +229,7 @@ export default function Navbar() {
                                     key={item.name}
                                     href={item.href}
                                     className={`relative flex items-center gap-2.5 px-4 py-2 text-[14px] font-semibold transition-all rounded-lg
-                                        ${isActive ? 'text-[#BF1737]' : 'text-slate-800 hover:text-[#BF1737] hover:bg-slate-50'}`}
+                                        ${isActive ? 'text-[#1A5319]' : 'text-slate-800 hover:text-[#1A5319] hover:bg-slate-50'}`}
                                 >
                                     {isActive && (
                                         <motion.div
@@ -237,7 +238,7 @@ export default function Navbar() {
                                             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                                         />
                                     )}
-                                    <span className={`relative z-10 ${isActive ? 'text-[#BF1737]' : 'text-slate-900'} transition-colors opacity-90`}>
+                                    <span className={`relative z-10 ${isActive ? 'text-[#1A5319]' : 'text-slate-900'} transition-colors opacity-90`}>
                                         {item.icon}
                                     </span>
                                     <span className="relative z-10">{item.name}</span>
@@ -249,20 +250,20 @@ export default function Navbar() {
                     {/* Scroll-triggered Action Icons */}
                     <div className={`flex items-center gap-6 ml-auto mr-4 transition-all duration-200 ease-out ${isScrolled ? 'opacity-100 translate-x-0 pointer-events-auto delay-700' : 'opacity-0 translate-x-8 pointer-events-none delay-500'}`}>
                         <Link href="/compare" className="group relative transition-all">
-                            <GitCompare size={20} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#BF1737] text-[9px] font-black text-white ring-2 ring-white">
+                            <GitCompare size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
                                 {mounted ? compareCount : 0}
                             </span>
                         </Link>
                         <Link href="/wishlist" className="group relative transition-all">
-                            <Heart size={20} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#BF1737] text-[9px] font-black text-white ring-2 ring-white">
+                            <Heart size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
                                 {mounted ? wishlistCount : 0}
                             </span>
                         </Link>
                         <Link href="/cart" className="group relative transition-all">
-                            <ShoppingBag size={20} className="text-slate-900 transition-colors group-hover:text-[#BF1737]" />
-                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#BF1737] text-[9px] font-black text-white ring-2 ring-white">
+                            <ShoppingBag size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
                                 {mounted ? totalItems : 0}
                             </span>
                         </Link>
@@ -281,7 +282,7 @@ export default function Navbar() {
                 <div className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[210] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <div className="flex flex-col h-full">
                         {/* Header */}
-                        <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-[#BF1737] text-white">
+                        <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-[#1A5319] text-white">
                             <h2 className="text-[17px] font-black uppercase tracking-widest">Menu</h2>
                             <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
                                 <X size={24} />
@@ -297,9 +298,9 @@ export default function Navbar() {
                                         key={item.name}
                                         href={item.href}
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all ${isActive ? 'bg-[#BF1737]/10 text-[#BF1737]' : 'text-slate-700 hover:bg-slate-50'}`}
+                                        className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all ${isActive ? 'bg-[#1A5319]/10 text-[#1A5319]' : 'text-slate-700 hover:bg-slate-50'}`}
                                     >
-                                        <span className={isActive ? 'text-[#BF1737]' : 'text-slate-400'}>{item.icon}</span>
+                                        <span className={isActive ? 'text-[#1A5319]' : 'text-slate-400'}>{item.icon}</span>
                                         {item.name}
                                     </Link>
                                 );
@@ -322,14 +323,14 @@ export default function Navbar() {
                                                 <Link
                                                     href={`/products?categoryId=${cat.id}`}
                                                     onClick={() => setIsMobileMenuOpen(false)}
-                                                    className="flex-1 px-4 py-3 text-[14px] font-semibold text-slate-800 hover:text-[#BF1737] transition-colors"
+                                                    className="flex-1 px-4 py-3 text-[14px] font-semibold text-slate-800 hover:text-[#1A5319] transition-colors"
                                                 >
                                                     {cat.name}
                                                 </Link>
                                                 {hasChildren && (
                                                     <button 
                                                         onClick={() => setMobileExpandedCat(isExpanded ? null : cat.id)}
-                                                        className={`p-3 text-slate-400 hover:text-[#BF1737] transition-all ${isExpanded ? 'rotate-180' : ''}`}
+                                                        className={`p-3 text-slate-400 hover:text-[#1A5319] transition-all ${isExpanded ? 'rotate-180' : ''}`}
                                                     >
                                                         <ChevronDown size={18} />
                                                     </button>
@@ -344,7 +345,7 @@ export default function Navbar() {
                                                                 key={sub.id}
                                                                 href={`/products?categoryId=${sub.id}`}
                                                                 onClick={() => setIsMobileMenuOpen(false)}
-                                                                className="block px-8 py-2.5 text-[13px] font-medium text-slate-600 hover:text-[#BF1737]"
+                                                                className="block px-8 py-2.5 text-[13px] font-medium text-slate-600 hover:text-[#1A5319]"
                                                             >
                                                                 {sub.name}
                                                             </Link>
@@ -364,16 +365,16 @@ export default function Navbar() {
                                 <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
                                     <Heart size={20} className="text-slate-400" />
                                     <span className="text-[11px] font-bold text-slate-600">Souhaits</span>
-                                    <span className="absolute top-2 right-4 bg-[#BF1737] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? wishlistCount : 0}</span>
+                                    <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? wishlistCount : 0}</span>
                                 </Link>
                                 <Link href="/compare" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
                                     <GitCompare size={20} className="text-slate-400" />
                                     <span className="text-[11px] font-bold text-slate-600">Comparer</span>
-                                    <span className="absolute top-2 right-4 bg-[#BF1737] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? compareCount : 0}</span>
+                                    <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? compareCount : 0}</span>
                                 </Link>
                             </div>
                             <p className="text-[11px] text-slate-400 font-medium text-center">
-                                CDigital © {new Date().getFullYear()} — MOL Droguerie
+                                CDigital © {mounted ? new Date().getFullYear() : '2026'} — PetMarket
                             </p>
                         </div>
                     </div>

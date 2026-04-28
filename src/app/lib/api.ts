@@ -7,11 +7,12 @@ export interface Category {
     name: string;
     description: string | null;
     isActive: boolean;
+    imageUrl: string | null;
     parentId: number | null;
     parent?: Category | null;
     children?: Category[];
     createdAt: string;
-    products?: any[]; // For count calculation
+    products?: any[];
 }
 
 export interface Product {
@@ -123,6 +124,8 @@ export interface StoreSettings {
     address: string;
     logoUrl: string | null;
     description: string | null;
+    facebookUrl: string | null;
+    instagramUrl: string | null;
     updatedAt: string;
 }
 
@@ -291,26 +294,19 @@ export const api = {
     getProductById: (id: string | number) =>
         apiFetch<Product>(`/products/${id}`),
     createProduct: (data: Partial<Product> & { categoryName?: string }) =>
-        fetch(`${API_BASE}/products`, {
+        apiFetch<Product>('/products', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to create product');
-            return res.json() as Promise<Product>;
         }),
     uploadImage: (file: File) => {
         const formData = new FormData();
         formData.append('file', file);
-        const token = Cookies.get('auth_token');
-        return fetch(`${API_BASE}/upload`, {
+        return apiFetch<{ url: string; filename: string }>('/upload', {
             method: 'POST',
-            ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {}),
             body: formData,
-        }).then(async (res) => {
-            if (!res.ok) throw new Error('Failed to upload image');
-            const json = await res.json() as { url: string; filename: string };
-            // Normalize relative URL to full URL
+            // apiFetch handles Authorization header via Cookies
+            headers: {}, // Let browser set Content-Type for FormData
+        }).then(json => {
             json.url = normalizeImageUrl(json.url) || json.url;
             return json;
         });
@@ -318,15 +314,11 @@ export const api = {
     uploadImages: (files: File[]) => {
         const formData = new FormData();
         files.forEach(file => formData.append('files', file));
-        const token = Cookies.get('auth_token');
-        return fetch(`${API_BASE}/upload/multiple`, {
+        return apiFetch<{ url: string; filename: string }[]>('/upload/multiple', {
             method: 'POST',
-            ...(token ? { headers: { 'Authorization': `Bearer ${token}` } } : {}),
             body: formData,
-        }).then(async (res) => {
-            if (!res.ok) throw new Error('Failed to upload images');
-            const json = await res.json() as { url: string; filename: string }[];
-            // Normalize relative URLs to full URLs
+            headers: {},
+        }).then(json => {
             return json.map(item => ({
                 ...item,
                 url: normalizeImageUrl(item.url) || item.url
@@ -334,19 +326,13 @@ export const api = {
         });
     },
     updateProduct: (id: number, data: Partial<Product> & { categoryName?: string }) =>
-        fetch(`${API_BASE}/products/${id}`, {
+        apiFetch<Product>(`/products/${id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to update product');
-            return res.json() as Promise<Product>;
         }),
     deleteProduct: (id: number) =>
-        fetch(`${API_BASE}/products/${id}`, {
+        apiFetch<void>(`/products/${id}`, {
             method: 'DELETE',
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to delete product');
         }),
 
     // Orders
@@ -362,6 +348,7 @@ export const api = {
     },
     getOrderStats: () => apiFetch<OrderStats>('/orders/stats'),
     getOrderById: (id: string | number) => apiFetch<Order>(`/orders/${id}`),
+    trackOrder: (ref: string) => apiFetch<Order>(`/orders/track/${ref}`),
     createOrder: (data: Partial<Order>) => apiFetch<Order>('/orders', {
         method: 'POST',
         body: JSON.stringify(data),
@@ -380,29 +367,19 @@ export const api = {
         return apiFetch<Category[]>(`/categories${query}`);
     },
     getUniqueCategories: () => apiFetch<string[]>('/blog/categories/unique'),
-    createCategory: (data: { name: string; description?: string; isActive?: boolean; parentId?: number | null }) =>
-        fetch(`${API_BASE}/categories`, {
+    createCategory: (data: { name: string; description?: string; isActive?: boolean; parentId?: number | null; imageUrl?: string | null }) =>
+        apiFetch<Category>('/categories', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to create category');
-            return res.json() as Promise<Category>;
         }),
-    updateCategory: (id: number, data: { name?: string; description?: string; isActive?: boolean; parentId?: number | null }) =>
-        fetch(`${API_BASE}/categories/${id}`, {
+    updateCategory: (id: number, data: { name?: string; description?: string; isActive?: boolean; parentId?: number | null; imageUrl?: string | null }) =>
+        apiFetch<Category>(`/categories/${id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to update category');
-            return res.json() as Promise<Category>;
         }),
     deleteCategory: (id: number) =>
-        fetch(`${API_BASE}/categories/${id}`, {
+        apiFetch<void>(`/categories/${id}`, {
             method: 'DELETE',
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to delete category');
         }),
 
     // Blog
@@ -419,46 +396,69 @@ export const api = {
         return apiFetch<PaginatedResponse<BlogPost>>(`/blog?${params.toString()}`);
     },
 
-    getPostBySlug: (slug: string) => {
-        const url = `${API_BASE}/blog/slug/${slug}`;
-        console.log(`[API] Fetching post by slug from: ${url}`);
-        return fetch(url).then((res) => {
-            if (!res.ok) {
-                console.error(`[API ERROR] Status ${res.status} for URL ${url}`);
-                throw new Error('Failed to fetch post by slug');
+    getPostBySlug: async (slug: string) => {
+        // Mock fallback for demonstration slugs
+        const mocks: Record<string, BlogPost> = {
+            "allergies-alimentaires-bulldog": {
+                id: 999,
+                title: "Comment gérer les allergies alimentaires de mon Bulldog ?",
+                slug: "allergies-alimentaires-bulldog",
+                excerpt: "Découvrez les signes d'allergies et comment adapter le régime de votre Bulldog avec des conseils de pro.",
+                author: "Dr. Sarah Alami (Vétérinaire)",
+                category: "CONSEIL EXPERT",
+                imageUrl: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=1000",
+                content: "<h2>Les signes qui ne trompent pas</h2><p>Les Bulldogs sont particulièrement sensibles aux allergies alimentaires. Si vous remarquez des rougeurs entre les doigts, des otites à répétition ou des démangeaisons excessives, il est temps de revoir son bol.</p><h3>La solution : Le régime d'éviction</h3><p>Consultez votre vétérinaire pour mettre en place un régime hypoallergénique strict pendant 8 semaines...</p>",
+                status: 'Published',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            "top-5-jouets-chats": {
+                id: 998,
+                title: "Top 5 des jouets d'occupation pour chats d'appartement",
+                slug: "top-5-jouets-chats",
+                excerpt: "Stimulez l'instinct de chasseur de votre chat avec notre sélection de jouets validée par des comportementalistes.",
+                author: "Yassine Drissi (Expert)",
+                category: "BIEN-ÊTRE",
+                imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=1000",
+                content: "<h2>Pourquoi votre chat s'ennuie ?</h2><p>Un chat d'appartement a besoin de stimulation mentale pour éviter le stress et l'obésité. Voici nos 5 recommandations : 1. Le circuit à balles... 2. Le tunnel auto-agrippant...</p>",
+                status: 'Published',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            },
+            "hygiene-dentaire-chien": {
+                id: 997,
+                title: "Hygiène bucco-dentaire : 3 gestes essentiels pour votre chien",
+                slug: "hygiene-dentaire-chien",
+                excerpt: "Prévenez le tartre et les maladies parodontales grâce à ces conseils simples mais vitaux.",
+                author: "Dr. Mehdi Fassi",
+                category: "SANTÉ",
+                imageUrl: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=1000",
+                content: "<h2>Le tartre, l'ennemi invisible</h2><p>80% des chiens de plus de 3 ans souffrent de maladies dentaires. Voici comment agir : 1. Le brossage régulier... 2. Les lamelles à mâcher enzymatiques...</p>",
+                status: 'Published',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
-            return res.json() as Promise<BlogPost>;
-        }).catch(err => {
-            console.error(`[API EXCEPTION] ${err.message} for URL ${url}`);
-            throw err;
-        });
+        };
+
+        if (mocks[slug]) return mocks[slug];
+        return apiFetch<BlogPost>(`/blog/slug/${slug}`);
     },
 
     createPost: (data: Partial<BlogPost>) =>
-        fetch(`${API_BASE}/blog`, {
+        apiFetch<BlogPost>('/blog', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to create post');
-            return res.json() as Promise<BlogPost>;
         }),
 
     updatePost: (id: number, data: Partial<BlogPost>) =>
-        fetch(`${API_BASE}/blog/${id}`, {
+        apiFetch<BlogPost>(`/blog/${id}`, {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to update post');
-            return res.json() as Promise<BlogPost>;
         }),
 
     deletePost: (id: number) =>
-        fetch(`${API_BASE}/blog/${id}`, {
+        apiFetch<void>(`/blog/${id}`, {
             method: 'DELETE',
-        }).then((res) => {
-            if (!res.ok) throw new Error('Failed to delete post');
         }),
 
     // Analytics
@@ -505,12 +505,7 @@ export const api = {
     getPopularTags: () => apiFetch<TagCount[]>('/blog/tags'),
 
     // Tips
-    getActiveTip: () =>
-        fetch(`${API_BASE}/tips/active`).then(async (res) => {
-            if (!res.ok) return null;
-            const data = await res.json();
-            return data as Tip | null;
-        }),
+    getActiveTip: () => apiFetch<Tip | null>('/tips/active').catch(() => null),
     getTips: () => apiFetch<Tip[]>('/tips'),
     createTip: (data: Partial<Tip>) =>
         apiFetch<Tip>('/tips', {
@@ -523,13 +518,8 @@ export const api = {
             body: JSON.stringify(data),
         }),
     deleteTip: (id: number) =>
-        fetch(`${API_BASE}/tips/${id}`, {
+        apiFetch<void>(`/tips/${id}`, {
             method: 'DELETE',
-        }).then(async (res) => {
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || 'Failed to delete tip');
-            }
         }),
 
     // Settings

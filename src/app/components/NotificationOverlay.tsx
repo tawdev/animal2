@@ -23,8 +23,8 @@ export default function NotificationOverlay() {
                     >
                         {/* Icon Badge */}
                         <div className={`h-10 w-10 rounded-full flex items-center justify-center shrink-0 shadow-lg ${
-                            toast.type === 'success' ? 'bg-emerald-500 text-white shadow-emerald-500/20' :
-                            toast.type === 'error' ? 'bg-[#BF1737] text-white shadow-[#BF1737]/20' :
+                            toast.type === 'success' ? 'bg-[#1A5319] text-white shadow-[#1A5319]/20' :
+                            toast.type === 'error' ? 'bg-red-500 text-white shadow-red-500/20' :
                             'bg-slate-500 text-white shadow-slate-500/20'
                         }`}>
                             {toast.type === 'success' && <Check size={18} strokeWidth={3} />}
@@ -64,10 +64,10 @@ export default function NotificationOverlay() {
                         {/* Modal Header/Icon */}
                         <div className="bg-[#0D0D0D] p-10 text-center relative overflow-hidden">
                              {/* Decorative Background */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#BF1737] opacity-[0.08] rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#1A5319] opacity-[0.08] rounded-full translate-x-1/2 -translate-y-1/2 blur-2xl" />
                             
                             <div className="relative z-10">
-                                <div className="h-20 w-20 rounded-full bg-[#BF1737]/10 flex items-center justify-center text-[#BF1737] mx-auto mb-6 border border-[#BF1737]/20 shadow-xl shadow-[#BF1737]/5">
+                                <div className="h-20 w-20 rounded-full bg-[#1A5319]/10 flex items-center justify-center text-[#1A5319] mx-auto mb-6 border border-[#1A5319]/20 shadow-xl shadow-[#1A5319]/5">
                                     <AlertTriangle size={32} strokeWidth={2.5} className="animate-bounce-slow" />
                                 </div>
                                 <h3 className="text-[24px] font-black text-white uppercase tracking-tight leading-tight italic">
@@ -90,7 +90,7 @@ export default function NotificationOverlay() {
                                     }}
                                     className={`flex-1 rounded-2xl py-4 text-[13px] font-black text-white uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl ${
                                         activeConfirm.variant === 'danger' 
-                                            ? 'bg-[#BF1737] hover:bg-[#D41C3D] shadow-[#BF1737]/20' 
+                                            ? 'bg-[#1A5319] hover:bg-[#004d26] shadow-[#1A5319]/20' 
                                             : 'bg-slate-900 hover:bg-slate-800 shadow-slate-900/20'
                                     }`}
                                 >

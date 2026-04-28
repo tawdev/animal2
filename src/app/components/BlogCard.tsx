@@ -30,7 +30,7 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
         >
             <Link
                 href={`/blog/post/${post.slug}`}
-                className={`group bg-white rounded-[40px] blog-card-shadow border border-slate-200 flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-[#BF1737]/5 hover:-translate-y-2 hover:border-[#BF1737]/10 ${
+                className={`group bg-white rounded-[40px] blog-card-shadow border border-slate-200 flex flex-col overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-[#1A5319]/5 hover:-translate-y-2 hover:border-[#1A5319]/10 ${
                     layout === 'list' ? 'md:flex-row min-h-[340px]' : ''
                 }`}
             >
@@ -47,12 +47,20 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
 
                 {/* Floating Badges */}
                 <div className="absolute top-6 left-6 right-6 flex items-center justify-between gap-3 flex-wrap">
-                    <span className="px-4 py-2 rounded-full bg-[#BF1737] text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-xl whitespace-nowrap">
-                        {post.category || 'GUIDE'}
-                    </span>
+                    <div className="flex gap-2">
+                        <span className="px-4 py-2 rounded-full bg-[#1A5319] text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-xl whitespace-nowrap">
+                            {post.category || 'GUIDE'}
+                        </span>
+                        {(post.category?.toLowerCase().includes('expert') || post.author?.toLowerCase().includes('dr')) && (
+                            <span className="px-4 py-2 rounded-full bg-[#EE8C2B] text-[10px] font-black uppercase tracking-[0.15em] text-white shadow-xl whitespace-nowrap flex items-center gap-1.5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                                Vétérinaire Certifié
+                            </span>
+                        )}
+                    </div>
 
                     <div className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-black text-white uppercase tracking-wider whitespace-nowrap">
-                        <Clock size={12} className="text-[#BF1737]" strokeWidth={3} />
+                        <Clock size={12} className="text-[#1A5319]" strokeWidth={3} />
                         {readTime} MIN
                     </div>
                 </div>
@@ -73,7 +81,7 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
                     ))}
                 </div>
 
-                <h3 className={`font-black text-slate-900 leading-[1.3] uppercase tracking-tight group-hover:text-[#BF1737] transition-colors line-clamp-2 italic ${
+                <h3 className={`font-black text-slate-900 leading-[1.3] uppercase tracking-tight group-hover:text-[#1A5319] transition-colors line-clamp-2 italic ${
                     layout === 'list' ? 'text-[24px] md:text-[32px] mb-4' : 'text-[20px] h-[52px] mb-3'
                 }`}>
                     {post.title}
@@ -82,7 +90,7 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
                 <p className={`font-medium text-slate-500 leading-relaxed line-clamp-3 overflow-hidden ${
                     layout === 'list' ? 'text-[16px] mb-8 max-w-2xl' : 'text-[14px] h-[69px] mb-8'
                 }`}>
-                    {post.excerpt || "Explorez les dernières actualités et conseils d'experts sur l'outillage professionnel."}
+                    {post.excerpt || "Explorez les dernières actualités et conseils d'experts sur le bien-être animal."}
                 </p>
 
                 {/* Footer Section */}
@@ -90,7 +98,7 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
                     layout === 'list' ? 'w-full' : ''
                 }`}>
                     <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 rounded-full bg-[#BF1737]/10 flex items-center justify-center text-[#BF1737] font-black text-sm border border-[#BF1737]/20 uppercase">
+                        <div className="w-12 h-12 rounded-full bg-[#1A5319]/10 flex items-center justify-center text-[#1A5319] font-black text-sm border border-[#1A5319]/20 uppercase">
                             {(post.author || 'A').charAt(0)}
                         </div>
                         <div className="flex flex-col">
@@ -105,7 +113,7 @@ export default function BlogCard({ post, priority = false, layout = 'grid' }: Bl
                         </div>
                     </div>
 
-                    <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-[#BF1737] group-hover:text-white transition-all transform group-hover:rotate-[-45deg] shadow-sm border border-slate-100/50">
+                    <div className="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-[#1A5319] group-hover:text-white transition-all transform group-hover:rotate-[-45deg] shadow-sm border border-slate-100/50">
                         <ArrowRight size={20} strokeWidth={3} />
                     </div>
                 </div>

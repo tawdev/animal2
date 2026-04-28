@@ -5,9 +5,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-primary: #BF1737;
+  --color-primary: #1A5319;
   --color-secondary: #F3F4F6;
-  --color-accent: #EA580C;
+  --color-accent: #EE8C2B;
   --color-background-light: #FFFFFF;
   --color-background-dark: #0D0D0D;
 
@@ -90,27 +90,29 @@
 
   /* Global Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px !important;
+    height: 12px !important;
+    display: block !important;
   }
 
   ::-webkit-scrollbar-track {
-    background: #F1F5F9;
+    background: #F1F5F9 !important;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #BF1737;
-    border-radius: 10px;
-    border: 3px solid #F1F5F9;
+    background: #1A5319 !important;
+    border-radius: 10px !important;
+    border: 3px solid #F1F5F9 !important;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #99122C;
+    background: #EE8C2B !important;
   }
 
   /* For Firefox */
   * {
-    scrollbar-width: thin;
-    scrollbar-color: #BF1737 #F1F5F9;
+    scrollbar-width: auto !important;
+    scrollbar-color: #1A5319 #F1F5F9 !important;
   }
 }
 
@@ -201,7 +203,7 @@
     }
   }
 
-  /* Custom modern scrollbar - Brand Red (#BF1737) */
+  /* Custom modern scrollbar - Brand Green (#1A5319) */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -212,17 +214,17 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(191, 23, 55, 0.3);
+    background: rgba(26, 83, 25, 0.3);
     border-radius: 99px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #BF1737;
+    background: #1A5319;
   }
 
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(191, 23, 55, 0.3) transparent;
+    scrollbar-color: rgba(26, 83, 25, 0.3) transparent;
   }
 
   .blog-card-shadow {

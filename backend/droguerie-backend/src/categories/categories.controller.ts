@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('categories')
 export class CategoriesController {
@@ -18,11 +19,13 @@ export class CategoriesController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     create(@Body() data: { name: string; description?: string; isActive?: boolean; parentId?: number }) {
         return this.categoriesService.create(data);
     }
 
     @Patch(':id')
+    @UseGuards(JwtAuthGuard)
     update(
         @Param('id', ParseIntPipe) id: number,
         @Body() data: { name?: string; description?: string; isActive?: boolean; parentId?: number },
@@ -31,6 +34,7 @@ export class CategoriesController {
     }
 
     @Delete(':id')
+    @UseGuards(JwtAuthGuard)
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.categoriesService.remove(id);
     }
