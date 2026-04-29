@@ -29,7 +29,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, type Category, type Product, type Brand, type BlogPost } from '@/app/lib/api';
+import { api, type Category, type Product, type Brand, type BlogPost, type Faq } from '@/app/lib/api';
 import { useSettings } from '@/app/context/SettingsContext';
 import ProductCard from '@/app/components/ProductCard';
 import BlogCard from '@/app/components/BlogCard';
@@ -40,6 +40,7 @@ interface HomeClientProps {
   initialNewProducts: Product[];
   initialBrands: Brand[];
   initialBlogs: BlogPost[];
+  initialFaqs: Faq[];
 }
 
 export default function HomeClient({ 
@@ -47,7 +48,8 @@ export default function HomeClient({
   initialPopularProducts, 
   initialNewProducts, 
   initialBrands, 
-  initialBlogs 
+  initialBlogs,
+  initialFaqs
 }: HomeClientProps) {
   const { settings } = useSettings();
   const [categories] = useState<Category[]>(initialCategories);
@@ -70,49 +72,19 @@ export default function HomeClient({
   const whatsappNumber = (settings?.phoneNumber || '212600000000').replace(/\D/g, '');
 
 
-  const [faqs, setFaqs] = useState([
-    {
-      q: "Comment puis-je commander sur Animal Food Express ?",
-      a: "C'est très simple ! Vous pouvez parcourir notre boutique, ajouter des articles à votre panier, puis finaliser votre commande. Elle sera directement envoyée à notre équipe via WhatsApp pour une confirmation instantanée.",
-      likes: 24,
-      dislikes: 2,
-      userVoted: null as 'like' | 'dislike' | null
-    },
-    {
-      q: "Quels sont vos délais de livraison au Maroc ?",
-      a: "Nous livrons partout au Maroc. Pour Casablanca et Rabat, la livraison se fait généralement sous 24h. Pour les autres villes, comptez 48h à 72h ouvrables.",
-      likes: 45,
-      dislikes: 1,
-      userVoted: null as 'like' | 'dislike' | null
-    },
-    {
-      q: "Quelles marques premium proposez-vous ?",
-      a: "Nous travaillons avec les leaders mondiaux comme Royal Canin, Pro Plan, Hill's, Orijen et Acana pour garantir la meilleure nutrition possible à vos animaux.",
-      likes: 38,
-      dislikes: 0,
-      userVoted: null as 'like' | 'dislike' | null
-    },
-    {
-      q: "Puis-je retourner un produit si mon animal ne l'aime pas ?",
-      a: "Oui, nous acceptons les retours sous 7 jours si l'emballage n'a pas été ouvert. Pour les sacs ouverts, contactez notre support pour voir si un échange est possible selon les conditions de la marque.",
-      likes: 12,
-      dislikes: 5,
-      userVoted: null as 'like' | 'dislike' | null
-    }
-  ]);
+  const [faqs, setFaqs] = useState<(Faq & { userVoted: 'like' | 'dislike' | null })[]>(
+    initialFaqs.map(f => ({ ...f, userVoted: null }))
+  );
 
-  // Load votes from localStorage on mount
+  // Load local vote choices from localStorage on mount
   useEffect(() => {
-    const savedVotes = localStorage.getItem('faq_votes');
+    const savedVotes = localStorage.getItem('faq_votes_local');
     if (savedVotes) {
       try {
         const parsedVotes = JSON.parse(savedVotes);
-        setFaqs(prevFaqs => prevFaqs.map((faq, idx) => ({
+        setFaqs(prevFaqs => prevFaqs.map((faq) => ({
           ...faq,
-          userVoted: parsedVotes[idx] || null,
-          // Adjust initial counts based on saved votes
-          likes: parsedVotes[idx] === 'like' ? faq.likes + 1 : faq.likes,
-          dislikes: parsedVotes[idx] === 'dislike' ? faq.dislikes + 1 : faq.dislikes
+          userVoted: parsedVotes[faq.id] || null,
         })));
       } catch (e) {
         console.error('Failed to parse saved votes', e);
@@ -120,33 +92,65 @@ export default function HomeClient({
     }
   }, []);
 
-  // Save votes to localStorage whenever they change
+  // Save local vote choices to localStorage whenever they change
   useEffect(() => {
-    const votesToSave = faqs.map(f => f.userVoted);
-    localStorage.setItem('faq_votes', JSON.stringify(votesToSave));
+    const votesToSave: Record<number, 'like' | 'dislike' | null> = {};
+    faqs.forEach(f => {
+      votesToSave[f.id] = f.userVoted;
+    });
+    localStorage.setItem('faq_votes_local', JSON.stringify(votesToSave));
   }, [faqs]);
 
-  const handleFaqVote = (index: number, type: 'like' | 'dislike') => {
-    const newFaqs = [...faqs];
-    const faq = newFaqs[index];
+  const handleFaqVote = async (index: number, type: 'like' | 'dislike') => {
+    const faq = faqs[index];
+    const prevVote = faq.userVoted;
 
-    if (faq.userVoted === type) {
-      // Toggle off
-      faq.userVoted = null;
-      if (type === 'like') faq.likes--;
-      else faq.dislikes--;
-    } else {
-      // If already voted for the other type, remove it first
-      if (faq.userVoted === 'like') faq.likes--;
-      if (faq.userVoted === 'dislike') faq.dislikes--;
+    try {
+      if (prevVote === type) {
+        // Toggle off
+        await api.voteFaq(faq.id, type, 'decrement');
+        setFaqs(prev => {
+          const next = [...prev];
+          next[index] = {
+            ...next[index],
+            userVoted: null,
+            likes: type === 'like' ? next[index].likes - 1 : next[index].likes,
+            dislikes: type === 'dislike' ? next[index].dislikes - 1 : next[index].dislikes,
+          };
+          return next;
+        });
+      } else {
+        // If already voted for the other type, remove it first on the backend
+        if (prevVote) {
+          await api.voteFaq(faq.id, prevVote, 'decrement');
+        }
 
-      // Set new vote
-      faq.userVoted = type;
-      if (type === 'like') faq.likes++;
-      else faq.dislikes++;
+        // Set new vote on the backend
+        await api.voteFaq(faq.id, type, 'increment');
+
+        setFaqs(prev => {
+          const next = [...prev];
+          let newLikes = next[index].likes;
+          let newDislikes = next[index].dislikes;
+
+          if (prevVote === 'like') newLikes--;
+          if (prevVote === 'dislike') newDislikes--;
+
+          if (type === 'like') newLikes++;
+          if (type === 'dislike') newDislikes++;
+
+          next[index] = {
+            ...next[index],
+            userVoted: type,
+            likes: newLikes,
+            dislikes: newDislikes,
+          };
+          return next;
+        });
+      }
+    } catch (error) {
+      console.error('Failed to vote:', error);
     }
-
-    setFaqs(newFaqs);
   };
 
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -238,14 +242,12 @@ export default function HomeClient({
       <section className="relative min-h-screen md:min-h-[90vh] flex items-center overflow-hidden bg-[#0A0A0B]">
         <div className="absolute inset-0 z-0">
           <Image 
-            src="/pet_store_hero_v2_1777370410776.png"
+            src="/hero_animals_v3.png"
             alt="Animal Food Express Hero"
             fill
             priority
-            className="object-cover opacity-80"
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A0B] via-[#0A0A0B]/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0B]/30 via-transparent to-[#0A0A0B]" />
         </div>
 
         <div className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 relative z-10 py-20">
@@ -569,24 +571,24 @@ export default function HomeClient({
       </section>
 
       {/* FAQ SECTION */}
-      <section className="py-32 bg-white">
-        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
-          <div className="text-center mb-20">
-            <span className="text-[#EE8C2B] font-black uppercase tracking-[0.3em] text-xs mb-4 block">Aide & Support</span>
-            <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter">Questions Fréquentes</h2>
+      <section className="py-20 md:py-32 bg-white">
+        <div className="mx-auto max-w-[800px] px-4 md:px-10">
+          <div className="text-center mb-16 md:mb-20">
+            <span className="text-[#EE8C2B] font-black uppercase tracking-[0.3em] text-[10px] md:text-xs mb-4 block">Aide & Support</span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">Questions Fréquentes</h2>
           </div>
 
           <div className="space-y-6">
             {faqs.map((faq, idx) => (
               <div 
                 key={idx} 
-                className={`bg-slate-50 rounded-[32px] p-8 border border-slate-100 transition-all duration-500 cursor-pointer overflow-hidden ${activeFaq === idx ? 'bg-white shadow-2xl border-[#1A5319]/10' : 'hover:bg-slate-100/50'}`}
+                className={`bg-slate-50 rounded-[24px] md:rounded-[32px] p-6 md:p-8 border border-slate-100 transition-all duration-500 cursor-pointer overflow-hidden ${activeFaq === idx ? 'bg-white shadow-xl border-[#1A5319]/10' : 'hover:bg-slate-100/50'}`}
                 onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
               >
-                <div className="flex items-center justify-between gap-6">
-                  <h3 className={`text-xl font-black leading-tight uppercase italic transition-colors ${activeFaq === idx ? 'text-[#1A5319]' : 'text-slate-900'}`}>{faq.q}</h3>
-                  <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${activeFaq === idx ? 'bg-[#1A5319] text-white rotate-180' : 'bg-white text-slate-400 shadow-sm'}`}>
-                    <ChevronDown size={20} strokeWidth={3} />
+                <div className="flex items-center justify-between gap-4 md:gap-6">
+                  <h3 className={`text-base md:text-xl font-black leading-tight uppercase italic transition-colors ${activeFaq === idx ? 'text-[#1A5319]' : 'text-slate-900'}`}>{faq.question}</h3>
+                  <div className={`shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 ${activeFaq === idx ? 'bg-[#1A5319] text-white rotate-180' : 'bg-white text-slate-400 shadow-sm'}`}>
+                    <ChevronDown size={18} strokeWidth={3} />
                   </div>
                 </div>
                 
@@ -598,7 +600,7 @@ export default function HomeClient({
                       exit={{ height: 0, opacity: 0, marginTop: 0 }}
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <p className="text-slate-600 font-medium leading-relaxed mb-8 border-t border-slate-200/60 pt-6">{faq.a}</p>
+                      <p className="text-slate-600 font-medium leading-relaxed mb-8 border-t border-slate-200/60 pt-6">{faq.answer}</p>
                       
                       {/* Feedback Buttons */}
                       <div className="flex items-center justify-between pt-6 border-t border-slate-200/60">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, ShieldCheck, Headphones, CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useSettings } from '../context/SettingsContext';
+import { api } from '@/app/lib/api';
 
 export default function ContactPage() {
     const { settings, loading: settingsLoading } = useSettings();
@@ -29,29 +30,35 @@ export default function ContactPage() {
         e.preventDefault();
         setStatus('loading');
         
-        const formTarget = e.currentTarget;
-        const formData = new FormData(formTarget);
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get('name') as string,
+            email: formData.get('email') as string,
+            subject: formData.get('_subject') as string,
+            message: formData.get('message') as string,
+        };
         
         try {
-            const targetEmail = settings?.supportEmail || 'contact@animalfood.com';
+            // 1. Save in Admin Database
+            const res = await api.submitInquiry(data);
             
-            const response = await fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
-                method: "POST",
-                headers: { 
-                    'Accept': 'application/json'
-                },
-                body: formData
-            });
+            // 2. Prepare WhatsApp message
+            const waPhone = coordPhone.replace(/\D/g, '');
+            const waMessage = `*Nouveau Message Contact*\n\n*Nom:* ${data.name}\n*Email:* ${data.email}\n*Sujet:* ${data.subject}\n*Message:* ${data.message}`;
+            const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(waMessage)}`;
             
-            if (response.ok) {
-                setStatus('success');
-                formTarget.reset();
-                setTimeout(() => setStatus('idle'), 5000);
-            } else {
-                setStatus('error');
-                setTimeout(() => setStatus('idle'), 5000);
-            }
+            // 3. Status success
+            setStatus('success');
+            (e.target as HTMLFormElement).reset();
+            
+            // 4. Open WhatsApp after a small delay
+            setTimeout(() => {
+                window.open(waUrl, '_blank');
+                setStatus('idle');
+            }, 1000);
+
         } catch (error) {
+            console.error('Contact error:', error);
             setStatus('error');
             setTimeout(() => setStatus('idle'), 5000);
         }

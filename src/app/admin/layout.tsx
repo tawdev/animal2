@@ -14,6 +14,8 @@ const navItems = [
     { label: 'Inventory', href: '/admin/inventory', icon: 'inventory' },
     { label: 'Blog', href: '/admin/blog', icon: 'article' },
     { label: 'Marques', href: '/admin/brands', icon: 'verified' },
+    { label: 'FAQs', href: '/admin/faqs', icon: 'quiz' },
+    { label: 'Messages', href: '/admin/inquiries', icon: 'chat' },
     { label: 'Avis Clients', href: '/admin/reviews', icon: 'reviews' },
     { label: 'Analytics', href: '/admin/analytics', icon: 'analytics' },
     { label: 'Settings', href: '/admin/settings', icon: 'settings' },

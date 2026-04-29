@@ -52,7 +52,10 @@ export default function Navbar() {
     const categoryTree = useMemo(() => {
         const buildTree = (items: Category[], parentId: number | null = null): Category[] => {
             return items
-                .filter(item => item.parentId === parentId)
+                .filter(item => 
+                    item.parentId === parentId && 
+                    (item.products?.length || item.children?.some(child => child.products?.length))
+                )
                 .map(item => ({
                     ...item,
                     children: buildTree(items, item.id)

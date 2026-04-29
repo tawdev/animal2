@@ -28,7 +28,10 @@ import { Setting } from './settings/setting.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Review } from './reviews/review.entity';
 import { ReviewsModule } from './reviews/reviews.module';
-
+import { Faq } from './faqs/faq.entity';
+import { FaqsModule } from './faqs/faqs.module';
+import { Inquiry } from './inquiries/inquiry.entity';
+import { InquiriesModule } from './inquiries/inquiries.module';
 
 @Module({
   imports: [
@@ -48,9 +51,8 @@ import { ReviewsModule } from './reviews/reviews.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Category, Product, Order, User, BlogPost, Brand, NewsletterSubscriber, Tip, Setting, Review],
-        synchronize: true, // WARNING: Set to false in production once you have real data & migrations!
-
+        entities: [Category, Product, Order, User, BlogPost, Brand, NewsletterSubscriber, Tip, Setting, Review, Faq, Inquiry],
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
@@ -67,8 +69,9 @@ import { ReviewsModule } from './reviews/reviews.module';
     TipsModule,
     SettingsModule,
     ReviewsModule,
+    FaqsModule,
+    InquiriesModule,
   ],
-
   controllers: [AppController],
   providers: [AppService],
 })

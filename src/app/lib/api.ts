@@ -107,6 +107,7 @@ export interface Brand {
     logoUrl: string | null;
     isActive: boolean;
     createdAt: string;
+    products?: any[];
 }
 
 export interface PaginatedResponse<T> {
@@ -198,6 +199,16 @@ export interface Review {
     product?: Product;
 }
 
+export interface Faq {
+    id: number;
+    question: string;
+    answer: string;
+    likes: number;
+    dislikes: number;
+    isActive: boolean;
+    createdAt: string;
+}
+
 import Cookies from 'js-cookie';
 
 // ─── Image URL Helper ─────────────────────────────────────────────────────────
@@ -245,11 +256,13 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
     const cleanPath = path.replace(/^\//, '');
     const url = `${baseUrl}/${cleanPath}`;
     
+    const isFormData = options.body instanceof FormData;
+    
     const res = await fetch(url, {
         cache: 'no-store',
         ...options,
         headers: {
-            'Content-Type': 'application/json',
+            ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
             ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
             ...(options.headers || {}),
         },
@@ -548,6 +561,45 @@ export const api = {
         }),
     deleteReview: (id: number) =>
         apiFetch<void>(`/reviews/${id}`, {
+            method: 'DELETE',
+        }),
+
+    // FAQs
+    getFaqs: () => apiFetch<Faq[]>('/faqs'),
+    voteFaq: (id: number, type: 'like' | 'dislike', action: 'increment' | 'decrement') =>
+        apiFetch<Faq>(`/faqs/${id}/vote`, {
+            method: 'PATCH',
+            body: JSON.stringify({ type, action }),
+        }),
+    createFaq: (data: Partial<Faq>) =>
+        apiFetch<Faq>('/faqs', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+    updateFaq: (id: number, data: Partial<Faq>) =>
+        apiFetch<Faq>(`/faqs/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        }),
+    deleteFaq: (id: number) =>
+        apiFetch<void>(`/faqs/${id}`, {
+            method: 'DELETE',
+        }),
+
+    // Inquiries (Contact)
+    submitInquiry: (data: { name: string; email: string; subject: string; message: string }) =>
+        apiFetch<any>('/inquiries', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+    getInquiries: () => apiFetch<any[]>('/inquiries'),
+    updateInquiryStatus: (id: number, status: string) =>
+        apiFetch<any>(`/inquiries/${id}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status }),
+        }),
+    deleteInquiry: (id: number) =>
+        apiFetch<void>(`/inquiries/${id}`, {
             method: 'DELETE',
         }),
 };

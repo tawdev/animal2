@@ -18,6 +18,7 @@ export class BrandsService {
     findActive(): Promise<Brand[]> {
         return this.brandRepository.find({
             where: { isActive: true },
+            relations: ['products'],
             order: { name: 'ASC' },
         });
     }

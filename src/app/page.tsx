@@ -8,29 +8,34 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
     description: 'Découvrez Animal Food Express, la boutique en ligne n°1 au Maroc pour l\'alimentation et les accessoires premium pour chiens, chats, oiseaux et poissons.',
-    images: ['/pet_store_hero_v2_1777370410776.png'],
+    images: ['/hero_animals_v3.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Animal Food Express – Votre Animalerie Premium au Maroc',
     description: 'Boutique en ligne spécialisée en alimentation et accessoires pour animaux au Maroc.',
-    images: ['/pet_store_hero_v2_1777370410776.png'],
+    images: ['/hero_animals_v3.png'],
   },
 };
 
 export default async function HomePage() {
   // Fetch all initial data on the server
   try {
-    const [categoriesRes, popularProductsRes, newProductsRes, brandsRes, blogsRes] = await Promise.all([
+    const [categoriesRes, popularProductsRes, newProductsRes, brandsRes, blogsRes, faqsRes] = await Promise.all([
       api.getCategories(true),
       api.getProducts({ page: 1, limit: 12, active: true, sort: 'popularity' }),
       api.getProducts({ page: 1, limit: 12, active: true, sort: 'createdAt' }),
       api.getBrands(),
-      api.getPosts(1, 3)
+      api.getPosts(1, 3),
+      api.getFaqs()
     ]);
 
-    const categories = categoriesRes.filter(c => c.isActive && c.parentId === null);
+    const categories = categoriesRes.filter(c => 
+      c.isActive && 
+      c.parentId === null && 
+      ((c.products && c.products.length > 0) || (c.children && c.children.some(child => child.products && child.products.length > 0)))
+    );
     const brands = brandsRes.filter(b => b.isActive);
 
     return (
@@ -40,6 +45,7 @@ export default async function HomePage() {
         initialNewProducts={newProductsRes.data}
         initialBrands={brands}
         initialBlogs={blogsRes.data}
+        initialFaqs={faqsRes}
       />
     );
   } catch (error) {
@@ -52,6 +58,7 @@ export default async function HomePage() {
         initialNewProducts={[]}
         initialBrands={[]}
         initialBlogs={[]}
+        initialFaqs={[]}
       />
     );
   }

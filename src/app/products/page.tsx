@@ -141,8 +141,20 @@ function ProductListingContent() {
 
   // Load Categories & Brands
   useEffect(() => {
-    api.getCategories(true).then(setCategories).catch(console.error);
-    api.getActiveBrands().then(setBrands).catch(console.error);
+    api.getCategories(true).then(res => {
+      // Filter categories: active, top-level, and has products (direct or children)
+      const filtered = res.filter(c => 
+        c.isActive && 
+        (c.products?.length || c.children?.some(child => child.products?.length))
+      );
+      setCategories(filtered);
+    }).catch(console.error);
+
+    api.getActiveBrands().then(res => {
+      // Filter brands that have products
+      const filtered = res.filter(b => b.isActive && b.products && b.products.length > 0);
+      setBrands(filtered);
+    }).catch(console.error);
   }, []);
 
   // Load Products
@@ -169,7 +181,11 @@ function ProductListingContent() {
 
       // Fetch categories with products count logic (handled via caching in a real app, but fetched here)
       const cachedCategories = await api.getCategories(true);
-      setCategories(cachedCategories);
+      const filtered = cachedCategories.filter(c => 
+        c.isActive && 
+        (c.products?.length || c.children?.some(child => child.products?.length))
+      );
+      setCategories(filtered);
 
     } catch (err) {
       console.error('Failed to load products:', err);

@@ -251,9 +251,10 @@ export default function AdminInventoryPage() {
                                                             <span className="material-symbols-outlined text-[18px]">remove</span>
                                                         </button>
                                                         <input
+                                                            key={`${product.id}-${product.stock}`}
                                                             type="text"
                                                             className="w-12 text-center bg-transparent border-none text-[13px] font-bold text-slate-900 focus:ring-0 p-0"
-                                                            value={updatingId === product.id ? '...' : product.stock}
+                                                            defaultValue={updatingId === product.id ? '...' : product.stock}
                                                             onBlur={(e) => handleManualStockUpdate(product.id, e.target.value)}
                                                             onKeyDown={(e) => {
                                                                 if (e.key === 'Enter') {
