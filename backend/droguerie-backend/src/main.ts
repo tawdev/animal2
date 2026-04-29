@@ -14,6 +14,8 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
   }));
 
+  app.setGlobalPrefix('api');
+
   const port = process.env.PORT || 3002;
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
