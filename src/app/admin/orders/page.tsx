@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   XCircle,
   Package,
+  Truck,
   Clock,
   User,
   MapPin,
