@@ -41,6 +41,7 @@ interface HomeClientProps {
   initialBrands: Brand[];
   initialBlogs: BlogPost[];
   initialFaqs: Faq[];
+  initialTestimonials: Testimonial[];
 }
 
 export default function HomeClient({ 
@@ -49,7 +50,8 @@ export default function HomeClient({
   initialNewProducts, 
   initialBrands, 
   initialBlogs,
-  initialFaqs
+  initialFaqs,
+  initialTestimonials
 }: HomeClientProps) {
   const { settings } = useSettings();
   const [categories] = useState<Category[]>(initialCategories);
@@ -185,33 +187,46 @@ export default function HomeClient({
 
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  const TESTIMONIALS = [
+  const [testimonials] = useState<Testimonial[]>(initialTestimonials.length > 0 ? initialTestimonials : [
     {
+      id: 1,
       initial: 'MA',
       name: 'Mohammed Alami',
       role: 'Propriétaire de Labrador — Casablanca',
-      content: "La qualité des croquettes est irréprochable. Mes chiens sont en pleine forme depuis que j'achète chez Animal Food Express. Les marques premium sont enfin accessibles. Livraison rapide même en pleine semaine."
+      content: "La qualité des croquettes est irréprochable. Mes chiens sont en pleine forme depuis que j'achète chez Animal Food Express. Les marques premium sont enfin accessibles. Livraison rapide même en pleine semaine.",
+      isActive: true,
+      createdAt: '',
+      updatedAt: ''
     },
     {
+      id: 2,
       initial: 'KB',
       name: 'Karim Bensaid',
       role: "Éleveur Félin — Rabat",
-      content: "Un service client exceptionnel et des accessoires magnifiques. Mes chats adorent leurs nouveaux arbres à chat. Je recommande vivement pour tous les passionnés d'animaux."
+      content: "Un service client exceptionnel et des accessoires magnifiques. Mes chats adorent leurs nouveaux arbres à chat. Je recommande vivement pour tous les passionnés d'animaux.",
+      isActive: true,
+      createdAt: '',
+      updatedAt: ''
     },
     {
+      id: 3,
       initial: 'FZ',
       name: 'Fatine Zahra',
       role: 'Propriétaire — Marrakech',
-      content: "J'ai trouvé tout le nécessaire pour mon premier chiot. Conseils précieux du support technique pour choisir la bonne alimentation. C'est rare de trouver une telle expertise en ligne au Maroc."
+      content: "J'ai trouvé tout le nécessaire pour mon premier chiot. Conseils précieux du support technique pour choisir la bonne alimentation. C'est rare de trouver une telle expertise en ligne au Maroc.",
+      isActive: true,
+      createdAt: '',
+      updatedAt: ''
     }
-  ];
+  ]);
 
   useEffect(() => {
+    if (testimonials.length === 0) return;
     const timer = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % TESTIMONIALS.length);
+      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, [TESTIMONIALS.length]);
+  }, [testimonials.length]);
 
   useEffect(() => {
     if (featuredProducts.length > 0) {
@@ -590,12 +605,26 @@ export default function HomeClient({
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 text-center">
           <h2 className="text-5xl font-black text-slate-900 tracking-tighter uppercase italic mb-20">Ils nous <span className="text-[#EE8C2B]">font confiance</span></h2>
           <div className="max-w-4xl mx-auto">
-            <p className="text-2xl font-medium text-slate-700 italic mb-12">&quot;{TESTIMONIALS[activeTestimonial].content}&quot;</p>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 bg-[#1A5319] text-white rounded-full flex items-center justify-center font-black text-xl mb-4">{TESTIMONIALS[activeTestimonial].initial}</div>
-              <h4 className="text-xl font-black uppercase italic">{TESTIMONIALS[activeTestimonial].name}</h4>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">{TESTIMONIALS[activeTestimonial].role}</p>
-            </div>
+            <AnimatePresence mode="wait">
+              {testimonials.length > 0 && (
+                <motion.div
+                  key={activeTestimonial}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <p className="text-2xl font-medium text-slate-700 italic mb-12">&quot;{testimonials[activeTestimonial].content}&quot;</p>
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 bg-[#1A5319] text-white rounded-full flex items-center justify-center font-black text-xl mb-4">
+                      {testimonials[activeTestimonial].initial || testimonials[activeTestimonial].name.substring(0, 2)}
+                    </div>
+                    <h4 className="text-xl font-black uppercase italic">{testimonials[activeTestimonial].name}</h4>
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">{testimonials[activeTestimonial].role}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </section>

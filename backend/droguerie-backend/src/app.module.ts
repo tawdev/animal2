@@ -32,6 +32,8 @@ import { Faq } from './faqs/faq.entity';
 import { FaqsModule } from './faqs/faqs.module';
 import { Inquiry } from './inquiries/inquiry.entity';
 import { InquiriesModule } from './inquiries/inquiries.module';
+import { Testimonial } from './testimonials/testimonial.entity';
+import { TestimonialsModule } from './testimonials/testimonials.module';
 
 @Module({
   imports: [
@@ -51,7 +53,7 @@ import { InquiriesModule } from './inquiries/inquiries.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Category, Product, Order, User, BlogPost, Brand, NewsletterSubscriber, Tip, Setting, Review, Faq, Inquiry],
+        entities: [Category, Product, Order, User, BlogPost, Brand, NewsletterSubscriber, Tip, Setting, Review, Faq, Inquiry, Testimonial],
         synchronize: true,
       }),
       inject: [ConfigService],
@@ -71,6 +73,7 @@ import { InquiriesModule } from './inquiries/inquiries.module';
     ReviewsModule,
     FaqsModule,
     InquiriesModule,
+    TestimonialsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

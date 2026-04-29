@@ -209,6 +209,18 @@ export interface Faq {
     createdAt: string;
 }
 
+export interface Testimonial {
+    id: number;
+    name: string;
+    role: string;
+    content: string;
+    initial: string | null;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+
 import Cookies from 'js-cookie';
 
 // ─── Image URL Helper ─────────────────────────────────────────────────────────
@@ -629,6 +641,24 @@ export const api = {
         }),
     deleteInquiry: (id: number) =>
         apiFetch<void>(`/inquiries/${id}`, {
+            method: 'DELETE',
+        }),
+
+    // Testimonials
+    getTestimonials: () => apiFetch<Testimonial[]>('/testimonials'),
+    getActiveTestimonials: () => apiFetch<Testimonial[]>('/testimonials/active'),
+    createTestimonial: (data: Partial<Testimonial>) =>
+        apiFetch<Testimonial>('/testimonials', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+    updateTestimonial: (id: number, data: Partial<Testimonial>) =>
+        apiFetch<Testimonial>(`/testimonials/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        }),
+    deleteTestimonial: (id: number) =>
+        apiFetch<void>(`/testimonials/${id}`, {
             method: 'DELETE',
         }),
 };

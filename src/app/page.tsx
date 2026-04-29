@@ -22,13 +22,14 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   // Fetch all initial data on the server
   try {
-    const [categoriesRes, popularProductsRes, newProductsRes, brandsRes, blogsRes, faqsRes] = await Promise.all([
+    const [categoriesRes, popularProductsRes, newProductsRes, brandsRes, blogsRes, faqsRes, testimonialsRes] = await Promise.all([
       api.getCategories(true),
       api.getProducts({ page: 1, limit: 12, active: true, sort: 'popularity' }),
       api.getProducts({ page: 1, limit: 12, active: true, sort: 'createdAt' }),
       api.getBrands(),
       api.getPosts(1, 3),
-      api.getFaqs()
+      api.getFaqs(),
+      api.getActiveTestimonials()
     ]);
 
     const categories = categoriesRes.filter(c => 
@@ -46,6 +47,7 @@ export default async function HomePage() {
         initialBrands={brands}
         initialBlogs={blogsRes.data}
         initialFaqs={faqsRes}
+        initialTestimonials={testimonialsRes}
       />
     );
   } catch (error) {
@@ -59,6 +61,7 @@ export default async function HomePage() {
         initialBrands={[]}
         initialBlogs={[]}
         initialFaqs={[]}
+        initialTestimonials={[]}
       />
     );
   }

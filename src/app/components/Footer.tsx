@@ -212,8 +212,17 @@ export default function Footer() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-slate-100 pt-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        © {mounted ? new Date().getFullYear() : '2026'} PetMarket.ma — Tous droits réservés
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex flex-wrap items-center gap-1.5">
+                        © {mounted ? new Date().getFullYear() : '2026'} 
+                        <a 
+                            href="https://cdigital.ma" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[#1A5319] hover:text-[#2E7D32] transition-colors"
+                        >
+                            cdigital.ma
+                        </a> 
+                        — Tous droits réservés
                     </p>
                     <div className="flex items-center gap-4">
                         <img src="/visa.png" alt="Visa" className="h-6 object-contain grayscale opacity-50" />

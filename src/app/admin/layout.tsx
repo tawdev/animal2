@@ -17,6 +17,7 @@ const navItems = [
     { label: 'FAQs', href: '/admin/faqs', icon: 'quiz' },
     { label: 'Messages', href: '/admin/inquiries', icon: 'chat' },
     { label: 'Avis Clients', href: '/admin/reviews', icon: 'reviews' },
+    { label: 'Témoignages', href: '/admin/testimonials', icon: 'format_quote' },
     { label: 'Analytics', href: '/admin/analytics', icon: 'analytics' },
     { label: 'Settings', href: '/admin/settings', icon: 'settings' },
 ];
