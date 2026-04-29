@@ -16,6 +16,7 @@ interface ProductCardProps {
   className?: string;
   imageClassName?: string;
   viewMode?: 'grid' | 'list';
+  
 }
 
 export default function ProductCard({ product, className = '', imageClassName = '', viewMode = 'grid' }: ProductCardProps) {
@@ -79,8 +80,14 @@ export default function ProductCard({ product, className = '', imageClassName = 
     >
       <Link
         href={`/products/${product.id}`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+          
+        }}
         className={`group/card flex transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative h-full bg-white border border-slate-100 rounded-[24px] overflow-hidden ${isList
           ? 'flex-row w-full gap-4 sm:gap-6 items-start p-3 sm:p-4'
           : 'flex-col w-full max-w-[280px]'
@@ -134,11 +141,18 @@ export default function ProductCard({ product, className = '', imageClassName = 
           </div>
         </div>
 
+          {/* Quick View Overlay */}
+          <div className={`absolute inset-0 z-20 flex items-center justify-center transition-all duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="bg-white/90 backdrop-blur-md px-6 py-3 rounded-2xl shadow-xl transform transition-transform duration-500 translate-y-4 group-hover/card:translate-y-0">
+               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#1A5319]">Vue Rapide</span>
+            </div>
+          </div>
+
+
         {/* Action Buttons (Heart & Compare) */}
-        {isList && (
-          <div className="absolute right-0 top-0 z-30 flex gap-1 sm:gap-1.5 flex-col">
+        <div className={`absolute right-2 top-2 z-30 flex gap-1.5 flex-col transition-all duration-500 ${isHovered ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}`}>
             <button 
-              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
+              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm ${isWishlisted ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
               onClick={(e) => { 
                 e.preventDefault(); 
                 e.stopPropagation(); 
@@ -153,7 +167,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
               )}
             </button>
             <button 
-              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
+              className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm ${isCompared ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
               onClick={(e) => { 
                 e.preventDefault(); 
                 e.stopPropagation(); 
@@ -163,8 +177,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
             >
               <RefreshCw size={14} strokeWidth={isCompared ? 2.5 : 1.5} className="sm:w-4 sm:h-4 w-[14px] h-[14px]" />
             </button>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Info Container */}
@@ -261,38 +274,6 @@ export default function ProductCard({ product, className = '', imageClassName = 
           </div>
         )}
       </div>
-
-      {/* Action Buttons (Grid Mode Only) */}
-      {!isList && (
-        <div className="absolute right-2 top-2 sm:right-3 sm:top-3 z-30 flex gap-1.5 flex-col">
-          <button 
-            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isWishlisted ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
-            onClick={(e) => { 
-              e.preventDefault(); 
-              e.stopPropagation(); 
-              toggleWishlist(productNumId);
-            }}
-            title={isWishlisted ? "Retirer de la liste de souhaits" : "Ajouter à la liste de souhaits"}
-          >
-            {isWishlisted ? (
-              <Heart size={14} strokeWidth={0} className="fill-white sm:w-4 sm:h-4 w-[14px] h-[14px]" />
-            ) : (
-              <Heart size={14} strokeWidth={1.5} className="sm:w-4 sm:h-4 w-[14px] h-[14px]" />
-            )}
-          </button>
-          <button 
-            className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-[6px] transition-all duration-300 shadow-sm opacity-100 lg:opacity-0 lg:group-hover/card:opacity-100 ${isCompared ? 'bg-[#1A5319] border border-[#1A5319] text-white' : 'bg-white/80 backdrop-blur-md border border-white/60 text-slate-600 hover:bg-[#1A5319] hover:border-[#1A5319] hover:text-white'}`}
-            onClick={(e) => { 
-              e.preventDefault(); 
-              e.stopPropagation(); 
-              toggleCompare(productNumId);
-            }}
-            title={isCompared ? "Retirer du comparateur" : "Ajouter au comparateur"}
-          >
-            <RefreshCw size={14} strokeWidth={isCompared ? 2.5 : 1.5} className="sm:w-4 sm:h-4 w-[14px] h-[14px]" />
-          </button>
-        </div>
-      )}
       </Link>
     </motion.div>
   );

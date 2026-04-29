@@ -34,6 +34,7 @@ import { useSettings } from '@/app/context/SettingsContext';
 import { FALLBACK_TESTIMONIALS, FALLBACK_BLOG_POSTS } from '@/app/constants';
 import ProductCard from '@/app/components/ProductCard';
 import BlogCard from '@/app/components/BlogCard';
+import Skeleton, { ProductSkeleton } from '@/app/components/Skeleton';
 
 interface HomeClientProps {
   initialCategories: Category[];
@@ -45,11 +46,11 @@ interface HomeClientProps {
   initialTestimonials: Testimonial[];
 }
 
-export default function HomeClient({ 
-  initialCategories, 
-  initialPopularProducts, 
-  initialNewProducts, 
-  initialBrands, 
+export default function HomeClient({
+  initialCategories,
+  initialPopularProducts,
+  initialNewProducts,
+  initialBrands,
   initialBlogs,
   initialFaqs,
   initialTestimonials
@@ -59,12 +60,12 @@ export default function HomeClient({
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(initialCategories[0]?.id || null);
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
-  
+
   const [activeTab, setActiveTab] = useState('Populaires');
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>(initialPopularProducts);
   const [isLoadingFeatured, setIsLoadingFeatured] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
-  
+
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   // Default WhatsApp Number
@@ -75,6 +76,10 @@ export default function HomeClient({
   const [trackingResult, setTrackingResult] = useState<any>(null);
   const [isTracking, setIsTracking] = useState(false);
   const [trackError, setTrackError] = useState('');
+
+
+
+
 
   const handleTrack = async () => {
     if (!trackingNumber.trim()) return;
@@ -205,8 +210,9 @@ export default function HomeClient({
 
   // Combined product fetching logic
   useEffect(() => {
+    // Skip if it's the first render and we have initial popular products
     if (activeTab === 'Populaires' && featuredProducts === initialPopularProducts) return;
-    
+
     setIsLoadingFeatured(true);
     let query: any = { page: 1, limit: 6, active: true };
     if (activeTab === 'Populaires') query.sort = 'popularity';
@@ -216,13 +222,14 @@ export default function HomeClient({
     api.getProducts(query)
       .then(res => {
         setFeaturedProducts(res.data);
-        setIsLoadingFeatured(false);
       })
       .catch(err => {
         console.error('Failed to fetch featured products:', err);
+      })
+      .finally(() => {
         setIsLoadingFeatured(false);
       });
-  }, [activeTab, initialPopularProducts, featuredProducts]);
+  }, [activeTab]);
 
   useEffect(() => {
     if (activeCategoryId) {
@@ -230,10 +237,11 @@ export default function HomeClient({
       api.getProducts({ categoryId: activeCategoryId, limit: 12, active: true })
         .then(res => {
           setCategoryProducts(res.data);
-          setIsLoadingProducts(false);
         })
         .catch(err => {
           console.error(err);
+        })
+        .finally(() => {
           setIsLoadingProducts(false);
         });
     }
@@ -253,7 +261,7 @@ export default function HomeClient({
       {/* HERO SECTION */}
       <section className="relative min-h-screen md:min-h-[90vh] flex items-center overflow-hidden bg-[#0A0A0B]">
         <div className="absolute inset-0 z-0">
-          <Image 
+          <Image
             src="/hero_animals_v3.png"
             alt="Animal Food Express Hero"
             fill
@@ -282,7 +290,12 @@ export default function HomeClient({
                 Animal Food Express — votre source premium pour l'alimentation et le bonheur de vos compagnons. Livraison partout au Maroc.
               </motion.p>
               <div className="flex flex-wrap gap-5">
-                <Link href="/products" className="px-10 py-5 bg-[#EE8C2B] text-white rounded-xl font-black uppercase tracking-widest hover:bg-[#d97d20] transition-all transform hover:-translate-y-1">
+                <Link
+                  href="/products"
+
+
+                  className="px-10 py-5 bg-[#EE8C2B] text-white rounded-xl font-black uppercase tracking-widest hover:bg-[#d97d20] transition-all transform hover:-translate-y-1"
+                >
                   Voir la boutique
                 </Link>
               </div>
@@ -292,28 +305,33 @@ export default function HomeClient({
               <div className="relative aspect-[4/5] w-full bg-white/5 rounded-[40px] border border-white/10 p-6 overflow-hidden">
                 <AnimatePresence mode="wait">
                   {featuredProducts.length > 0 && (
-                    <motion.div 
+                    <motion.div
                       key={featuredProducts[heroSlideIndex % featuredProducts.length]?.id}
                       initial={{ opacity: 0, scale: 0.9, x: 50 }}
                       animate={{ opacity: 1, scale: 1, x: 0 }}
                       exit={{ opacity: 0, scale: 0.9, x: -50 }}
                       className="relative w-full h-full"
                     >
-                      <Link href={`/products/${featuredProducts[heroSlideIndex % featuredProducts.length]?.id}`} className="block w-full h-full relative rounded-[30px] overflow-hidden group">
-                        <Image 
-                          src={featuredProducts[heroSlideIndex % featuredProducts.length]?.imageUrl || "/placeholder.png"} 
+                      <Link
+                        href={`/products/${featuredProducts[heroSlideIndex % featuredProducts.length]?.id}`}
+
+
+                        className="block w-full h-full relative rounded-[30px] overflow-hidden group"
+                      >
+                        <Image
+                          src={featuredProducts[heroSlideIndex % featuredProducts.length]?.imageUrl || "/placeholder.png"}
                           alt={featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-110"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                         <div className="absolute bottom-6 left-6 right-6">
-                           <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter line-clamp-1">
-                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
-                           </h3>
-                           <div className="text-2xl font-black text-[#EE8C2B] italic">
-                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.price} MAD
-                           </div>
+                          <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter line-clamp-1">
+                            {featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
+                          </h3>
+                          <div className="text-2xl font-black text-[#EE8C2B] italic">
+                            {featuredProducts[heroSlideIndex % featuredProducts.length]?.price} MAD
+                          </div>
                         </div>
                       </Link>
                     </motion.div>
@@ -333,12 +351,12 @@ export default function HomeClient({
             <div className="w-20 h-1 bg-[#EE8C2B] mx-auto rounded-full mt-4" />
           </div>
         </div>
-        
+
         <div className="relative flex overflow-x-hidden group">
-          <motion.div 
+          <motion.div
             className="flex gap-20 whitespace-nowrap py-10"
             animate={{ x: [0, -2000] }}
-            transition={{ 
+            transition={{
               x: {
                 repeat: Infinity,
                 repeatType: "loop",
@@ -349,16 +367,45 @@ export default function HomeClient({
           >
             {[...categories, ...categories, ...categories].map((cat, idx) => {
               const Icon = getCategoryIcon(cat.name);
+              const isActive = activeCategoryId === cat.id;
               return (
-                <Link key={`${cat.id}-${idx}`} href={`/products?categoryId=${cat.id}`} className="flex flex-col items-center gap-8 shrink-0 transition-transform hover:scale-105">
-                  <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] border-slate-50 hover:border-[#EE8C2B] aspect-square overflow-hidden group/item">
-                    <Icon size={100} className="text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110 transition-all duration-500" />
+                <button
+                  key={`${cat.id}-${idx}`}
+                  onClick={() => setActiveCategoryId(cat.id)}
+
+
+                  className="flex flex-col items-center gap-8 shrink-0 transition-transform hover:scale-105"
+                >
+                  <div className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] ${isActive ? 'border-[#EE8C2B]' : 'border-slate-50'} hover:border-[#EE8C2B] aspect-square overflow-hidden group/item`}>
+                    <Icon size={100} className={`transition-all duration-500 ${isActive ? 'text-[#EE8C2B] scale-110' : 'text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110'}`} />
                   </div>
-                  <h3 className="text-sm sm:text-xl font-black uppercase tracking-[0.2em] text-slate-800 italic">{cat.name}</h3>
-                </Link>
+                  <h3 className={`text-sm sm:text-xl font-black uppercase tracking-[0.2em] italic transition-colors ${isActive ? 'text-[#EE8C2B]' : 'text-slate-800'}`}>{cat.name}</h3>
+                </button>
               );
             })}
           </motion.div>
+        </div>
+
+        <div className="mx-auto max-w-[1580px] px-6 lg:px-10 mt-16">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 min-h-[400px]">
+            {isLoadingProducts ? (
+              Array(6).fill(0).map((_, i) => <ProductSkeleton key={i} />)
+            ) : (
+              categoryProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
+          </div>
+          <div className="text-center mt-16">
+            <Link
+              href={`/products?categoryId=${activeCategoryId}`}
+
+
+              className="inline-flex items-center gap-4 bg-[#1A5319] text-white px-10 py-5 rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all"
+            >
+              Voir toute la catégorie <ArrowRight size={20} />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -369,24 +416,24 @@ export default function HomeClient({
             <h2 className="text-[42px] md:text-[54px] font-black text-[#1A5319] leading-tight mb-4">La commande en toute simplicité</h2>
             <p className="text-slate-500 text-lg">Trois étapes simples pour apporter le meilleur de la nutrition directement dans sa gamelle.</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
             {[
-              { 
-                step: '1', 
-                title: 'Séléction Nutrition', 
+              {
+                step: '1',
+                title: 'Séléction Nutrition',
                 desc: 'Explorez nos recettes approuvées par des vétérinaires et sélectionnez le plan de repas parfait adapté à l\'âge et à la race de votre animal.',
                 icon: ShoppingBag
               },
-              { 
-                step: '2', 
-                title: 'Préparation Premium', 
+              {
+                step: '2',
+                title: 'Préparation Premium',
                 desc: 'Nous préparons chaque commande avec des ingrédients 100% naturels et tracables. Aucun remplissage, jamais.',
                 icon: PawPrint
               },
-              { 
-                step: '3', 
-                title: 'Livraison Express', 
+              {
+                step: '3',
+                title: 'Livraison Express',
                 desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
                 icon: Truck
               }
@@ -395,12 +442,12 @@ export default function HomeClient({
                 <div className="relative mb-12">
                   {/* Outer Glow/Shadow */}
                   <div className="absolute inset-0 bg-[#1A5319]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
+
                   {/* Main Circle */}
                   <div className="relative w-36 h-36 rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] flex items-center justify-center border-[6px] border-slate-50 z-10 transition-all duration-500 group-hover:scale-110 group-hover:border-[#1A5319]/10">
                     <item.icon size={48} className="text-[#1A5319]" strokeWidth={1.2} />
                   </div>
-                  
+
                   {/* Step Badge */}
                   <div className="absolute top-0 -right-2 w-11 h-11 rounded-full bg-[#1A5319] flex items-center justify-center text-white font-black text-base shadow-xl z-20 border-4 border-white">
                     {item.step}
@@ -432,7 +479,9 @@ export default function HomeClient({
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`text-sm font-black uppercase tracking-widest pb-1 border-b-2 transition-all ${activeTab === tab ? 'border-[#1A5319] text-[#1A5319]' : 'border-transparent text-slate-400'}`}
+
+
+                  className={`text-[12px] md:text-sm font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'text-[#1A5319] border-b-4 border-[#1A5319] pb-2' : 'text-slate-300 hover:text-slate-500'}`}
                 >
                   {tab}
                 </button>
@@ -440,9 +489,13 @@ export default function HomeClient({
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {isLoadingFeatured ? (
+              Array(6).fill(0).map((_, i) => <ProductSkeleton key={i} />)
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -498,24 +551,24 @@ export default function HomeClient({
               </div>
               <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase italic tracking-tighter mb-8 leading-[0.9]">Conseils de <span className="text-[#1A5319]">Santé & Bien-être</span></h2>
               <p className="text-slate-500 text-xl font-medium leading-relaxed max-w-xl">
-                Nos experts et vétérinaires partenaires partagent leurs meilleurs conseils pour assurer une vie longue et saine à vos compagnons. 
+                Nos experts et vétérinaires partenaires partagent leurs meilleurs conseils pour assurer une vie longue et saine à vos compagnons.
               </p>
             </div>
             <div className="w-full lg:w-1/2 grid grid-cols-2 gap-6">
-               <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100">
-                  <div className="w-12 h-12 bg-[#1A5319] rounded-2xl flex items-center justify-center text-white mb-6">
-                    <PawPrint size={24} />
-                  </div>
-                  <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Nutrition</h4>
-                  <p className="text-slate-500 text-sm">Choisir le bon régime selon la race et l&apos;âge.</p>
-               </div>
-               <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 mt-12">
-                  <div className="w-12 h-12 bg-[#EE8C2B] rounded-2xl flex items-center justify-center text-white mb-6">
-                    <Headset size={24} />
-                  </div>
-                  <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Comportement</h4>
-                  <p className="text-slate-500 text-sm">Comprendre les besoins psychologiques de votre animal.</p>
-               </div>
+              <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100">
+                <div className="w-12 h-12 bg-[#1A5319] rounded-2xl flex items-center justify-center text-white mb-6">
+                  <PawPrint size={24} />
+                </div>
+                <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Nutrition</h4>
+                <p className="text-slate-500 text-sm">Choisir le bon régime selon la race et l&apos;âge.</p>
+              </div>
+              <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 mt-12">
+                <div className="w-12 h-12 bg-[#EE8C2B] rounded-2xl flex items-center justify-center text-white mb-6">
+                  <Headset size={24} />
+                </div>
+                <h4 className="text-lg font-black uppercase italic text-slate-900 mb-2">Comportement</h4>
+                <p className="text-slate-500 text-sm">Comprendre les besoins psychologiques de votre animal.</p>
+              </div>
             </div>
           </div>
 
@@ -566,8 +619,8 @@ export default function HomeClient({
 
           <div className="space-y-6">
             {faqs.map((faq, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`bg-slate-50 rounded-[24px] md:rounded-[32px] p-6 md:p-8 border border-slate-100 transition-all duration-500 cursor-pointer overflow-hidden ${activeFaq === idx ? 'bg-white shadow-xl border-[#1A5319]/10' : 'hover:bg-slate-100/50'}`}
                 onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
               >
@@ -577,7 +630,7 @@ export default function HomeClient({
                     <ChevronDown size={18} strokeWidth={3} />
                   </div>
                 </div>
-                
+
                 <AnimatePresence>
                   {activeFaq === idx && (
                     <motion.div
@@ -587,19 +640,19 @@ export default function HomeClient({
                       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     >
                       <p className="text-slate-600 font-medium leading-relaxed mb-8 border-t border-slate-200/60 pt-6">{faq.answer}</p>
-                      
+
                       {/* Feedback Buttons */}
                       <div className="flex items-center justify-between pt-6 border-t border-slate-200/60">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Est-ce que cela vous a aidé ?</span>
                         <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
-                          <button 
+                          <button
                             onClick={() => handleFaqVote(idx, 'like')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border group/btn ${faq.userVoted === 'like' ? 'bg-[#1A5319] text-white border-[#1A5319]' : 'bg-white text-slate-400 border-slate-100 hover:text-[#1A5319] hover:bg-[#1A5319]/5'}`}
                           >
                             <ThumbsUp size={16} className={`${faq.userVoted === 'like' ? 'scale-110' : 'group-hover/btn:scale-110'} transition-transform`} />
                             <span className="text-xs font-black">{faq.likes}</span>
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleFaqVote(idx, 'dislike')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all border group/btn ${faq.userVoted === 'dislike' ? 'bg-red-500 text-white border-red-500' : 'bg-white text-slate-400 border-slate-100 hover:text-red-500 hover:bg-red-50'}`}
                           >
@@ -623,7 +676,7 @@ export default function HomeClient({
           <div className="bg-white rounded-[60px] p-12 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
             {/* Background Decorative element */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#1A5319]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            
+
             <div className="relative z-10 text-center mb-16">
               <span className="text-[#1A5319] font-black uppercase tracking-[0.3em] text-xs mb-4 block">Expédition & Logistique</span>
               <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter mb-6">Suivez votre <span className="text-[#EE8C2B]">commande</span></h2>
@@ -634,16 +687,16 @@ export default function HomeClient({
               <div className="flex flex-col md:flex-row gap-4 mb-8">
                 <div className="flex-1 relative">
                   <Package className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={trackingNumber}
                     onChange={(e) => setTrackingNumber(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleTrack()}
-                    placeholder="Ex: #AFE-2024-8892" 
+                    placeholder="Ex: #AFE-2024-8892"
                     className="w-full pl-14 pr-6 py-6 bg-slate-50 border border-slate-100 rounded-3xl text-lg font-bold text-slate-900 placeholder:text-slate-300 outline-none focus:bg-white focus:border-[#1A5319]/20 transition-all"
                   />
                 </div>
-                <button 
+                <button
                   onClick={handleTrack}
                   disabled={isTracking}
                   className="px-10 py-6 bg-[#1A5319] text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
@@ -667,9 +720,9 @@ export default function HomeClient({
                   { label: 'Livrée', icon: CheckCircle, status: ['completed'] }
                 ].map((step, i) => {
                   const isDone = trackingResult && step.status.includes(trackingResult.status) && trackingResult.status !== 'cancelled';
-                  const isCurrent = trackingResult && i > 0 && 
-                                   step.status[0] === trackingResult.status;
-                  
+                  const isCurrent = trackingResult && i > 0 &&
+                    step.status[0] === trackingResult.status;
+
                   return (
                     <div key={i} className="flex flex-col items-center text-center group">
                       <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${isDone ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : isCurrent ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
@@ -685,7 +738,7 @@ export default function HomeClient({
                 <div className="mt-12 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-1 bg-[#1A5319]/10">
-                        <div className="h-full bg-[#1A5319] transition-all duration-1000" style={{ width: trackingResult.status === 'completed' ? '100%' : trackingResult.status === 'shipped' ? '75%' : trackingResult.status === 'processing' ? '50%' : '25%' }} />
+                      <div className="h-full bg-[#1A5319] transition-all duration-1000" style={{ width: trackingResult.status === 'completed' ? '100%' : trackingResult.status === 'shipped' ? '75%' : trackingResult.status === 'processing' ? '50%' : '25%' }} />
                     </div>
                     <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-3">État actuel de la livraison</p>
                     <p className="text-2xl font-black text-[#1A5319] italic uppercase mb-1">
@@ -702,44 +755,44 @@ export default function HomeClient({
                   {/* ORDER DETAILS SUMMARY */}
                   <div className="bg-white rounded-[40px] border border-slate-100 shadow-xl p-8 text-left">
                     <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-50">
-                        <h4 className="font-black italic uppercase text-slate-900">Détails du colis</h4>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            {new Date(trackingResult.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                        </span>
+                      <h4 className="font-black italic uppercase text-slate-900">Détails du colis</h4>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        {new Date(trackingResult.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </span>
                     </div>
-                    
+
                     <div className="space-y-4 mb-8">
-                        {trackingResult.items && Array.isArray(trackingResult.items) ? (
-                            trackingResult.items.map((item: any, idx: number) => (
-                                <div key={idx} className="flex items-center justify-between group/item">
-                                    <div className="flex items-center gap-4">
-                                        <div className="relative size-14 bg-white rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 shadow-sm">
-                                            <Image 
-                                                src={item.imageUrl || 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80'} 
-                                                alt={item.name} 
-                                                fill 
-                                                className="object-cover transition-transform group-hover/item:scale-110" 
-                                            />
-                                            <div className="absolute top-0 left-0 bg-[#1A5319] text-white text-[9px] font-black px-1.5 py-0.5 rounded-br-lg shadow-sm z-10">
-                                                {item.quantity}x
-                                            </div>
-                                        </div>
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-bold text-slate-700 truncate pr-2">{item.name}</p>
-                                            <p className="text-[11px] text-slate-400 font-medium italic">Prix unitaire: {Number(item.price).toFixed(2)} MAD</p>
-                                        </div>
-                                    </div>
-                                    <p className="text-sm font-black text-slate-900">{Number(item.price * item.quantity).toFixed(2)} MAD</p>
+                      {trackingResult.items && Array.isArray(trackingResult.items) ? (
+                        trackingResult.items.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-center justify-between group/item">
+                            <div className="flex items-center gap-4">
+                              <div className="relative size-14 bg-white rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 shadow-sm">
+                                <Image
+                                  src={item.imageUrl || 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80'}
+                                  alt={item.name}
+                                  fill
+                                  className="object-cover transition-transform group-hover/item:scale-110"
+                                />
+                                <div className="absolute top-0 left-0 bg-[#1A5319] text-white text-[9px] font-black px-1.5 py-0.5 rounded-br-lg shadow-sm z-10">
+                                  {item.quantity}x
                                 </div>
-                            ))
-                        ) : (
-                            <p className="text-slate-400 italic text-sm">Détails des articles non disponibles.</p>
-                        )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold text-slate-700 truncate pr-2">{item.name}</p>
+                                <p className="text-[11px] text-slate-400 font-medium italic">Prix unitaire: {Number(item.price).toFixed(2)} MAD</p>
+                              </div>
+                            </div>
+                            <p className="text-sm font-black text-slate-900">{Number(item.price * item.quantity).toFixed(2)} MAD</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-slate-400 italic text-sm">Détails des articles non disponibles.</p>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between p-6 bg-slate-900 rounded-3xl text-white">
-                        <span className="font-black italic uppercase text-xs tracking-widest text-white/50">Total de la commande</span>
-                        <span className="text-xl font-black">{Number(trackingResult.totalPrice).toFixed(2)} MAD</span>
+                      <span className="font-black italic uppercase text-xs tracking-widest text-white/50">Total de la commande</span>
+                      <span className="text-xl font-black">{Number(trackingResult.totalPrice).toFixed(2)} MAD</span>
                     </div>
                   </div>
                 </div>
@@ -747,7 +800,7 @@ export default function HomeClient({
 
               <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col items-center">
                 <p className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-6">Préférer les notifications automatiques ?</p>
-                <a 
+                <a
                   href={`https://wa.me/${whatsappNumber}?text=Je%20souhaite%20recevoir%20les%20mises%20à%20jour%20de%20ma%20commande%20(Réf:%20${trackingNumber})%20sur%20WhatsApp.`}
                   className="flex items-center gap-4 text-[#25D366] font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
                 >
@@ -769,7 +822,7 @@ export default function HomeClient({
             <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
               <div className="w-full h-full border-[100px] border-white rounded-full translate-x-1/2 -translate-y-1/2" />
             </div>
-            
+
             <div className="max-w-2xl relative z-10">
               <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-10 leading-[0.85]">On reste en <span className="text-[#EE8C2B]">contact ?</span></h2>
               <p className="text-white/70 text-xl font-medium mb-12 max-w-lg leading-relaxed">Questions sur une marque ? Conseil nutritionnel ? Notre équipe d&apos;experts est disponible pour vous 7j/7.</p>
@@ -782,7 +835,7 @@ export default function HomeClient({
                 </Link>
               </div>
             </div>
-            
+
             <div className="w-full lg:w-1/3 mt-20 lg:mt-0 grid grid-cols-1 gap-10 relative z-10">
               {[
                 { icon: MapPin, title: 'Boutique', desc: settings?.address || 'Boulevard Zerktouni, Casablanca' },
@@ -807,10 +860,12 @@ export default function HomeClient({
       {/* SOS VETERINAIRE FLOATING BUTTON */}
       <div className="fixed bottom-8 left-8 z-[100] group">
         <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20 group-hover:opacity-40 transition-opacity" />
-        <a 
+        <a
           href={`https://wa.me/${whatsappNumber}?text=Bonjour,%20j'ai%20besoin%20d'un%20conseil%20vétérinaire%20urgent%20pour%20mon%20animal.`}
           target="_blank"
           rel="noopener noreferrer"
+
+
           className="relative flex items-center gap-4 bg-white border-2 border-red-500 text-red-500 p-2 pr-6 rounded-full shadow-[0_20px_50px_rgba(239,68,68,0.3)] hover:bg-red-500 hover:text-white transition-all duration-500 group-hover:-translate-y-2"
         >
           <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">

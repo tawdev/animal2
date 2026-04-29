@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Menu, Home, Store, ShieldCheck, Info, Mail, ChevronRight, X, Heart, GitCompare, ShoppingBag, Newspaper, ChevronDown, Truck } from 'lucide-react';
+import { Menu, Home, Store, ShieldCheck, Info, Mail, ChevronRight, X, Heart, GitCompare, ShoppingBag, Newspaper, ChevronDown, Truck, Search } from 'lucide-react';
 import { api, type Category } from '../lib/api';
+import { useSettings } from '../context/SettingsContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCompare } from '../context/CompareContext';
 import { useCart } from '../context/CartContext';
@@ -22,6 +23,7 @@ export default function Navbar() {
     const [hoveredSubCatId, setHoveredSubCatId] = useState<number | null>(null);
     const [isScrolled, setIsScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const { settings } = useSettings();
     
     const { count: wishlistCount } = useWishlist();
     const { count: compareCount } = useCompare();
@@ -32,7 +34,7 @@ export default function Navbar() {
     useEffect(() => {
         setMounted(true);
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 400);
+            setIsScrolled(window.scrollY > 80);
         };
         window.addEventListener('scroll', handleScroll);
         
@@ -90,10 +92,28 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="w-full sticky top-[64px] sm:top-[76px] md:top-0 z-40 bg-transparent py-2 sm:py-3" suppressHydrationWarning>
+        <nav className="w-full sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.06)] py-2 sm:py-3" suppressHydrationWarning>
             <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
                 {/* Desktop Navbar */}
                 <div className="hidden md:flex h-[76px] items-center rounded-2xl bg-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/20 p-3 pr-6 transition-all duration-300 backdrop-blur-xl">
+                    
+                    {/* Logo - visible only when scrolled (header no longer sticky) */}
+                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isScrolled ? 'w-[130px] opacity-100 mr-4' : 'w-0 opacity-0 mr-0'}`}>
+                        <Link href="/" className="shrink-0 flex items-center">
+                            <div className="relative w-[120px] h-[46px]">
+                                {mounted && (
+                                    <Image
+                                        src={settings?.logoUrl || '/logo.png'}
+                                        alt={settings?.storeName || 'PetMarket'}
+                                        fill
+                                        style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                        unoptimized
+                                        priority
+                                    />
+                                )}
+                            </div>
+                        </Link>
+                    </div>
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => {
@@ -250,8 +270,15 @@ export default function Navbar() {
                         })}
                     </div>
 
-                    {/* Scroll-triggered Action Icons */}
-                    <div className={`flex items-center gap-6 ml-auto mr-4 transition-all duration-200 ease-out ${isScrolled ? 'opacity-100 translate-x-0 pointer-events-auto delay-700' : 'opacity-0 translate-x-8 pointer-events-none delay-500'}`}>
+                    {/* Action Icons - Always visible since header is no longer sticky */}
+                    <div className="flex items-center gap-5 ml-auto mr-4">
+                        {/* Search icon - only shows when scrolled (header hidden) */}
+                        <Link
+                            href="/products"
+                            className={`group transition-all duration-300 ${isScrolled ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                        >
+                            <Search size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                        </Link>
                         <Link href="/compare" className="group relative transition-all">
                             <GitCompare size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
                             <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
