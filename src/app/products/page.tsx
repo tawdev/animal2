@@ -675,7 +675,7 @@ function ProductListingContent() {
 
             {/* Product Grid Area ... */}
             {loading ? (
-              <div className={`grid gap-3 sm:gap-4 ${viewMode === 'grid' ? 'grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
+              <div className={`grid gap-3 sm:gap-4 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'grid-cols-1'}`}>
                 {[...Array(20)].map((_, i) => (
                   <div key={i} className={`animate-pulse bg-white p-4 ${viewMode === 'grid' ? 'h-[250px] sm:h-[380px] flex flex-col' : 'h-[160px] sm:h-[200px] flex gap-4 sm:gap-6'} rounded-[20px] border border-slate-100 shadow-sm`}>
                     <div className={`${viewMode === 'grid' ? 'w-full h-[60%] mb-4' : 'h-full w-32 sm:w-48'} bg-slate-100 rounded-[12px]`}></div>
@@ -715,7 +715,7 @@ function ProductListingContent() {
                     }
                   }
                 }}
-                className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"
               >
                 {products.map((product) => (
                   <motion.div

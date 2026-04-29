@@ -234,7 +234,7 @@ export default function HomeClient({
   useEffect(() => {
     if (activeCategoryId) {
       setIsLoadingProducts(true);
-      api.getProducts({ categoryId: activeCategoryId, limit: 12, active: true })
+      api.getProducts({ categoryId: activeCategoryId, limit: 6, active: true })
         .then(res => {
           setCategoryProducts(res.data);
         })
@@ -286,7 +286,7 @@ export default function HomeClient({
                   <span className="text-[#EE8C2B]">PREMIUM</span>
                 </motion.h1>
               </div>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-lg text-slate-400 font-medium max-w-lg">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-lg text-slate-900 font-bold max-w-lg">
                 Animal Food Express — votre source premium pour l'alimentation et le bonheur de vos compagnons. Livraison partout au Maroc.
               </motion.p>
               <div className="flex flex-wrap gap-5">
@@ -387,20 +387,10 @@ export default function HomeClient({
         </div>
 
         <div className="mx-auto max-w-[1580px] px-6 lg:px-10 mt-16">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 min-h-[400px]">
-            {isLoadingProducts ? (
-              Array(6).fill(0).map((_, i) => <ProductSkeleton key={i} />)
-            ) : (
-              categoryProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
-            )}
-          </div>
+
           <div className="text-center mt-16">
             <Link
               href={`/products?categoryId=${activeCategoryId}`}
-
-
               className="inline-flex items-center gap-4 bg-[#1A5319] text-white px-10 py-5 rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all"
             >
               Voir toute la catégorie <ArrowRight size={20} />
@@ -488,7 +478,7 @@ export default function HomeClient({
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
             {isLoadingFeatured ? (
               Array(6).fill(0).map((_, i) => <ProductSkeleton key={i} />)
             ) : (
@@ -518,7 +508,7 @@ export default function HomeClient({
               <p className="text-white/60 text-lg font-medium leading-relaxed mb-10">
                 Chez Animal Food Express, nous croyons que chaque animal mérite le meilleur. C&apos;est pourquoi nous sélectionnons rigoureusement les marques les plus prestigieuses au monde pour garantir une santé optimale à vos compagnons.
               </p>
-              <div className="grid grid-cols-2 gap-8 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
                 {[
                   { title: 'Qualité Premium', desc: 'Produits testés et approuvés par des experts.' },
                   { title: 'Stock Permanent', desc: 'Vos produits préférés toujours disponibles.' }
@@ -554,7 +544,7 @@ export default function HomeClient({
                 Nos experts et vétérinaires partenaires partagent leurs meilleurs conseils pour assurer une vie longue et saine à vos compagnons.
               </p>
             </div>
-            <div className="w-full lg:w-1/2 grid grid-cols-2 gap-6">
+            <div className="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100">
                 <div className="w-12 h-12 bg-[#1A5319] rounded-2xl flex items-center justify-center text-white mb-6">
                   <PawPrint size={24} />

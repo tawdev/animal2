@@ -116,7 +116,7 @@ export default function WishlistPage() {
 
                 {/* ── Product Grid ───────────────────────────────────────── */}
                 {loading ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                         {[...Array(5)].map((_, i) => (
                             <div key={i} className="bg-white rounded-xl border border-slate-100 animate-pulse shadow-sm overflow-hidden">
                                 <div className="aspect-[5/4] w-full bg-slate-100" />
@@ -147,7 +147,7 @@ export default function WishlistPage() {
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             {products.map((product) => {
                                 const price = Number(product.price);
                                 const oldPrice = product.oldPrice ? Number(product.oldPrice) : null;

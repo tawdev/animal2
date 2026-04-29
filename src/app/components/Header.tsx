@@ -10,6 +10,7 @@ import { useCompare } from '@/app/context/CompareContext';
 import { useCart } from '@/app/context/CartContext';
 import { useSettings } from '@/app/context/SettingsContext';
 import { Search, Heart, GitCompare, ShoppingBag, ChevronDown, Mail, MessageCircle, X, Menu } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
     const { settings, loading: settingsLoading } = useSettings();
@@ -112,7 +113,7 @@ export default function Header() {
     };
 
     return (
-        <header className="w-full bg-white/95 backdrop-blur-md relative z-[100] border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+        <header className="w-full bg-white/95 backdrop-blur-md relative z-[1000] border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             {/* Top Bar - Hidden on small mobile */}
             <div className="border-b border-slate-200 py-2.5 hidden sm:block">
                 <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">

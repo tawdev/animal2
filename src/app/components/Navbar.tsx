@@ -13,7 +13,7 @@ import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
-    
+
     const pathname = usePathname();
     const [categories, setCategories] = useState<Category[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,20 +24,20 @@ export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
     const { settings } = useSettings();
-    
+
     const { count: wishlistCount } = useWishlist();
     const { count: compareCount } = useCompare();
     const { totalItems } = useCart();
-    
+
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 80);
+            setIsScrolled(window.scrollY > 20);
         };
         window.addEventListener('scroll', handleScroll);
-        
+
         const handleOpenMenu = () => setIsMobileMenuOpen(true);
         document.addEventListener('open-mobile-menu', handleOpenMenu);
 
@@ -48,14 +48,25 @@ export default function Navbar() {
     }, []);
 
     useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
+    useEffect(() => {
         api.getCategories(true).then(setCategories).catch(console.error);
     }, []);
 
     const categoryTree = useMemo(() => {
         const buildTree = (items: Category[], parentId: number | null = null): Category[] => {
             return items
-                .filter(item => 
-                    item.parentId === parentId && 
+                .filter(item =>
+                    item.parentId === parentId &&
                     (item.products?.length || item.children?.some(child => child.products?.length))
                 )
                 .map(item => ({
@@ -92,21 +103,61 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="w-full sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.06)] py-2 sm:py-3" suppressHydrationWarning>
+        <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-300 bg-transparent border-transparent shadow-none py-2 sm:py-3`} suppressHydrationWarning>
             <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+                {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
+                <div 
+                    className={`md:hidden fixed top-0 left-0 right-0 h-[64px] bg-white shadow-[0_4px_25px_rgba(0,0,0,0.1)] border-b border-slate-100 flex items-center justify-between px-4 z-[9999] transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
+                    suppressHydrationWarning
+                >
+                    <button 
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        className="p-2 text-slate-800 hover:text-[#1A5319] transition-colors"
+                    >
+                        <Menu size={24} />
+                    </button>
+
+                    <Link href="/" className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+                        <div className="relative w-[110px] h-[44px]">
+                            {mounted && (
+                                <Image
+                                    src={settings?.logoUrl || '/logo.png'}
+                                    alt={settings?.storeName || 'Animal Food Express'}
+                                    fill
+                                    style={{ objectFit: 'contain' }}
+                                    unoptimized
+                                    priority
+                                />
+                            )}
+                        </div>
+                    </Link>
+
+                    <div className="flex items-center gap-1">
+                        <Link href="/products" className="p-2 text-slate-800 hover:text-[#1A5319]">
+                            <Search size={22} />
+                        </Link>
+                        <Link href="/cart" className="p-2 text-slate-800 hover:text-[#1A5319] relative">
+                            <ShoppingBag size={22} />
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
+                                {mounted ? totalItems : 0}
+                            </span>
+                        </Link>
+                    </div>
+                </div>
+
                 {/* Desktop Navbar */}
                 <div className="hidden md:flex h-[76px] items-center rounded-2xl bg-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/20 p-3 pr-6 transition-all duration-300 backdrop-blur-xl">
-                    
+
                     {/* Logo - visible only when scrolled (header no longer sticky) */}
-                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isScrolled ? 'w-[130px] opacity-100 mr-4' : 'w-0 opacity-0 mr-0'}`}>
-                        <Link href="/" className="shrink-0 flex items-center">
-                            <div className="relative w-[120px] h-[46px]">
+                    <div className={`flex items-center transition-all duration-500 ease-in-out ${isScrolled ? 'w-[160px] opacity-100 mr-6' : 'w-0 opacity-0 mr-0 overflow-hidden'}`}>
+                        <Link href="/" className="shrink-0 flex items-center w-full h-full">
+                            <div className="relative w-full h-[52px]">
                                 {mounted && (
                                     <Image
                                         src={settings?.logoUrl || '/logo.png'}
-                                        alt={settings?.storeName || 'PetMarket'}
+                                        alt={settings?.storeName || 'Animal Food Express'}
                                         fill
-                                        style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                        style={{ objectFit: 'contain' }}
                                         unoptimized
                                         priority
                                     />
@@ -302,14 +353,17 @@ export default function Navbar() {
 
                 {/* Mobile Menu Backdrop */}
                 {isMobileMenuOpen && (
-                    <div 
-                        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] animate-in fade-in duration-300 md:hidden"
+                    <div
+                        className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[9998] animate-in fade-in duration-300 md:hidden"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
                 )}
 
                 {/* Mobile Menu Side Drawer */}
-                <div className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[210] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+                <div 
+                    className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[9999] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+                    style={{ backgroundColor: '#ffffff', opacity: 1 }}
+                >
                     <div className="flex flex-col h-full">
                         {/* Header */}
                         <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-[#1A5319] text-white">
@@ -346,7 +400,7 @@ export default function Navbar() {
                                 {categoryTree.map((cat) => {
                                     const isExpanded = mobileExpandedCat === cat.id;
                                     const hasChildren = cat.children && cat.children.length > 0;
-                                    
+
                                     return (
                                         <div key={cat.id} className="overflow-hidden">
                                             <div className="flex items-center justify-between">
@@ -358,7 +412,7 @@ export default function Navbar() {
                                                     {cat.name}
                                                 </Link>
                                                 {hasChildren && (
-                                                    <button 
+                                                    <button
                                                         onClick={() => setMobileExpandedCat(isExpanded ? null : cat.id)}
                                                         className={`p-3 text-slate-400 hover:text-[#1A5319] transition-all ${isExpanded ? 'rotate-180' : ''}`}
                                                     >
@@ -366,7 +420,7 @@ export default function Navbar() {
                                                     </button>
                                                 )}
                                             </div>
-                                            
+
                                             {hasChildren && (
                                                 <div className={`grid transition-all duration-300 ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                                                     <div className="overflow-hidden bg-slate-50/50 rounded-xl ml-4">

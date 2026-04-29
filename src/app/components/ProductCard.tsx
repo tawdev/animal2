@@ -90,7 +90,7 @@ export default function ProductCard({ product, className = '', imageClassName = 
         }}
         className={`group/card flex transition-all hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative h-full bg-white border border-slate-100 rounded-[24px] overflow-hidden ${isList
           ? 'flex-row w-full gap-4 sm:gap-6 items-start p-3 sm:p-4'
-          : 'flex-col w-full max-w-[280px]'
+          : 'flex-col w-full sm:max-w-[280px]'
           }`}
       >
       {/* Media Wrapper */}
