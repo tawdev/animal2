@@ -24,8 +24,8 @@ export default async function HomePage() {
   try {
     const [categoriesRes, popularProductsRes, newProductsRes, brandsRes, blogsRes, faqsRes, testimonialsRes] = await Promise.all([
       api.getCategories(true),
-      api.getProducts({ page: 1, limit: 12, active: true, sort: 'popularity' }),
-      api.getProducts({ page: 1, limit: 12, active: true, sort: 'createdAt' }),
+      api.getProducts({ page: 1, limit: 6, active: true, sort: 'popularity' }),
+      api.getProducts({ page: 1, limit: 6, active: true, sort: 'createdAt' }),
       api.getBrands(),
       api.getPosts(1, 3),
       api.getFaqs(),

@@ -242,7 +242,8 @@ export default function HomeClient({
     if (activeTab === 'Populaires' && featuredProducts === initialPopularProducts) return;
     
     setIsLoadingFeatured(true);
-    let query: any = { page: 1, limit: 12, active: true };
+    let query: any = { page: 1, limit: 6, active: true };
+    if (activeTab === 'Populaires') query.sort = 'popularity';
     if (activeTab === 'Promotions') query.onSale = true;
     if (activeTab === 'Nouveautés') query.sort = 'createdAt';
 
