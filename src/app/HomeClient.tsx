@@ -31,6 +31,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { api, type Category, type Product, type Brand, type BlogPost, type Faq, type Testimonial } from '@/app/lib/api';
 import { useSettings } from '@/app/context/SettingsContext';
+import { FALLBACK_TESTIMONIALS, FALLBACK_BLOG_POSTS } from '@/app/constants';
 import ProductCard from '@/app/components/ProductCard';
 import BlogCard from '@/app/components/BlogCard';
 
@@ -63,10 +64,6 @@ export default function HomeClient({
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>(initialPopularProducts);
   const [isLoadingFeatured, setIsLoadingFeatured] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
-  
-  const [activeIncontournableTab, setActiveIncontournableTab] = useState('Derniers Produits');
-  const [incontournableProducts, setIncontournableProducts] = useState<Product[]>(initialNewProducts);
-  const [isLoadingIncontournable, setIsLoadingIncontournable] = useState(false);
   
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -187,38 +184,7 @@ export default function HomeClient({
 
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  const [testimonials] = useState<Testimonial[]>(initialTestimonials.length > 0 ? initialTestimonials : [
-    {
-      id: 1,
-      initial: 'MA',
-      name: 'Mohammed Alami',
-      role: 'Propriétaire de Labrador — Casablanca',
-      content: "La qualité des croquettes est irréprochable. Mes chiens sont en pleine forme depuis que j'achète chez Animal Food Express. Les marques premium sont enfin accessibles. Livraison rapide même en pleine semaine.",
-      isActive: true,
-      createdAt: '',
-      updatedAt: ''
-    },
-    {
-      id: 2,
-      initial: 'KB',
-      name: 'Karim Bensaid',
-      role: "Éleveur Félin — Rabat",
-      content: "Un service client exceptionnel et des accessoires magnifiques. Mes chats adorent leurs nouveaux arbres à chat. Je recommande vivement pour tous les passionnés d'animaux.",
-      isActive: true,
-      createdAt: '',
-      updatedAt: ''
-    },
-    {
-      id: 3,
-      initial: 'FZ',
-      name: 'Fatine Zahra',
-      role: 'Propriétaire — Marrakech',
-      content: "J'ai trouvé tout le nécessaire pour mon premier chiot. Conseils précieux du support technique pour choisir la bonne alimentation. C'est rare de trouver une telle expertise en ligne au Maroc.",
-      isActive: true,
-      createdAt: '',
-      updatedAt: ''
-    }
-  ]);
+  const [testimonials] = useState<Testimonial[]>(initialTestimonials.length > 0 ? initialTestimonials : FALLBACK_TESTIMONIALS);
 
   useEffect(() => {
     if (testimonials.length === 0) return;
@@ -554,47 +520,7 @@ export default function HomeClient({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              {
-                id: 999,
-                title: "Comment gérer les allergies alimentaires de mon Bulldog ?",
-                slug: "allergies-alimentaires-bulldog",
-                excerpt: "Découvrez les signes d'allergies et comment adapter le régime de votre Bulldog avec des conseils de pro.",
-                author: "Dr. Sarah Alami (Vétérinaire)",
-                category: "CONSEIL EXPERT",
-                imageUrl: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=1000",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                status: 'Published',
-                content: "Contenu détaillé validé par Dr. Sarah..."
-              },
-              {
-                id: 998,
-                title: "Top 5 des jouets d'occupation pour chats d'appartement",
-                slug: "top-5-jouets-chats",
-                excerpt: "Stimulez l'instinct de chasseur de votre chat avec notre sélection de jouets validée par des comportementalistes.",
-                author: "Yassine Drissi (Expert)",
-                category: "BIEN-ÊTRE",
-                imageUrl: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=1000",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                status: 'Published',
-                content: "Articles complet sur les jouets..."
-              },
-              {
-                id: 997,
-                title: "Hygiène bucco-dentaire : 3 gestes essentiels pour votre chien",
-                slug: "hygiene-dentaire-chien",
-                excerpt: "Prévenez le tartre et les maladies parodontales grâce à ces conseils simples mais vitaux.",
-                author: "Dr. Mehdi Fassi",
-                category: "SANTÉ",
-                imageUrl: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&q=80&w=1000",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                status: 'Published',
-                content: "Conseils santé dentaire..."
-              }
-            ].map((post: BlogPost) => (
+            {(initialBlogs.length > 0 ? initialBlogs : FALLBACK_BLOG_POSTS).map((post: BlogPost) => (
               <BlogCard key={post.id} post={post} />
             ))}
           </div>
