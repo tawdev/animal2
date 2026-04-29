@@ -34,6 +34,7 @@ function StatusBadge({ status }: { status: Order['status'] }) {
     pending: { bg: 'bg-amber-50 ring-amber-600/20', text: 'text-amber-700', icon: Clock },
     confirmed: { bg: 'bg-blue-50 ring-blue-600/20', text: 'text-blue-700', icon: Package },
     processing: { bg: 'bg-indigo-50 ring-indigo-600/20', text: 'text-indigo-700', icon: Package },
+    shipped: { bg: 'bg-purple-50 ring-purple-600/20', text: 'text-purple-700', icon: Truck },
     completed: { bg: 'bg-emerald-50 ring-emerald-600/20', text: 'text-emerald-700', icon: CheckCircle2 },
     cancelled: { bg: 'bg-rose-50 ring-rose-600/20', text: 'text-rose-700', icon: XCircle },
   };
@@ -53,6 +54,7 @@ const STATUS_FILTERS: { label: string; value: string }[] = [
   { label: 'En attente', value: 'pending' },
   { label: 'Confirmés', value: 'confirmed' },
   { label: 'En préparation', value: 'processing' },
+  { label: 'Expédiés', value: 'shipped' },
   { label: 'Terminés', value: 'completed' },
   { label: 'Annulés', value: 'cancelled' },
 ];
@@ -397,10 +399,19 @@ export default function AdminOrdersPage() {
                                 {order.status === 'processing' && (
                                   <button
                                     disabled={actionLoading === order.id}
+                                    onClick={() => handleUpdateStatus(order.id, 'shipped')}
+                                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-purple-100"
+                                  >
+                                    Marquer comme Expédié
+                                  </button>
+                                )}
+                                {order.status === 'shipped' && (
+                                  <button
+                                    disabled={actionLoading === order.id}
                                     onClick={() => handleUpdateStatus(order.id, 'completed')}
                                     className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-100"
                                   >
-                                    Marquer comme livré
+                                    Marquer comme Livré
                                   </button>
                                 )}
                                 {order.status !== 'cancelled' && order.status !== 'completed' && (
