@@ -58,7 +58,7 @@ export interface Order {
     invoiceReference: string | null;
     items: any;
     totalPrice: number;
-    status: 'pending' | 'confirmed' | 'processing' | 'completed' | 'cancelled';
+    status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'completed' | 'cancelled';
     createdAt: string;
 }
 
@@ -222,28 +222,57 @@ function normalizeImageUrl(url: string | null | undefined): string | null {
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
         return url;
     }
-    // Relative path like /uploads/file.jpg → http://localhost:3002/uploads/file.jpg
-    return `${API_BASE.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
+    
+    const base = API_BASE.replace(/\/$/, '');
+    const path = url.replace(/^\//, '');
+    
+    // If the path already starts with 'api/', don't prepend it if the base already ends with /api
+    if (path.startsWith('api/') && base.endsWith('/api')) {
+        return `${base.replace(/\/api$/, '')}/${path}`;
+    }
+    
+    return `${base}/${path}`;
 }
 
 /** Recursively walk an object and fix any field named imageUrl or logoUrl. */
 function fixImageUrls<T>(data: T): T {
     if (data === null || data === undefined) return data;
-    if (Array.isArray(data)) return data.map(fixImageUrls) as unknown as T;
+    
+    // Handle Arrays
+    if (Array.isArray(data)) {
+        return data.map(item => fixImageUrls(item)) as unknown as T;
+    }
+    
+    // Handle Objects
     if (typeof data === 'object') {
         const obj = data as Record<string, any>;
         const result: Record<string, any> = {};
+        
         for (const key of Object.keys(obj)) {
-            if ((key === 'imageUrl' || key === 'logoUrl') && typeof obj[key] === 'string') {
-                result[key] = normalizeImageUrl(obj[key]);
-            } else if (typeof obj[key] === 'object') {
-                result[key] = fixImageUrls(obj[key]);
-            } else {
-                result[key] = obj[key];
+            const value = obj[key];
+            
+            // Normalize any key that looks like an image URL
+            if (['imageUrl', 'logoUrl', 'image', 'thumbnail', 'img'].includes(key) && typeof value === 'string') {
+                result[key] = normalizeImageUrl(value);
+            } 
+            // Normalize arrays of strings (like imageUrls)
+            else if (key === 'imageUrls' && Array.isArray(value)) {
+                result[key] = value.map((url: any) => 
+                    typeof url === 'string' ? normalizeImageUrl(url) : url
+                );
+            }
+            // Recurse into nested objects or arrays
+            else if (value !== null && typeof value === 'object') {
+                result[key] = fixImageUrls(value);
+            }
+            // Keep other values as is
+            else {
+                result[key] = value;
             }
         }
         return result as T;
     }
+    
     return data;
 }
 

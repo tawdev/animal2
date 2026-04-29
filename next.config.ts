@@ -7,14 +7,19 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '3002',
-        pathname: '/uploads/**',
+        port: '3021',
+        pathname: '/api/uploads/**',
       },
       {
         protocol: 'http',
         hostname: '127.0.0.1',
-        port: '3002',
-        pathname: '/uploads/**',
+        port: '3021',
+        pathname: '/api/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'test.ahlanbek.com',
+        pathname: '/api/uploads/**',
       },
       {
         protocol: 'https',
@@ -29,12 +34,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'moldroguerie.ma',
-        pathname: '/uploads/**',
+        pathname: '/api/uploads/**',
       },
       {
         protocol: 'http',
         hostname: 'moldroguerie.ma',
-        pathname: '/uploads/**',
+        pathname: '/api/uploads/**',
       },
       {
         protocol: 'https',

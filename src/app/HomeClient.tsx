@@ -71,6 +71,36 @@ export default function HomeClient({
   // Default WhatsApp Number
   const whatsappNumber = (settings?.phoneNumber || '212600000000').replace(/\D/g, '');
 
+  // Tracking State
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackingResult, setTrackingResult] = useState<any>(null);
+  const [isTracking, setIsTracking] = useState(false);
+  const [trackError, setTrackError] = useState('');
+
+  const handleTrack = async () => {
+    if (!trackingNumber.trim()) return;
+    setIsTracking(true);
+    setTrackError('');
+    setTrackingResult(null);
+    try {
+      // The tracking endpoint is /orders/track/:ref
+      const res = await api.trackOrder(trackingNumber.trim().replace('#', ''));
+      if (res && typeof res.items === 'string') {
+        try {
+          res.items = JSON.parse(res.items);
+        } catch (e) {
+          console.error('Failed to parse order items', e);
+        }
+      }
+      setTrackingResult(res);
+    } catch (err: any) {
+      console.error('Tracking error:', err);
+      setTrackError('Commande introuvable. Vérifiez le numéro (ex: AFE-2024-XXXX).');
+    } finally {
+      setIsTracking(false);
+    }
+  };
+
 
   const [faqs, setFaqs] = useState<(Faq & { userVoted: 'like' | 'dislike' | null })[]>(
     initialFaqs.map(f => ({ ...f, userVoted: null }))
@@ -645,41 +675,124 @@ export default function HomeClient({
             </div>
 
             <div className="max-w-2xl mx-auto">
-              <div className="flex flex-col md:flex-row gap-4 mb-12">
+              <div className="flex flex-col md:flex-row gap-4 mb-8">
                 <div className="flex-1 relative">
                   <Package className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                   <input 
                     type="text" 
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleTrack()}
                     placeholder="Ex: #AFE-2024-8892" 
                     className="w-full pl-14 pr-6 py-6 bg-slate-50 border border-slate-100 rounded-3xl text-lg font-bold text-slate-900 placeholder:text-slate-300 outline-none focus:bg-white focus:border-[#1A5319]/20 transition-all"
                   />
                 </div>
-                <button className="px-10 py-6 bg-[#1A5319] text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all active:scale-95">
-                  Suivre
+                <button 
+                  onClick={handleTrack}
+                  disabled={isTracking}
+                  className="px-10 py-6 bg-[#1A5319] text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  {isTracking ? 'Recherche...' : 'Suivre'}
                 </button>
               </div>
 
-              {/* MOCK TIMELINE (Visible when tracking) */}
+              {trackError && (
+                <p className="text-red-500 font-bold text-center mb-8 bg-red-50 py-3 rounded-2xl border border-red-100 italic">
+                  {trackError}
+                </p>
+              )}
+
+              {/* TIMELINE */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[
-                  { label: 'Confirmée', icon: CheckCircle, active: true, done: true },
-                  { label: 'Préparation', icon: Package, active: true, done: false },
-                  { label: 'En route', icon: Truck, active: false, done: false },
-                  { label: 'Livrée', icon: CheckCircle, active: false, done: false }
-                ].map((step, i) => (
-                  <div key={i} className="flex flex-col items-center text-center group">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${step.done ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : step.active ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
-                      <step.icon size={28} />
+                  { label: 'Confirmée', icon: CheckCircle, status: ['pending', 'confirmed', 'processing', 'shipped', 'completed'] },
+                  { label: 'Préparation', icon: Package, status: ['processing', 'shipped', 'completed'] },
+                  { label: 'En route', icon: Truck, status: ['shipped', 'completed'] },
+                  { label: 'Livrée', icon: CheckCircle, status: ['completed'] }
+                ].map((step, i) => {
+                  const isDone = trackingResult && step.status.includes(trackingResult.status) && trackingResult.status !== 'cancelled';
+                  const isCurrent = trackingResult && i > 0 && 
+                                   step.status[0] === trackingResult.status;
+                  
+                  return (
+                    <div key={i} className="flex flex-col items-center text-center group">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${isDone ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : isCurrent ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
+                        <step.icon size={28} />
+                      </div>
+                      <span className={`text-[11px] font-black uppercase tracking-widest ${isDone || isCurrent ? 'text-slate-900' : 'text-slate-300'}`}>{step.label}</span>
                     </div>
-                    <span className={`text-[11px] font-black uppercase tracking-widest ${step.active || step.done ? 'text-slate-900' : 'text-slate-300'}`}>{step.label}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
+
+              {trackingResult && (
+                <div className="mt-12 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="p-8 bg-slate-50 rounded-[40px] border border-slate-100 text-center relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-[#1A5319]/10">
+                        <div className="h-full bg-[#1A5319] transition-all duration-1000" style={{ width: trackingResult.status === 'completed' ? '100%' : trackingResult.status === 'shipped' ? '75%' : trackingResult.status === 'processing' ? '50%' : '25%' }} />
+                    </div>
+                    <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-3">État actuel de la livraison</p>
+                    <p className="text-2xl font-black text-[#1A5319] italic uppercase mb-1">
+                      {trackingResult.status === 'pending' && '⏳ En attente de confirmation'}
+                      {trackingResult.status === 'confirmed' && '✅ Commande Confirmée'}
+                      {trackingResult.status === 'processing' && '📦 En cours de préparation'}
+                      {trackingResult.status === 'shipped' && '🚚 En cours de livraison'}
+                      {trackingResult.status === 'completed' && '🏁 Livraison effectuée'}
+                      {trackingResult.status === 'cancelled' && '❌ Commande Annulée'}
+                    </p>
+                    <p className="text-slate-400 text-[11px] font-bold italic">Réf: {trackingResult.invoiceReference}</p>
+                  </div>
+
+                  {/* ORDER DETAILS SUMMARY */}
+                  <div className="bg-white rounded-[40px] border border-slate-100 shadow-xl p-8 text-left">
+                    <div className="flex items-center justify-between mb-6 pb-6 border-b border-slate-50">
+                        <h4 className="font-black italic uppercase text-slate-900">Détails du colis</h4>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            {new Date(trackingResult.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </span>
+                    </div>
+                    
+                    <div className="space-y-4 mb-8">
+                        {trackingResult.items && Array.isArray(trackingResult.items) ? (
+                            trackingResult.items.map((item: any, idx: number) => (
+                                <div key={idx} className="flex items-center justify-between group/item">
+                                    <div className="flex items-center gap-4">
+                                        <div className="relative size-14 bg-white rounded-xl overflow-hidden border border-slate-100 flex-shrink-0 shadow-sm">
+                                            <Image 
+                                                src={item.imageUrl || 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80'} 
+                                                alt={item.name} 
+                                                fill 
+                                                className="object-cover transition-transform group-hover/item:scale-110" 
+                                            />
+                                            <div className="absolute top-0 left-0 bg-[#1A5319] text-white text-[9px] font-black px-1.5 py-0.5 rounded-br-lg shadow-sm z-10">
+                                                {item.quantity}x
+                                            </div>
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-bold text-slate-700 truncate pr-2">{item.name}</p>
+                                            <p className="text-[11px] text-slate-400 font-medium italic">Prix unitaire: {Number(item.price).toFixed(2)} MAD</p>
+                                        </div>
+                                    </div>
+                                    <p className="text-sm font-black text-slate-900">{Number(item.price * item.quantity).toFixed(2)} MAD</p>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-slate-400 italic text-sm">Détails des articles non disponibles.</p>
+                        )}
+                    </div>
+
+                    <div className="flex items-center justify-between p-6 bg-slate-900 rounded-3xl text-white">
+                        <span className="font-black italic uppercase text-xs tracking-widest text-white/50">Total de la commande</span>
+                        <span className="text-xl font-black">{Number(trackingResult.totalPrice).toFixed(2)} MAD</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-16 pt-8 border-t border-slate-100 flex flex-col items-center">
                 <p className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-6">Préférer les notifications automatiques ?</p>
                 <a 
-                  href={`https://wa.me/${whatsappNumber}?text=Je%20souhaite%20recevoir%20les%20mises%20à%20jour%20de%20ma%20commande%20sur%20WhatsApp.`}
+                  href={`https://wa.me/${whatsappNumber}?text=Je%20souhaite%20recevoir%20les%20mises%20à%20jour%20de%20ma%20commande%20(Réf:%20${trackingNumber})%20sur%20WhatsApp.`}
                   className="flex items-center gap-4 text-[#25D366] font-black uppercase tracking-widest text-xs hover:scale-105 transition-all"
                 >
                   <div className="w-10 h-10 bg-[#25D366]/10 rounded-full flex items-center justify-center">
