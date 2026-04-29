@@ -29,7 +29,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, type Category, type Product, type Brand, type BlogPost, type Faq } from '@/app/lib/api';
+import { api, type Category, type Product, type Brand, type BlogPost, type Faq, type Testimonial } from '@/app/lib/api';
 import { useSettings } from '@/app/context/SettingsContext';
 import ProductCard from '@/app/components/ProductCard';
 import BlogCard from '@/app/components/BlogCard';
