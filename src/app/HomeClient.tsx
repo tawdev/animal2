@@ -286,7 +286,7 @@ export default function HomeClient({
                   <span className="text-[#EE8C2B]">PREMIUM</span>
                 </motion.h1>
               </div>
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-lg text-slate-900 font-bold max-w-lg">
+              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-lg text-white/80 font-medium max-w-lg">
                 Animal Food Express — votre source premium pour l'alimentation et le bonheur de vos compagnons. Livraison partout au Maroc.
               </motion.p>
               <div className="flex flex-wrap gap-5">
