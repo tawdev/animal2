@@ -34,7 +34,7 @@ export default function Navbar() {
     useEffect(() => {
         setMounted(true);
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            setIsScrolled(window.scrollY > 50);
         };
         window.addEventListener('scroll', handleScroll);
 
@@ -106,11 +106,11 @@ export default function Navbar() {
         <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-300 bg-transparent border-transparent shadow-none py-2 sm:py-3`} suppressHydrationWarning>
             <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
                 {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
-                <div 
+                <div
                     className={`md:hidden fixed top-0 left-0 right-0 h-[64px] bg-white shadow-[0_4px_25px_rgba(0,0,0,0.1)] border-b border-slate-100 flex items-center justify-between px-4 z-[9999] transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
                     suppressHydrationWarning
                 >
-                    <button 
+                    <button
                         onClick={() => setIsMobileMenuOpen(true)}
                         className="p-2 text-slate-800 hover:text-[#1A5319] transition-colors"
                     >
@@ -146,25 +146,34 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop Navbar */}
-                <div className="hidden md:flex h-[76px] items-center rounded-2xl bg-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white/20 p-3 pr-6 transition-all duration-300 backdrop-blur-xl">
+                <div className={`hidden md:flex h-[76px] items-center rounded-2xl transition-all duration-500 backdrop-blur-xl border border-white/20 p-3 pr-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] ${isScrolled ? 'bg-white/40' : 'bg-white/20'}`}>
 
-                    {/* Logo - visible only when scrolled (header no longer sticky) */}
-                    <div className={`flex items-center transition-all duration-500 ease-in-out ${isScrolled ? 'w-[160px] opacity-100 mr-6' : 'w-0 opacity-0 mr-0 overflow-hidden'}`}>
-                        <Link href="/" className="shrink-0 flex items-center w-full h-full">
-                            <div className="relative w-full h-[52px]">
-                                {mounted && (
-                                    <Image
-                                        src={settings?.logoUrl || '/logo.png'}
-                                        alt={settings?.storeName || 'Animal Food Express'}
-                                        fill
-                                        style={{ objectFit: 'contain' }}
-                                        unoptimized
-                                        priority
-                                    />
-                                )}
-                            </div>
-                        </Link>
-                    </div>
+                    <AnimatePresence>
+                        {isScrolled && (
+                            <motion.div
+                                initial={{ width: 0, opacity: 0, x: -20 }}
+                                animate={{ width: 160, opacity: 1, x: 0 }}
+                                exit={{ width: 0, opacity: 0, x: -20 }}
+                                transition={{ duration: 0.5, ease: "easeInOut" }}
+                                className="flex items-center mr-6 overflow-hidden"
+                            >
+                                <Link href="/" className="shrink-0 flex items-center w-full h-full">
+                                    <div className="relative w-full h-[52px]">
+                                        {mounted && (
+                                            <Image
+                                                src={settings?.logoUrl || '/logo.png'}
+                                                alt={settings?.storeName || 'Animal Food Express'}
+                                                fill
+                                                style={{ objectFit: 'contain' }}
+                                                unoptimized
+                                                priority
+                                            />
+                                        )}
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => {
@@ -360,7 +369,7 @@ export default function Navbar() {
                 )}
 
                 {/* Mobile Menu Side Drawer */}
-                <div 
+                <div
                     className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[9999] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
                     style={{ backgroundColor: '#ffffff', opacity: 1 }}
                 >

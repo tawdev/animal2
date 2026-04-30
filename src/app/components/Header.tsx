@@ -27,13 +27,19 @@ export default function Header() {
     const { count: wishlistCount } = useWishlist();
     const { count: compareCount } = useCompare();
     const { totalItems } = useCart();
+    const [isScrolled, setIsScrolled] = useState(false);
     const [mounted, setMounted] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const searchContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setMounted(true);
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
         api.getCategories(true).then(setCategories).catch(console.error);
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     // Flatten categories for the dropdown
@@ -113,7 +119,7 @@ export default function Header() {
     };
 
     return (
-        <header className="w-full bg-white/95 backdrop-blur-md relative z-[1000] border-b border-slate-100 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+        <header className={`w-full bg-white/70 backdrop-blur-xl relative z-[1000] border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-500 ${isScrolled ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'}`}>
             {/* Top Bar - Hidden on small mobile */}
             <div className="border-b border-slate-200 py-2.5 hidden sm:block">
                 <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -128,10 +134,10 @@ export default function Header() {
                         <Link href="/contact" className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#1A5319] transition-colors">
                             <Mail size={16} className="text-[#1A5319]" /> <span>Contact</span>
                         </Link>
-                        <a 
-                            href={`https://wa.me/${(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || settings?.phoneNumber || '').replace(/\D/g, '')}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
+                        <a
+                            href={`https://wa.me/${(process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || settings?.phoneNumber || '').replace(/\D/g, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex items-center gap-1.5 text-[12px] sm:text-[13px] font-bold text-slate-700 hover:text-[#1A5319] transition-colors"
                         >
                             <MessageCircle size={16} className="text-[#1A5319]" /> <span>Besoin d&apos;aide ?</span>
@@ -143,11 +149,11 @@ export default function Header() {
             {/* Main Header */}
             <div className="py-2.5 sm:py-3 relative">
                 <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-4 md:gap-10">
-                    
+
                     {/* Mobile Menu Trigger & Logo */}
                     <div className="flex items-center gap-3">
                         {/* Mobile Menu Button - Displayed on mobile only */}
-                        <button 
+                        <button
                             className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors"
                             onClick={() => {
                                 // Trigger custom event for Navbar to open
@@ -162,15 +168,15 @@ export default function Header() {
                                 {(!mounted || settingsLoading) ? (
                                     <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
                                 ) : (
-                                        <Image
-                                            src={settings?.logoUrl || "/logo.png"}
-                                            alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
-                                            fill
-                                            style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
-                                            priority
-                                            unoptimized={true}
-                                            sizes="(max-width: 640px) 110px, (max-width: 1024px) 140px, 160px"
-                                        />
+                                    <Image
+                                        src={settings?.logoUrl || "/logo.png"}
+                                        alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
+                                        fill
+                                        style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                        priority
+                                        unoptimized={true}
+                                        sizes="(max-width: 640px) 110px, (max-width: 1024px) 140px, 160px"
+                                    />
                                 )}
                             </div>
                         </Link>
@@ -353,7 +359,7 @@ export default function Header() {
                     {/* Action Icons - Mobile only (desktop icons are in the sticky Navbar) */}
                     <div className="flex items-center gap-2 sm:gap-4">
                         {/* Mobile Search Button */}
-                        <button 
+                        <button
                             className="md:hidden p-2 text-slate-700 hover:text-[#1A5319] transition-colors"
                             onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                         >
@@ -408,7 +414,7 @@ export default function Header() {
                                     </button>
                                 )}
                             </div>
-                            <button 
+                            <button
                                 onClick={handleSearch}
                                 className="ml-2 h-[46px] px-5 bg-[#1A5319] text-white rounded-[7px] font-bold text-sm"
                             >
