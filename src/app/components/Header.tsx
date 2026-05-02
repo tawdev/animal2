@@ -42,11 +42,13 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Flatten categories for the dropdown
+    // Flatten categories for the dropdown and ensure unique IDs
     const flatCategories = categories.reduce((acc: Category[], cat) => {
-        acc.push(cat);
+        if (!acc.find(c => c.id === cat.id)) acc.push(cat);
         if (cat.children) {
-            cat.children.forEach(child => acc.push(child));
+            cat.children.forEach(child => {
+                if (!acc.find(c => c.id === child.id)) acc.push(child);
+            });
         }
         return acc;
     }, []);
@@ -119,7 +121,7 @@ export default function Header() {
     };
 
     return (
-        <header className={`w-full bg-white/70 backdrop-blur-xl relative z-[1000] border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-500 ${isScrolled ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+        <header className={`w-full bg-white relative z-[5000] border-b border-slate-100 shadow-sm transition-all duration-500 print:hidden ${isScrolled ? 'opacity-0 -translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'}`}>
             {/* Top Bar - Hidden on small mobile */}
             <div className="border-b border-slate-200 py-2.5 hidden sm:block">
                 <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">

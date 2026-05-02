@@ -40,7 +40,7 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="bg-white pt-0">
+        <footer className="bg-white pt-0 print:hidden">
             {/* Newsletter Section */}
             <div className="bg-[#1A5319] py-12">
                 <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8 text-white">

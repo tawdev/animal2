@@ -15,7 +15,7 @@ export default function AdminInventoryPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [stockFilter, setStockFilter] = useState<'all' | 'low' | 'in-stock'>('all');
+    const [stockFilter, setStockFilter] = useState<'all' | 'low' | 'in-stock' | 'out-of-stock'>('all');
     const [updatingId, setUpdatingId] = useState<number | null>(null);
 
     // Pagination
@@ -44,7 +44,8 @@ export default function AdminInventoryPage() {
                 (p.sku?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
 
             let matchesFilter = true;
-            if (stockFilter === 'low') matchesFilter = p.stock <= 10;
+            if (stockFilter === 'out-of-stock') matchesFilter = p.stock === 0;
+            else if (stockFilter === 'low') matchesFilter = p.stock <= 10 && p.stock > 0;
             else if (stockFilter === 'in-stock') matchesFilter = p.stock > 10;
 
             return matchesSearch && matchesFilter;
@@ -117,6 +118,52 @@ export default function AdminInventoryPage() {
                     </div>
                 </header>
 
+                {/* 🟠 Low Stock Alert Banner */}
+                {!loading && products.filter(p => p.stock <= 10 && p.stock > 0).length > 0 && (
+                    <div className="mb-6 flex items-center gap-4 p-4 bg-amber-50 border border-amber-200 rounded-xl animate-in slide-in-from-top-2 duration-300">
+                        <div className="size-10 shrink-0 rounded-xl bg-amber-100 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-amber-600 text-[22px] animate-pulse">warning</span>
+                        </div>
+                        <div className="flex-1">
+                            <p className="font-bold text-amber-800 text-sm">
+                                ⚠️ {products.filter(p => p.stock <= 10 && p.stock > 0).length} produit(s) en stock faible
+                            </p>
+                            <p className="text-xs text-amber-600 mt-0.5 font-medium">
+                                Ces produits ont moins de 10 unités restantes. Pensez à réapprovisionner.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setStockFilter('low')}
+                            className="shrink-0 px-4 py-2 bg-amber-500 text-white rounded-lg text-xs font-bold hover:bg-amber-600 transition-colors shadow-sm"
+                        >
+                            Voir les produits
+                        </button>
+                    </div>
+                )}
+
+                {/* 🔴 Out of Stock Alert Banner */}
+                {!loading && products.filter(p => p.stock === 0).length > 0 && (
+                    <div className="mb-6 flex items-center gap-4 p-4 bg-red-50 border border-red-200 rounded-xl animate-in slide-in-from-top-2 duration-300">
+                        <div className="size-10 shrink-0 rounded-xl bg-red-100 flex items-center justify-center">
+                            <span className="material-symbols-outlined text-red-600 text-[22px]">error</span>
+                        </div>
+                        <div className="flex-1">
+                            <p className="font-bold text-red-800 text-sm">
+                                🔴 {products.filter(p => p.stock === 0).length} produit(s) en rupture de stock
+                            </p>
+                            <p className="text-xs text-red-600 mt-0.5 font-medium">
+                                Ces produits ne sont plus disponibles à la vente. Action immédiate requise.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => setStockFilter('out-of-stock')}
+                            className="shrink-0 px-4 py-2 bg-red-500 text-white rounded-lg text-xs font-bold hover:bg-red-600 transition-colors shadow-sm"
+                        >
+                            Voir les ruptures
+                        </button>
+                    </div>
+                )}
+
                 {/* Filters & Search */}
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
                     <div className="relative flex-1">
@@ -133,6 +180,7 @@ export default function AdminInventoryPage() {
                         {[
                             { id: 'all', label: 'All Products', icon: 'list' },
                             { id: 'low', label: 'Low Stock', icon: 'warning' },
+                            { id: 'out-of-stock', label: 'Out of Stock', icon: 'error' },
                             { id: 'in-stock', label: 'In Stock', icon: 'check_circle' }
                         ].map((filter) => (
                             <button

@@ -122,9 +122,29 @@ export default function AdminReviewsPage() {
                                         <p className="text-[14px] text-slate-600 italic max-w-3xl leading-relaxed">
                                             "{review.comment}"
                                         </p>
-                                        <div className="mt-3 inline-block bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-500 flex items-center gap-2">
-                                            <span className="material-symbols-outlined text-[14px]">inventory_2</span>
-                                            ID Produit: {review.product?.name || review.productId}
+                                        <div className="mt-4 flex items-center gap-3 p-2 bg-slate-50 border border-slate-100 rounded-xl w-max max-w-full">
+                                            <div className="w-12 h-12 rounded-lg bg-white border border-slate-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                {review.product?.imageUrl ? (
+                                                    <img src={review.product.imageUrl} alt={review.product.name || 'Produit'} className="w-full h-full object-contain p-1" />
+                                                ) : (
+                                                    <span className="material-symbols-outlined text-slate-300 text-[20px]">inventory_2</span>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col truncate pr-3">
+                                                <span className="text-[13px] font-bold text-slate-800 truncate" title={review.product?.name || `Produit #${review.productId}`}>
+                                                    {review.product?.name || `Produit #${review.productId}`}
+                                                </span>
+                                                {review.product?.sku && (
+                                                    <span className="text-[11px] font-medium text-slate-500">
+                                                        SKU: {review.product.sku}
+                                                    </span>
+                                                )}
+                                                {!review.product?.sku && review.productId && (
+                                                    <span className="text-[11px] font-medium text-slate-400">
+                                                        ID: {review.productId}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 

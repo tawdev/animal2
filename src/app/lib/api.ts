@@ -2,6 +2,18 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL as string;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export type AdminRole = 'admin' | 'stock_manager' | 'order_manager';
+
+export interface AdminUser {
+    id: number;
+    email: string;
+    fullName: string;
+    role: AdminRole;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export interface Category {
     id: number;
     name: string;
@@ -615,6 +627,27 @@ export const api = {
         }),
     deleteTestimonial: (id: number) =>
         apiFetch<void>(`/testimonials/${id}`, {
+            method: 'DELETE',
+        }),
+
+    // Admin Users Management
+    getAdminUsers: () => apiFetch<AdminUser[]>('/admin/users'),
+    createAdminUser: (data: { fullName: string; email: string; password: string; role: AdminRole }) =>
+        apiFetch<AdminUser>('/admin/users', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+    updateAdminUser: (id: number, data: Partial<{ fullName: string; role: AdminRole; isActive: boolean; password: string }>) =>
+        apiFetch<AdminUser>(`/admin/users/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(data),
+        }),
+    toggleAdminUserActive: (id: number) =>
+        apiFetch<AdminUser>(`/admin/users/${id}/toggle-active`, {
+            method: 'PATCH',
+        }),
+    deleteAdminUser: (id: number) =>
+        apiFetch<void>(`/admin/users/${id}`, {
             method: 'DELETE',
         }),
 };

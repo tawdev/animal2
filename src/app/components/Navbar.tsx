@@ -103,7 +103,7 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-300 bg-transparent border-transparent shadow-none py-2 sm:py-3`} suppressHydrationWarning>
+        <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-500 print:hidden ${isScrolled ? 'py-2' : 'py-4 sm:py-6'}`} suppressHydrationWarning>
             <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
                 {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
                 <div
@@ -146,7 +146,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop Navbar */}
-                <div className={`hidden md:flex h-[76px] items-center rounded-2xl transition-all duration-500 backdrop-blur-xl border border-white/20 p-3 pr-6 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] ${isScrolled ? 'bg-white/40' : 'bg-white/20'}`}>
+                <div className={`hidden md:flex h-[76px] items-center rounded-2xl transition-all duration-500 backdrop-blur-2xl border p-3 pr-6 shadow-2xl ${isScrolled ? 'bg-white/80 border-[#1A5319]/20 shadow-slate-200/50' : 'bg-white/40 border-white/30 shadow-none'}`}>
 
                     <AnimatePresence>
                         {isScrolled && (

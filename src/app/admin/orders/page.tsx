@@ -25,6 +25,7 @@ import {
   Search
 } from 'lucide-react';
 import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
 
 function Skeleton({ className }: { className?: string }) {
   return <div className={`animate-pulse bg-slate-200 rounded ${className}`} />;
@@ -62,6 +63,7 @@ const STATUS_FILTERS: { label: string; value: string }[] = [
 
 export default function AdminOrdersPage() {
   const { showToast } = useNotification();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const urlSearch = searchParams.get('search');
 
@@ -378,55 +380,57 @@ export default function AdminOrdersPage() {
                                 </div>
                               </div>
 
-                              <div className="flex flex-wrap gap-2">
-                                {order.status === 'pending' && (
-                                  <button
-                                    disabled={actionLoading === order.id}
-                                    onClick={() => handleUpdateStatus(order.id, 'confirmed')}
-                                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-blue-100 flex flex-col items-center leading-tight"
-                                  >
-                                    <span>Confirmer & Envoyer Devis</span>
-                                  </button>
-                                )}
-                                {order.status === 'confirmed' && (
-                                  <button
-                                    disabled={actionLoading === order.id}
-                                    onClick={() => handleUpdateStatus(order.id, 'processing')}
-                                    className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100"
-                                  >
-                                    Lancer la préparation
-                                  </button>
-                                )}
-                                {order.status === 'processing' && (
-                                  <button
-                                    disabled={actionLoading === order.id}
-                                    onClick={() => handleUpdateStatus(order.id, 'shipped')}
-                                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-purple-100"
-                                  >
-                                    Marquer comme Expédié
-                                  </button>
-                                )}
-                                {order.status === 'shipped' && (
-                                  <button
-                                    disabled={actionLoading === order.id}
-                                    onClick={() => handleUpdateStatus(order.id, 'completed')}
-                                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-100"
-                                  >
-                                    Marquer comme Livré
-                                  </button>
-                                )}
-                                {order.status !== 'cancelled' && order.status !== 'completed' && (
-                                  <button
-                                    disabled={actionLoading === order.id}
-                                    onClick={() => handleUpdateStatus(order.id, 'cancelled')}
-                                    className="px-4 bg-white hover:bg-rose-50 text-rose-500 border border-rose-100 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
-                                  >
-                                    Annuler
-                                  </button>
+                                {user?.role !== 'stock_manager' && (
+                                  <div className="flex flex-wrap gap-2">
+                                    {order.status === 'pending' && (
+                                      <button
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleUpdateStatus(order.id, 'confirmed')}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-blue-100 flex flex-col items-center leading-tight"
+                                      >
+                                        <span>Confirmer & Envoyer Devis</span>
+                                      </button>
+                                    )}
+                                    {order.status === 'confirmed' && (
+                                      <button
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleUpdateStatus(order.id, 'processing')}
+                                        className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-indigo-100"
+                                      >
+                                        Lancer la préparation
+                                      </button>
+                                    )}
+                                    {order.status === 'processing' && (
+                                      <button
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleUpdateStatus(order.id, 'shipped')}
+                                        className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-purple-100"
+                                      >
+                                        Marquer comme Expédié
+                                      </button>
+                                    )}
+                                    {order.status === 'shipped' && (
+                                      <button
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleUpdateStatus(order.id, 'completed')}
+                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md shadow-emerald-100"
+                                      >
+                                        Marquer comme Livré
+                                      </button>
+                                    )}
+                                    {order.status !== 'cancelled' && order.status !== 'completed' && (
+                                      <button
+                                        disabled={actionLoading === order.id}
+                                        onClick={() => handleUpdateStatus(order.id, 'cancelled')}
+                                        className="px-4 bg-white hover:bg-rose-50 text-rose-500 border border-rose-100 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                                      >
+                                        Annuler
+                                      </button>
+                                    )}
+                                  </div>
                                 )}
                               </div>
                             </div>
-                          </div>
                         </td>
                       </tr>
                     )}

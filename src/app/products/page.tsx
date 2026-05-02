@@ -19,12 +19,14 @@ function CategoryTreeItem({
   category,
   selectedId,
   onSelect,
-  level = 0
+  level = 0,
+  onClose
 }: {
   category: Category;
   selectedId: number | null;
   onSelect: (id: number | null) => void;
   level?: number;
+  onClose?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = category.children && category.children.length > 0;
@@ -32,6 +34,9 @@ function CategoryTreeItem({
 
   const handleToggle = () => {
     onSelect(category.id);
+    if (!hasChildren && onClose) {
+      onClose();
+    }
     if (hasChildren) {
       setIsOpen(!isOpen);
     }
@@ -64,13 +69,14 @@ function CategoryTreeItem({
       >
         <div className="overflow-hidden">
           {hasChildren && category.children!.map(child => (
-            <CategoryTreeItem
-              key={child.id}
-              category={child}
-              selectedId={selectedId}
-              onSelect={onSelect}
-              level={level + 1}
-            />
+              <CategoryTreeItem
+                key={child.id}
+                category={child}
+                selectedId={selectedId}
+                onSelect={onSelect}
+                level={level + 1}
+                onClose={onClose}
+              />
           ))}
         </div>
       </div>
@@ -116,6 +122,15 @@ function ProductListingContent() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isLimitOpen, setIsLimitOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Debounce search input
   useEffect(() => {
@@ -143,8 +158,8 @@ function ProductListingContent() {
   useEffect(() => {
     api.getCategories(true).then(res => {
       // Filter categories: active, top-level, and has products (direct or children)
-      const filtered = res.filter(c => 
-        c.isActive && 
+      const filtered = res.filter(c =>
+        c.isActive &&
         (c.products?.length || c.children?.some(child => child.products?.length))
       );
       setCategories(filtered);
@@ -181,8 +196,8 @@ function ProductListingContent() {
 
       // Fetch categories with products count logic (handled via caching in a real app, but fetched here)
       const cachedCategories = await api.getCategories(true);
-      const filtered = cachedCategories.filter(c => 
-        c.isActive && 
+      const filtered = cachedCategories.filter(c =>
+        c.isActive &&
         (c.products?.length || c.children?.some(child => child.products?.length))
       );
       setCategories(filtered);
@@ -283,27 +298,27 @@ function ProductListingContent() {
     <div className="flex-1 flex flex-col bg-white font-sans text-slate-900 selection:bg-[#1A5319]/20 selection:text-slate-900">
 
       {/* Mobile Sticky Filter Bar - Visible only on mobile/tablet */}
-      <div className="xl:hidden sticky top-[115px] sm:top-[135px] z-30 bg-white/95 backdrop-blur-md border-b border-slate-100 py-3 px-4 shadow-sm">
+      <div className={`xl:hidden sticky z-30 bg-white/80 backdrop-blur-xl border-b border-white/10 py-3 px-4 shadow-sm transition-all duration-300 ${isScrolled ? 'top-[64px]' : 'top-0'}`}>
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(true)}
             className="flex-1 flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#1A5319] transition-all"
           >
             <Filter size={18} className="text-[#1A5319]" />
             Filtrer
           </button>
-          
+
           <div className="flex-1 relative">
-            <button 
-                onClick={() => setIsSortOpen(!isSortOpen)}
-                className="w-full flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#1A5319] transition-all"
+            <button
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              className="w-full flex items-center justify-center gap-2 h-11 bg-[#F8F9FA] border border-slate-200 rounded-xl text-[13px] font-bold text-slate-700 hover:border-[#1A5319] transition-all"
             >
-                <ArrowUpDown size={18} className="text-slate-400" />
-                <span>{
-                  sort === 'newest' ? 'Derniers' :
-                    sort === 'priceAsc' ? 'Prix: Min' :
-                      sort === 'priceDesc' ? 'Prix: Max' : 'Trier'
-                }</span>
+              <ArrowUpDown size={18} className="text-slate-400" />
+              <span>{
+                sort === 'newest' ? 'Derniers' :
+                  sort === 'priceAsc' ? 'Prix: Min' :
+                    sort === 'priceDesc' ? 'Prix: Max' : 'Trier'
+              }</span>
             </button>
             {isSortOpen && (
               <div className="absolute top-[calc(100%+12px)] left-0 right-0 z-[100] bg-white rounded-xl shadow-lg border border-slate-100 py-2 animate-in fade-in slide-in-from-top-2">
@@ -333,7 +348,7 @@ function ProductListingContent() {
         <div className="flex flex-col xl:flex-row gap-10">
 
           {/* Sidebar / Filter Drawer */}
-          <motion.aside 
+          <motion.aside
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -344,13 +359,13 @@ function ProductListingContent() {
           `}>
             {/* Mobile Sidebar Header */}
             <div className="xl:hidden flex items-center justify-between p-5 border-b border-slate-100 bg-[#1A5319] text-white">
-                <div className="flex items-center gap-2">
-                    <Sliders size={20} />
-                    <span className="text-[17px] font-black uppercase tracking-widest">Filtres</span>
-                </div>
-                <button onClick={() => setIsSidebarOpen(false)} className="p-1">
-                    <X size={24} />
-                </button>
+              <div className="flex items-center gap-2">
+                <Sliders size={20} />
+                <span className="text-[17px] font-black uppercase tracking-widest">Filtres</span>
+              </div>
+              <button onClick={() => setIsSidebarOpen(false)} className="p-1">
+                <X size={24} />
+              </button>
             </div>
 
             <div className="p-6 xl:p-0 space-y-10">
@@ -362,10 +377,13 @@ function ProductListingContent() {
                     <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
-                <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+                <div className="xl:max-h-[400px] xl:overflow-y-auto xl:overflow-x-hidden pr-2 custom-scrollbar">
                   <div className="space-y-1">
                     <button
-                      onClick={() => setCategoryId(null)}
+                      onClick={() => {
+                        setCategoryId(null);
+                        setIsSidebarOpen(false);
+                      }}
                       className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${categoryId === null ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                     >
                       <span className={`material-symbols-outlined text-[18px] ${categoryId === null ? 'text-[#1A5319]' : 'text-slate-400'}`}>grid_view</span> Tous les produits
@@ -376,6 +394,7 @@ function ProductListingContent() {
                         category={cat}
                         selectedId={categoryId}
                         onSelect={setCategoryId}
+                        onClose={() => setIsSidebarOpen(false)}
                       />
                     ))}
                   </div>
@@ -390,10 +409,13 @@ function ProductListingContent() {
                     <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
                 </div>
-                <div className="h-[200px] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+                <div className="xl:h-[200px] xl:overflow-y-auto xl:overflow-x-hidden pr-2 custom-scrollbar">
                   <div className="space-y-1">
                     <button
-                      onClick={() => setBrandId(null)}
+                      onClick={() => {
+                        setBrandId(null);
+                        setIsSidebarOpen(false);
+                      }}
                       className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === null ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                     >
                       Toutes les marques
@@ -401,7 +423,10 @@ function ProductListingContent() {
                     {brands.map(brand => (
                       <button
                         key={brand.id}
-                        onClick={() => setBrandId(brand.id)}
+                        onClick={() => {
+                          setBrandId(brand.id);
+                          setIsSidebarOpen(false);
+                        }}
                         className={`w-full flex items-center gap-2 py-2 text-[16px] transition-colors ${brandId === brand.id ? 'font-bold text-[#1A5319]' : 'font-medium text-slate-600 hover:text-slate-900'}`}
                       >
                         {brand.name}
@@ -555,14 +580,8 @@ function ProductListingContent() {
                 </div>
               </div>
 
-              {/* Mobile "Apply" Button */}
               <div className="xl:hidden pt-4 pb-10">
-                <button 
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="w-full py-4 bg-[#1A5319] text-white font-black rounded-2xl shadow-lg shadow-[#1A5319]/20 uppercase tracking-widest"
-                >
-                    Afficher les produits
-                </button>
+                {/* Button removed as per user request for automatic filtering */}
               </div>
             </div>
           </motion.aside>
@@ -695,15 +714,15 @@ function ProductListingContent() {
                 <span className="material-symbols-outlined text-[48px] sm:text-[64px] text-slate-200 mb-4">inventory_2</span>
                 <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-2">No products found</h3>
                 <p className="text-[14px] sm:text-[16px] text-slate-500 font-medium">Try adjusting your filters or search terms.</p>
-                <button 
-                    onClick={() => { setCategoryId(null); setBrandId(null); setSearch(''); setMinPrice(null); setMaxPrice(null); setInStock(false); setOnSale(false); setEcoFriendly(false); }} 
-                    className="mt-6 px-6 py-2.5 bg-[#1A5319] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity"
+                <button
+                  onClick={() => { setCategoryId(null); setBrandId(null); setSearch(''); setMinPrice(null); setMaxPrice(null); setInStock(false); setOnSale(false); setEcoFriendly(false); }}
+                  className="mt-6 px-6 py-2.5 bg-[#1A5319] text-white font-bold rounded-xl shadow-sm hover:opacity-90 transition-opacity"
                 >
-                    Clear Filters
+                  Clear Filters
                 </button>
               </div>
             ) : viewMode === 'grid' ? (
-              <motion.div 
+              <motion.div
                 initial="hidden"
                 animate="show"
                 variants={{
@@ -731,7 +750,7 @@ function ProductListingContent() {
                 ))}
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 initial="hidden"
                 animate="show"
                 variants={{

@@ -42,7 +42,16 @@ export default function PortalClient() {
       }
 
       login(data.access_token, data.user);
-      router.push('/admin');
+
+      // Role-based redirect
+      const role = data.user?.role;
+      if (role === 'stock_manager') {
+        router.push('/admin/inventory');
+      } else if (role === 'order_manager') {
+        router.push('/admin/orders');
+      } else {
+        router.push('/admin');
+      }
     } catch (err: any) {
       setError(err.message || 'Erreur lors de l\'authentification.');
     } finally {
