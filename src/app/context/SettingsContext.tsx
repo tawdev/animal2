@@ -22,7 +22,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       
       // Process logoUrl to ensure it's absolute if relative
       if (data.logoUrl && data.logoUrl.startsWith('/')) {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://test.ahlanbek.com/api';
         data.logoUrl = `${apiBase}${data.logoUrl}`;
       }
       

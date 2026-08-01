@@ -37,6 +37,6 @@ export function getImageUrl(url: string | null | undefined): string {
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
         return url;
     }
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3002';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://test.ahlanbek.com/api';
     return `${baseUrl.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
 }

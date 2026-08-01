@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL as string;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://test.ahlanbek.com/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
