@@ -46,6 +46,27 @@ interface HomeClientProps {
   initialTestimonials: Testimonial[];
 }
 
+const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
+  chien: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80",
+  chat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+  oiseau: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=600&q=80",
+  poisson: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=600&q=80",
+  rongeur: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=600&q=80",
+  souris: "https://images.unsplash.com/photo-1425082661705-1834bfd09dca?auto=format&fit=crop&w=600&q=80",
+  santé: "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=600&q=80",
+  hygiène: "https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=600&q=80",
+  accessoire: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=600&q=80",
+};
+
+const getCategoryDisplayImage = (cat: Category): string => {
+  if (cat.imageUrl) return cat.imageUrl;
+  const nameLower = cat.name.toLowerCase();
+  for (const [key, url] of Object.entries(DEFAULT_CATEGORY_IMAGES)) {
+    if (nameLower.includes(key)) return url;
+  }
+  return "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80";
+};
+
 export default function HomeClient({
   initialCategories,
   initialPopularProducts,
@@ -362,7 +383,7 @@ export default function HomeClient({
             }}
           >
             {[...categories, ...categories, ...categories].map((cat, idx) => {
-              const Icon = getCategoryIcon(cat.name);
+              const catImg = getCategoryDisplayImage(cat);
               const isActive = activeCategoryId === cat.id;
               return (
                 <button
@@ -371,16 +392,13 @@ export default function HomeClient({
                   className="flex flex-col items-center gap-8 shrink-0 transition-transform hover:scale-105"
                 >
                   <div className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] ${isActive ? 'border-[#EE8C2B]' : 'border-slate-50'} hover:border-[#EE8C2B] aspect-square overflow-hidden group/item relative`}>
-                    {cat.imageUrl ? (
-                      <Image
-                        src={cat.imageUrl}
-                        alt={cat.name}
-                        fill
-                        className={`object-cover transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover/item:scale-110'}`}
-                      />
-                    ) : (
-                      <Icon size={100} className={`transition-all duration-500 ${isActive ? 'text-[#EE8C2B] scale-110' : 'text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110'}`} />
-                    )}
+                    <Image
+                      src={catImg}
+                      alt={cat.name}
+                      fill
+                      unoptimized={catImg.startsWith('http')}
+                      className={`object-cover transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover/item:scale-110'}`}
+                    />
                   </div>
                   <h3 className={`text-sm sm:text-xl font-black uppercase tracking-[0.2em] italic transition-colors ${isActive ? 'text-[#EE8C2B]' : 'text-slate-800'}`}>{cat.name}</h3>
                 </button>
