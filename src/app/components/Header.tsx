@@ -154,9 +154,9 @@ export default function Header() {
 
                     {/* Mobile Menu Button - Displayed on mobile only */}
                     <button
-                        className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors shrink-0"
-                        onClick={() => {
-                            // Trigger custom event for Navbar to open
+                        className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors shrink-0 relative z-20 cursor-pointer"
+                        onClick={(e) => {
+                            e.stopPropagation();
                             document.dispatchEvent(new CustomEvent('open-mobile-menu'));
                         }}
                     >

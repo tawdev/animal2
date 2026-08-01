@@ -132,9 +132,6 @@ export default function Navbar() {
                 </Link>
 
                 <div className="flex items-center gap-1">
-                    <Link href="/products" className="p-2 text-slate-800 hover:text-[#1A5319]">
-                        <Search size={22} />
-                    </Link>
                     <Link href="/cart" className="p-2 text-slate-800 hover:text-[#1A5319] relative">
                         <ShoppingBag size={22} />
                         <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
