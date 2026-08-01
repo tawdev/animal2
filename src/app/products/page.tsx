@@ -597,7 +597,7 @@ function ProductListingContent() {
                   })}
                 </div>
               </div>
-
+              </div>
             </div>
 
             {/* Mobile Bottom Sticky Close/Apply Action Bar */}
