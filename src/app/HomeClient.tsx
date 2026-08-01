@@ -281,8 +281,17 @@ export default function HomeClient({
     <div className="flex-1 flex flex-col bg-white overflow-x-hidden">
       {/* HERO SECTION */}
       <section className="relative min-h-[100svh] md:min-h-screen flex items-center overflow-hidden bg-[#0A0A0B]">
-        {/* Background image — object-contain pour afficher TOUTE l'image sans crop */}
-        <div className="absolute inset-0 z-0">
+        {/* Background image — Mobile vs Desktop */}
+        <div className="absolute inset-0 z-0 block md:hidden">
+          <Image
+            src="/heroMobile.png"
+            alt="Animal Food Express Hero Mobile"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+        </div>
+        <div className="absolute inset-0 z-0 hidden md:block">
           <Image
             src="/heroNew.png"
             alt="Animal Food Express Hero"
