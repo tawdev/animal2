@@ -442,6 +442,40 @@ export default function HomeClient({
 
           {/* Slider container for mobile / Grid for desktop */}
           <div className="relative">
+            {/* Left Arrow Button (<) - Vertically Centered on Card */}
+            <button
+              onClick={() => {
+                const prevIdx = Math.max(0, stepIndex - 1);
+                setStepIndex(prevIdx);
+                if (stepsContainerRef.current) {
+                  const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                  stepsContainerRef.current.scrollTo({ left: prevIdx * cardWidth, behavior: 'smooth' });
+                }
+              }}
+              disabled={stepIndex === 0}
+              className="md:hidden absolute -left-3 top-[42%] -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-20 disabled:pointer-events-none active:scale-95 transition-all"
+              aria-label="Étape précédente"
+            >
+              <ChevronLeft size={24} strokeWidth={2.5} />
+            </button>
+
+            {/* Right Arrow Button (>) - Vertically Centered on Card */}
+            <button
+              onClick={() => {
+                const nextIdx = Math.min(2, stepIndex + 1);
+                setStepIndex(nextIdx);
+                if (stepsContainerRef.current) {
+                  const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                  stepsContainerRef.current.scrollTo({ left: nextIdx * cardWidth, behavior: 'smooth' });
+                }
+              }}
+              disabled={stepIndex === 2}
+              className="md:hidden absolute -right-3 top-[42%] -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-20 disabled:pointer-events-none active:scale-95 transition-all"
+              aria-label="Étape suivante"
+            >
+              <ChevronRight size={24} strokeWidth={2.5} />
+            </button>
+
             <div
               ref={stepsContainerRef}
               onScroll={(e) => {
@@ -470,7 +504,7 @@ export default function HomeClient({
                 {
                   step: '3',
                   title: 'Livraison Express',
-                  desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal me livrée fraîche et prête à servir.',
+                  desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
                   icon: Truck
                 }
               ].map((item, idx) => (
@@ -497,56 +531,22 @@ export default function HomeClient({
               ))}
             </div>
 
-            {/* Mobile Slide Buttons (< and >) + Indicators */}
-            <div className="flex md:hidden items-center justify-between mt-6 px-4">
-              <button
-                onClick={() => {
-                  const prevIdx = Math.max(0, stepIndex - 1);
-                  setStepIndex(prevIdx);
-                  if (stepsContainerRef.current) {
-                    const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
-                    stepsContainerRef.current.scrollTo({ left: prevIdx * cardWidth, behavior: 'smooth' });
-                  }
-                }}
-                disabled={stepIndex === 0}
-                className="w-11 h-11 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all"
-                aria-label="Étape précédente"
-              >
-                <ChevronLeft size={22} strokeWidth={2.5} />
-              </button>
-
-              <div className="flex items-center gap-2">
-                {[0, 1, 2].map((i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setStepIndex(i);
-                      if (stepsContainerRef.current) {
-                        const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
-                        stepsContainerRef.current.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
-                      }
-                    }}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${stepIndex === i ? 'w-8 bg-[#1A5319]' : 'w-2.5 bg-slate-300'}`}
-                    aria-label={`Étape ${i + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={() => {
-                  const nextIdx = Math.min(2, stepIndex + 1);
-                  setStepIndex(nextIdx);
-                  if (stepsContainerRef.current) {
-                    const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
-                    stepsContainerRef.current.scrollTo({ left: nextIdx * cardWidth, behavior: 'smooth' });
-                  }
-                }}
-                disabled={stepIndex === 2}
-                className="w-11 h-11 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all"
-                aria-label="Étape suivante"
-              >
-                <ChevronRight size={22} strokeWidth={2.5} />
-              </button>
+            {/* Mobile Pagination Dots */}
+            <div className="flex md:hidden items-center justify-center gap-2 mt-6">
+              {[0, 1, 2].map((i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setStepIndex(i);
+                    if (stepsContainerRef.current) {
+                      const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                      stepsContainerRef.current.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+                    }
+                  }}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${stepIndex === i ? 'w-8 bg-[#1A5319]' : 'w-2.5 bg-slate-300'}`}
+                  aria-label={`Étape ${i + 1}`}
+                />
+              ))}
             </div>
           </div>
 
