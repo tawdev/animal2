@@ -344,6 +344,19 @@ function ProductListingContent() {
         </div>
       </div>
 
+      {/* Backdrop Overlay for Mobile Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 z-[140] bg-black/60 backdrop-blur-xs xl:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       <main className="mx-auto w-full max-w-[1400px] px-2 py-6 sm:py-8 sm:px-4 lg:px-6">
         <div className="flex flex-col xl:flex-row gap-10">
 
@@ -353,22 +366,27 @@ function ProductListingContent() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             className={`
-            fixed inset-0 z-[150] bg-white transition-transform duration-300 xl:relative xl:z-0 xl:translate-x-0 xl:w-[260px] xl:shrink-0 xl:block xl:sticky xl:top-[120px] xl:h-fit
-            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}
-            overflow-y-auto xl:overflow-visible custom-scrollbar
+            fixed inset-y-0 left-0 z-[150] w-[88vw] max-w-[340px] bg-white transition-transform duration-300 xl:relative xl:z-0 xl:translate-x-0 xl:w-[260px] xl:shrink-0 xl:block xl:sticky xl:top-[120px] xl:h-fit
+            ${isSidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full xl:translate-x-0'}
+            overflow-y-auto xl:overflow-visible custom-scrollbar flex flex-col justify-between
           `}>
-            {/* Mobile Sidebar Header */}
-            <div className="xl:hidden flex items-center justify-between p-5 border-b border-slate-100 bg-[#1A5319] text-white">
-              <div className="flex items-center gap-2">
-                <Sliders size={20} />
-                <span className="text-[17px] font-black uppercase tracking-widest">Filtres</span>
+            <div>
+              {/* Mobile Sidebar Sticky Header with prominent X button */}
+              <div className="xl:hidden sticky top-0 z-[200] flex items-center justify-between p-4 px-5 border-b border-slate-100 bg-[#1A5319] text-white shadow-md">
+                <div className="flex items-center gap-2.5">
+                  <Sliders size={20} className="text-[#EE8C2B]" />
+                  <span className="text-[16px] font-black uppercase tracking-wider">Filtres</span>
+                </div>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white active:scale-95 transition-all"
+                  aria-label="Fermer les filtres"
+                >
+                  <X size={22} strokeWidth={2.5} />
+                </button>
               </div>
-              <button onClick={() => setIsSidebarOpen(false)} className="p-1">
-                <X size={24} />
-              </button>
-            </div>
 
-            <div className="p-6 xl:p-0 space-y-10">
+              <div className="p-6 xl:p-0 space-y-10">
               {/* Categories */}
               <div>
                 <div className="mb-6">
@@ -580,9 +598,31 @@ function ProductListingContent() {
                 </div>
               </div>
 
-              <div className="xl:hidden pt-4 pb-10">
-                {/* Button removed as per user request for automatic filtering */}
-              </div>
+            </div>
+
+            {/* Mobile Bottom Sticky Close/Apply Action Bar */}
+            <div className="xl:hidden sticky bottom-0 z-[200] bg-white border-t border-slate-100 p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] flex items-center gap-3">
+              <button
+                onClick={() => {
+                  setCategoryId(null);
+                  setBrandId(null);
+                  setMinPrice(null);
+                  setMaxPrice(null);
+                  setInStock(false);
+                  setOnSale(false);
+                  setEcoFriendly(false);
+                  setIsSidebarOpen(false);
+                }}
+                className="px-4 py-3 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 active:scale-95 transition-all"
+              >
+                Réinitialiser
+              </button>
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="flex-1 py-3 bg-[#1A5319] text-white rounded-xl text-xs font-black uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all"
+              >
+                <X size={16} /> Fermer les filtres ({total})
+              </button>
             </div>
           </motion.aside>
 
