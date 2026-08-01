@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ArrowRight,
+  ChevronLeft,
   ChevronRight,
   Plus,
   Truck,
@@ -88,6 +89,8 @@ export default function HomeClient({
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
 
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [stepIndex, setStepIndex] = useState(0);
+  const stepsContainerRef = useRef<HTMLDivElement>(null);
 
   // Default WhatsApp Number
   const whatsappNumber = (settings?.phoneNumber || '212600000000').replace(/\D/g, '');
@@ -439,7 +442,18 @@ export default function HomeClient({
 
           {/* Slider container for mobile / Grid for desktop */}
           <div className="relative">
-            <div className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 px-2 md:px-0 scroll-smooth">
+            <div
+              ref={stepsContainerRef}
+              onScroll={(e) => {
+                const container = e.currentTarget;
+                const cardWidth = container.clientWidth * 0.85;
+                const newIndex = Math.round(container.scrollLeft / cardWidth);
+                if (newIndex !== stepIndex && newIndex >= 0 && newIndex <= 2) {
+                  setStepIndex(newIndex);
+                }
+              }}
+              className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 px-2 md:px-0 scroll-smooth"
+            >
               {[
                 {
                   step: '1',
@@ -456,7 +470,7 @@ export default function HomeClient({
                 {
                   step: '3',
                   title: 'Livraison Express',
-                  desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
+                  desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal me livrée fraîche et prête à servir.',
                   icon: Truck
                 }
               ].map((item, idx) => (
@@ -481,6 +495,58 @@ export default function HomeClient({
                   </p>
                 </div>
               ))}
+            </div>
+
+            {/* Mobile Slide Buttons (< and >) + Indicators */}
+            <div className="flex md:hidden items-center justify-between mt-6 px-4">
+              <button
+                onClick={() => {
+                  const prevIdx = Math.max(0, stepIndex - 1);
+                  setStepIndex(prevIdx);
+                  if (stepsContainerRef.current) {
+                    const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                    stepsContainerRef.current.scrollTo({ left: prevIdx * cardWidth, behavior: 'smooth' });
+                  }
+                }}
+                disabled={stepIndex === 0}
+                className="w-11 h-11 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all"
+                aria-label="Étape précédente"
+              >
+                <ChevronLeft size={22} strokeWidth={2.5} />
+              </button>
+
+              <div className="flex items-center gap-2">
+                {[0, 1, 2].map((i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setStepIndex(i);
+                      if (stepsContainerRef.current) {
+                        const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                        stepsContainerRef.current.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+                      }
+                    }}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${stepIndex === i ? 'w-8 bg-[#1A5319]' : 'w-2.5 bg-slate-300'}`}
+                    aria-label={`Étape ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  const nextIdx = Math.min(2, stepIndex + 1);
+                  setStepIndex(nextIdx);
+                  if (stepsContainerRef.current) {
+                    const cardWidth = stepsContainerRef.current.clientWidth * 0.85;
+                    stepsContainerRef.current.scrollTo({ left: nextIdx * cardWidth, behavior: 'smooth' });
+                  }
+                }}
+                disabled={stepIndex === 2}
+                className="w-11 h-11 rounded-full bg-white shadow-md border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-30 disabled:pointer-events-none active:scale-95 transition-all"
+                aria-label="Étape suivante"
+              >
+                <ChevronRight size={22} strokeWidth={2.5} />
+              </button>
             </div>
           </div>
 
