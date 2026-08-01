@@ -15,22 +15,31 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            # Ensure target directory exists
+            mkdir -p /var/www/animal2
             cd /var/www/animal2
-            
+
+            # Check if git repository is initialized
+            if [ ! -d ".git" ]; then
+              echo "Error: /var/www/animal2 is not a git repository yet. Please clone your repo into /var/www/animal2 on the VPS first."
+              exit 1
+            fi
+
             # Pull latest changes
             git pull origin main
-            
+
             # Update Backend
             cd backend/droguerie-backend
             npm install
             npm run build
-            pm2 restart animal-backend
-            
+            pm2 restart animal-backend || pm2 start npm --name "animal-backend" -- run start:prod
+
             # Update Frontend
             cd ../..
             npm install
             npm run build
-            pm2 restart animal-frontend
-            
-            # Cleanup PM2
+            pm2 restart animal-frontend || pm2 start npm --name "animal-frontend" -- run start
+
+            # Save PM2 state
             pm2 save
+
