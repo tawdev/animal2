@@ -328,7 +328,7 @@ export default function HomeClient({
               </div>
             </div>
 
-            <div className="flex-1 w-full lg:max-w-[360px] relative mx-auto lg:ml-auto">
+            <div className="hidden lg:flex flex-1 w-full lg:max-w-[360px] relative mx-auto lg:ml-auto">
               <div className="relative aspect-[3/4] w-full bg-white/10 backdrop-blur-md rounded-[28px] border border-white/20 p-3 overflow-hidden shadow-2xl">
                 <AnimatePresence mode="wait">
                   {featuredProducts.length > 0 && (
