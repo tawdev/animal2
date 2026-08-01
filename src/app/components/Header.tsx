@@ -149,11 +149,11 @@ export default function Header() {
             </div>
 
             {/* Main Header */}
-            <div className="py-2.5 sm:py-3 relative">
-                <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-4 md:gap-10">
+            <div className="py-3 sm:py-4 relative flex items-center">
+                <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-4 md:gap-10">
 
                     {/* Mobile Menu Trigger & Logo */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 my-auto">
                         {/* Mobile Menu Button - Displayed on mobile only */}
                         <button
                             className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors"
@@ -165,8 +165,8 @@ export default function Header() {
                             <Menu size={24} />
                         </button>
 
-                        <Link href="/" className="shrink-0 group">
-                            <div className="relative w-[150px] h-[60px] sm:w-[210px] sm:h-[76px] md:w-[250px] md:h-[88px] lg:w-[280px] lg:h-[96px] flex items-center justify-start">
+                        <Link href="/" className="shrink-0 group flex items-center justify-center my-auto">
+                            <div className="relative w-[140px] h-[54px] sm:w-[190px] sm:h-[64px] md:w-[230px] md:h-[72px] lg:w-[260px] lg:h-[76px] flex items-center justify-center">
                                 {(!mounted || settingsLoading) ? (
                                     <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
                                 ) : (
@@ -174,10 +174,10 @@ export default function Header() {
                                         src={settings?.logoUrl || "/logo.png"}
                                         alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
                                         fill
-                                        style={{ objectFit: 'contain', objectPosition: 'left center', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                        style={{ objectFit: 'contain', objectPosition: 'center center', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
                                         priority
                                         unoptimized={true}
-                                        sizes="(max-width: 640px) 150px, (max-width: 1024px) 210px, 280px"
+                                        sizes="(max-width: 640px) 140px, (max-width: 1024px) 190px, 260px"
                                     />
                                 )}
                             </div>
