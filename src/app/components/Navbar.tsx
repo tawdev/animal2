@@ -141,6 +141,119 @@ export default function Navbar() {
                 </div>
             </div>
 
+            {/* Mobile Menu Backdrop */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[99998] animate-in fade-in duration-300 md:hidden"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Mobile Menu Side Drawer */}
+            <div
+                className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[99999] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full pointer-events-none'}`}
+                style={{ backgroundColor: '#ffffff', opacity: 1 }}
+            >
+                <div className="flex flex-col h-full">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-[#1A5319] text-white">
+                        <h2 className="text-[17px] font-black uppercase tracking-widest">Menu</h2>
+                        <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
+                            <X size={24} />
+                        </button>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <div className="p-4 space-y-1">
+                        {navItems.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all ${isActive ? 'bg-[#1A5319]/10 text-[#1A5319]' : 'text-slate-700 hover:bg-slate-50'}`}
+                                >
+                                    <span className={isActive ? 'text-[#1A5319]' : 'text-slate-400'}>{item.icon}</span>
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
+                    </div>
+
+                    <div className="h-[1px] w-full bg-slate-200 my-4 px-8" />
+
+                    {/* Categories Accordion */}
+                    <div className="p-4 pt-0">
+                        <h3 className="px-4 py-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Les Catégories</h3>
+                        <div className="space-y-1">
+                            {categoryTree.map((cat) => {
+                                const isExpanded = mobileExpandedCat === cat.id;
+                                const hasChildren = cat.children && cat.children.length > 0;
+
+                                return (
+                                    <div key={cat.id} className="overflow-hidden">
+                                        <div className="flex items-center justify-between">
+                                            <Link
+                                                href={`/products?categoryId=${cat.id}`}
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="flex-1 px-4 py-3 text-[14px] font-semibold text-slate-800 hover:text-[#1A5319] transition-colors"
+                                            >
+                                                {cat.name}
+                                            </Link>
+                                            {hasChildren && (
+                                                <button
+                                                    onClick={() => setMobileExpandedCat(isExpanded ? null : cat.id)}
+                                                    className={`p-3 text-slate-400 hover:text-[#1A5319] transition-all ${isExpanded ? 'rotate-180' : ''}`}
+                                                >
+                                                    <ChevronDown size={18} />
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {hasChildren && (
+                                            <div className={`grid transition-all duration-300 ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                                                <div className="overflow-hidden bg-slate-50/50 rounded-xl ml-4">
+                                                    {cat.children!.map((sub) => (
+                                                        <Link
+                                                            key={sub.id}
+                                                            href={`/products?categoryId=${sub.id}`}
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                            className="block px-8 py-2.5 text-[13px] font-medium text-slate-600 hover:text-[#1A5319]"
+                                                        >
+                                                            {sub.name}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* Footer Info */}
+                    <div className="mt-auto p-8 bg-slate-50">
+                        <div className="flex items-center gap-4 mb-6">
+                            <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                                <Heart size={20} className="text-slate-400" />
+                                <span className="text-[11px] font-bold text-slate-600">Souhaits</span>
+                                <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? wishlistCount : 0}</span>
+                            </Link>
+                            <Link href="/compare" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                                <GitCompare size={20} className="text-slate-400" />
+                                <span className="text-[11px] font-bold text-slate-600">Comparer</span>
+                                <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? compareCount : 0}</span>
+                            </Link>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-medium text-center">
+                            CDigital © {mounted ? new Date().getFullYear() : '2026'} — PetMarket
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* Desktop Navbar */}
             <nav className={`w-full hidden md:block sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-500 print:hidden ${isScrolled ? 'py-2' : 'py-4 sm:py-6'}`} suppressHydrationWarning>
                 <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
@@ -357,121 +470,7 @@ export default function Navbar() {
                         </Link>
                     </div>
                 </div>
-
-                {/* Mobile Menu Backdrop */}
-                {isMobileMenuOpen && (
-                    <div
-                        className="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[9998] animate-in fade-in duration-300 md:hidden"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                    />
-                )}
-
-                {/* Mobile Menu Side Drawer */}
-                <div
-                    className={`fixed top-0 left-0 bottom-0 w-[85%] max-w-[320px] bg-white z-[9999] shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] md:hidden overflow-y-auto custom-scrollbar ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
-                    style={{ backgroundColor: '#ffffff', opacity: 1 }}
-                >
-                    <div className="flex flex-col h-full">
-                        {/* Header */}
-                        <div className="flex items-center justify-between p-5 border-b border-slate-200 bg-[#1A5319] text-white">
-                            <h2 className="text-[17px] font-black uppercase tracking-widest">Menu</h2>
-                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
-                                <X size={24} />
-                            </button>
-                        </div>
-
-                        {/* Navigation Links */}
-                        <div className="p-4 space-y-1">
-                            {navItems.map((item) => {
-                                const isActive = pathname === item.href;
-                                return (
-                                    <Link
-                                        key={item.name}
-                                        href={item.href}
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-[15px] font-bold transition-all ${isActive ? 'bg-[#1A5319]/10 text-[#1A5319]' : 'text-slate-700 hover:bg-slate-50'}`}
-                                    >
-                                        <span className={isActive ? 'text-[#1A5319]' : 'text-slate-400'}>{item.icon}</span>
-                                        {item.name}
-                                    </Link>
-                                );
-                            })}
-                        </div>
-
-                        <div className="h-[1px] w-full bg-slate-200 my-4 px-8" />
-
-                        {/* Categories Accordion */}
-                        <div className="p-4 pt-0">
-                            <h3 className="px-4 py-2 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Les Catégories</h3>
-                            <div className="space-y-1">
-                                {categoryTree.map((cat) => {
-                                    const isExpanded = mobileExpandedCat === cat.id;
-                                    const hasChildren = cat.children && cat.children.length > 0;
-
-                                    return (
-                                        <div key={cat.id} className="overflow-hidden">
-                                            <div className="flex items-center justify-between">
-                                                <Link
-                                                    href={`/products?categoryId=${cat.id}`}
-                                                    onClick={() => setIsMobileMenuOpen(false)}
-                                                    className="flex-1 px-4 py-3 text-[14px] font-semibold text-slate-800 hover:text-[#1A5319] transition-colors"
-                                                >
-                                                    {cat.name}
-                                                </Link>
-                                                {hasChildren && (
-                                                    <button
-                                                        onClick={() => setMobileExpandedCat(isExpanded ? null : cat.id)}
-                                                        className={`p-3 text-slate-400 hover:text-[#1A5319] transition-all ${isExpanded ? 'rotate-180' : ''}`}
-                                                    >
-                                                        <ChevronDown size={18} />
-                                                    </button>
-                                                )}
-                                            </div>
-
-                                            {hasChildren && (
-                                                <div className={`grid transition-all duration-300 ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
-                                                    <div className="overflow-hidden bg-slate-50/50 rounded-xl ml-4">
-                                                        {cat.children!.map((sub) => (
-                                                            <Link
-                                                                key={sub.id}
-                                                                href={`/products?categoryId=${sub.id}`}
-                                                                onClick={() => setIsMobileMenuOpen(false)}
-                                                                className="block px-8 py-2.5 text-[13px] font-medium text-slate-600 hover:text-[#1A5319]"
-                                                            >
-                                                                {sub.name}
-                                                            </Link>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Footer Info */}
-                        <div className="mt-auto p-8 bg-slate-50">
-                            <div className="flex items-center gap-4 mb-6">
-                                <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                                    <Heart size={20} className="text-slate-400" />
-                                    <span className="text-[11px] font-bold text-slate-600">Souhaits</span>
-                                    <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? wishlistCount : 0}</span>
-                                </Link>
-                                <Link href="/compare" onClick={() => setIsMobileMenuOpen(false)} className="relative flex-1 flex flex-col items-center gap-2 py-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
-                                    <GitCompare size={20} className="text-slate-400" />
-                                    <span className="text-[11px] font-bold text-slate-600">Comparer</span>
-                                    <span className="absolute top-2 right-4 bg-[#1A5319] text-white text-[9px] font-black h-4 w-4 rounded-full flex items-center justify-center">{mounted ? compareCount : 0}</span>
-                                </Link>
-                            </div>
-                            <p className="text-[11px] text-slate-400 font-medium text-center">
-                                CDigital © {mounted ? new Date().getFullYear() : '2026'} — PetMarket
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </>
+            </nav>
+        </>
     );
 }
