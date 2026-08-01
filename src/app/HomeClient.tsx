@@ -280,7 +280,7 @@ export default function HomeClient({
   return (
     <div className="flex-1 flex flex-col bg-white overflow-x-hidden">
       {/* HERO SECTION */}
-      <section className="relative min-h-[auto] sm:min-h-[100svh] md:min-h-screen flex items-center overflow-hidden bg-[#0A0A0B]">
+      <section className="relative min-h-[85vh] sm:min-h-[100svh] md:min-h-screen flex items-center overflow-hidden bg-[#0A0A0B]">
         {/* Background image — Mobile vs Desktop */}
         <div className="absolute inset-0 z-0 block md:hidden">
           <Image
@@ -303,9 +303,9 @@ export default function HomeClient({
         {/* Overlay sombre léger pour garder le texte lisible */}
         <div className="absolute inset-0 z-[1] bg-black/50" />
 
-        <div className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 relative z-10 pt-6 pb-12 sm:py-20">
+        <div className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 relative z-10 pt-10 pb-16 sm:py-20">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20">
-            <div className="flex-1 space-y-5 sm:space-y-10">
+            <div className="flex-1 space-y-6 sm:space-y-10">
               <div className="space-y-4">
                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl xl:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic">
                   NUTRITION <br />
