@@ -413,6 +413,22 @@ export const api = {
             }));
         });
     },
+    removeBackground: (fileOrUrl: File | string) => {
+        const formData = new FormData();
+        if (typeof fileOrUrl === 'string') {
+            formData.append('imageUrl', fileOrUrl);
+        } else {
+            formData.append('file', fileOrUrl);
+        }
+        return apiFetch<{ url: string; filename: string }>('/upload/remove-bg', {
+            method: 'POST',
+            body: formData,
+            headers: {},
+        }).then(json => {
+            json.url = normalizeImageUrl(json.url) || json.url;
+            return json;
+        });
+    },
     updateProduct: (id: number, data: Partial<Product> & { categoryName?: string }) =>
         apiFetch<Product>(`/products/${id}`, {
             method: 'PATCH',

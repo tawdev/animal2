@@ -263,7 +263,7 @@ export default function HomeClient({
         {/* Background image — object-contain pour afficher TOUTE l'image sans crop */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/heroimage2.png"
+            src="/heroNew.png"
             alt="Animal Food Express Hero"
             fill
             priority

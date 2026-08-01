@@ -200,13 +200,66 @@ export default function AdminProductsPage() {
     }
   };
 
+  const [removingBgIndex, setRemovingBgIndex] = useState<number | null>(null);
+
+  const handleRemoveBackground = async (index: number) => {
+    const targetUrl = newProduct.imageUrls[index];
+    if (!targetUrl) return;
+
+    try {
+      setRemovingBgIndex(index);
+      const res = await api.removeBackground(targetUrl);
+      const newUrl = res.url;
+
+      setNewProduct(prev => {
+        const updated = [...prev.imageUrls];
+        const oldUrl = updated[index];
+        updated[index] = newUrl;
+        return {
+          ...prev,
+          imageUrls: updated,
+          imageUrl: prev.imageUrl === oldUrl ? newUrl : prev.imageUrl
+        };
+      });
+      showToast("Arrière-plan supprimé avec succès ! Image transparente créée.", "success");
+    } catch (err: any) {
+      showToast(err.message || "Échec de la suppression de l'arrière-plan", "error");
+    } finally {
+      setRemovingBgIndex(null);
+    }
+  };
+
+  const handleUploadWithRemoveBg = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const res = await api.removeBackground(file);
+      const newUrl = res.url;
+
+      setNewProduct(prev => {
+        const updated = [...prev.imageUrls, newUrl];
+        return {
+          ...prev,
+          imageUrls: updated,
+          imageUrl: prev.imageUrl || newUrl
+        };
+      });
+      showToast("Image téléchargée et arrière-plan supprimé avec succès !", "success");
+    } catch (err: any) {
+      showToast(err.message || "Échec de la suppression de l'arrière-plan", "error");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleRemoveImage = (index: number) => {
     setNewProduct(prev => {
       const updatedUrls = prev.imageUrls.filter((_, i) => i !== index);
       return {
         ...prev,
         imageUrls: updatedUrls,
-        // If we removed the primary image, update it to the next available one or empty
         imageUrl: prev.imageUrl === prev.imageUrls[index] 
           ? (updatedUrls[0] || '') 
           : prev.imageUrl
@@ -662,18 +715,33 @@ export default function AdminProductsPage() {
                         )}
                         
                         {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                        <div className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2 text-center">
                           <button 
                             type="button" 
                             onClick={() => setNewProduct(prev => ({ ...prev, imageUrl: url }))}
-                            className="text-[10px] bg-white text-slate-900 px-3 py-1 rounded font-black uppercase hover:bg-primary hover:text-white transition-colors"
+                            className="text-[9px] bg-white text-slate-900 px-2 py-1 rounded font-black uppercase hover:bg-primary hover:text-white transition-colors w-full truncate"
                           >
-                            DÉFINIR COMME PRINCIPALE
+                            PRINCIPALE
+                          </button>
+                          <button 
+                            type="button" 
+                            disabled={removingBgIndex === idx}
+                            onClick={() => handleRemoveBackground(idx)}
+                            className="text-[9px] bg-purple-600 text-white px-2 py-1 rounded font-black uppercase hover:bg-purple-700 transition-colors flex items-center justify-center gap-1 w-full truncate disabled:opacity-50"
+                          >
+                            {removingBgIndex === idx ? (
+                              <>
+                                <div className="w-2.5 h-2.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                TRAITEMENT...
+                              </>
+                            ) : (
+                              <>✨ SUPPRIMER FOND</>
+                            )}
                           </button>
                           <button 
                             type="button" 
                             onClick={() => handleRemoveImage(idx)}
-                            className="text-[10px] bg-rose-500 text-white px-3 py-1 rounded font-black uppercase hover:bg-rose-600 transition-colors"
+                            className="text-[9px] bg-rose-500 text-white px-2 py-1 rounded font-black uppercase hover:bg-rose-600 transition-colors w-full truncate"
                           >
                             SUPPRIMER
                           </button>
@@ -682,7 +750,7 @@ export default function AdminProductsPage() {
                     ))}
                     
                     {/* Add Image Button */}
-                    <label className="relative aspect-square rounded-xl border-2 border-dashed border-slate-200 hover:border-primary flex flex-col items-center justify-center cursor-pointer transition-colors group overflow-hidden">
+                    <label className="relative aspect-square rounded-xl border-2 border-dashed border-slate-200 hover:border-primary flex flex-col items-center justify-center cursor-pointer transition-colors group overflow-hidden text-center p-2">
                       {isUploading ? (
                         <div className="flex flex-col items-center gap-2">
                           <div className="size-6 border-[3px] border-primary border-t-transparent rounded-full animate-spin" />
@@ -690,8 +758,8 @@ export default function AdminProductsPage() {
                         </div>
                       ) : (
                         <>
-                          <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors text-[32px]">add_a_photo</span>
-                          <span className="text-[10px] font-bold text-slate-400 mt-2">AJOUTER</span>
+                          <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors text-[28px]">add_a_photo</span>
+                          <span className="text-[9px] font-black text-slate-500 uppercase mt-1">AJOUTER</span>
                         </>
                       )}
                       <input 
@@ -699,6 +767,28 @@ export default function AdminProductsPage() {
                         multiple 
                         accept="image/*" 
                         onChange={handleImageChange} 
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        disabled={isUploading}
+                      />
+                    </label>
+
+                    {/* Add Image without BG Button */}
+                    <label className="relative aspect-square rounded-xl border-2 border-dashed border-purple-300 hover:border-purple-600 bg-purple-50/50 hover:bg-purple-100/50 flex flex-col items-center justify-center cursor-pointer transition-all group overflow-hidden text-center p-2">
+                      {isUploading ? (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="size-6 border-[3px] border-purple-600 border-t-transparent rounded-full animate-spin" />
+                          <span className="text-[10px] font-bold text-purple-600">DÉTOURAGE...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <span className="material-symbols-outlined text-purple-600 group-hover:scale-110 transition-transform text-[28px]">auto_fix_high</span>
+                          <span className="text-[9px] font-black text-purple-700 uppercase mt-1">✨ SANS FOND</span>
+                        </>
+                      )}
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleUploadWithRemoveBg} 
                         className="absolute inset-0 opacity-0 cursor-pointer"
                         disabled={isUploading}
                       />

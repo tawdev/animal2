@@ -1,8 +1,8 @@
-import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, BadRequestException, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, UploadedFiles, BadRequestException, Req, UseGuards, Body } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { mkdirSync } from 'fs';
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -82,5 +82,94 @@ export class UploadController {
             url: `/uploads/${file.filename}`,
             filename: file.filename,
         }));
+    }
+    @UseInterceptors(
+        FileInterceptor('file', {
+            limits: { fileSize: 50 * 1024 * 1024 },
+        }),
+    )
+    async removeBackground(
+        @UploadedFile() file?: Express.Multer.File,
+        @Body('imageUrl') imageUrl?: string,
+    ) {
+        const apiKey = process.env.CLIPDROP_API_KEY || 'xVHYp98s5nQWp3vsUZcRZNBF';
+
+        let imageBuffer: Buffer;
+        let originalName = 'image.png';
+
+        if (file) {
+            imageBuffer = file.buffer;
+            originalName = file.originalname;
+        } else if (imageUrl) {
+            try {
+                if (imageUrl.startsWith('/uploads/')) {
+                    const localPath = join(process.cwd(), imageUrl);
+                    if (existsSync(localPath)) {
+                        imageBuffer = readFileSync(localPath);
+                    } else {
+                        throw new BadRequestException('Local image file not found');
+                    }
+                } else {
+                    const res = await fetch(imageUrl);
+                    if (!res.ok) throw new Error('Failed to fetch image from URL');
+                    imageBuffer = Buffer.from(await res.arrayBuffer());
+                }
+            } catch (err: any) {
+                throw new BadRequestException(`Could not read image URL: ${err.message}`);
+            }
+        } else {
+            throw new BadRequestException('Either image file or imageUrl must be provided');
+        }
+
+        try {
+            const formData = new FormData();
+            const blob = new Blob([new Uint8Array(imageBuffer)], { type: 'image/png' });
+            formData.append('image_file', blob, originalName);
+
+            let apiRes = await fetch('https://clipdrop-api.co/remove-background/v1', {
+                method: 'POST',
+                headers: {
+                    'x-api-key': apiKey,
+                },
+                body: formData,
+            });
+
+            if (!apiRes.ok) {
+                console.warn(`Clipdrop API returned status ${apiRes.status}, trying remove.bg API...`);
+                const removeBgFormData = new FormData();
+                removeBgFormData.append('image_file', blob, originalName);
+
+                apiRes = await fetch('https://api.remove.bg/v1.0/removebg', {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': apiKey,
+                    },
+                    body: removeBgFormData,
+                });
+            }
+
+            if (!apiRes.ok) {
+                const errText = await apiRes.text();
+                console.error('Background removal API error:', errText);
+                throw new BadRequestException(`API error (${apiRes.status}): ${errText}`);
+            }
+
+            const resultBuffer = Buffer.from(await apiRes.arrayBuffer());
+            const filename = `bg-removed-${Date.now()}-${Math.round(Math.random() * 1e9)}.png`;
+            const filePath = join(UPLOADS_DIR, filename);
+
+            writeFileSync(filePath, resultBuffer);
+
+            const url = `/uploads/${filename}`;
+            console.log(`[Upload] Background removed image saved: ${url}`);
+
+            return {
+                url,
+                filename,
+            };
+        } catch (err: any) {
+            console.error('Remove background error:', err);
+            throw new BadRequestException(err.message || 'Failed to remove background from image');
+        }
     }
 }
