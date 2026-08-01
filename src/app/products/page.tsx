@@ -390,7 +390,16 @@ function ProductListingContent() {
               {/* Categories */}
               <div>
                 <div className="mb-6">
-                  <h3 className="text-[20px] font-bold text-[#1D1D1D] mb-3 font-display">Parcourir les catégories</h3>
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <h3 className="text-[20px] font-bold text-[#1D1D1D] font-display">Parcourir les catégories</h3>
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="xl:hidden w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all active:scale-95 shrink-0"
+                      aria-label="Fermer les filtres"
+                    >
+                      <X size={18} strokeWidth={2.5} />
+                    </button>
+                  </div>
                   <div className="h-[1px] w-full bg-slate-100 relative">
                     <div className="absolute top-0 left-0 h-[3px] -top-[1px] w-[60px] bg-[#1A5319]"></div>
                   </div>
