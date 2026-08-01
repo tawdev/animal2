@@ -83,6 +83,8 @@ export class UploadController {
             filename: file.filename,
         }));
     }
+
+    @Post('remove-bg')
     @UseInterceptors(
         FileInterceptor('file', {
             limits: { fileSize: 50 * 1024 * 1024 },
