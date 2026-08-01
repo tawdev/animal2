@@ -19,26 +19,29 @@ jobs:
             mkdir -p /var/www/animal2
             cd /var/www/animal2
 
-            # Check if git repository is initialized, clone if not
+            # Force sync git repository to origin/main
             if [ ! -d ".git" ]; then
               echo "Repository not found in /var/www/animal2. Cloning repository..."
               git clone https://github.com/tawdev/animal2.git .
             else
-              echo "Pulling latest changes..."
-              git pull origin main
+              echo "Pulling latest changes from main..."
+              git fetch origin main
+              git reset --hard origin/main
             fi
 
             # Update Backend
             cd backend/droguerie-backend
             npm install
+            rm -rf dist
             npm run build
-            pm2 restart animal-backend || pm2 start npm --name "animal-backend" -- run start:prod
+            pm2 restart animal-backend --update-env || pm2 start npm --name "animal-backend" -- run start:prod
 
             # Update Frontend
             cd ../..
             npm install
+            rm -rf .next
             npm run build
-            pm2 restart animal-frontend || pm2 start npm --name "animal-frontend" -- run start
+            pm2 restart animal-frontend --update-env || pm2 start npm --name "animal-frontend" -- run start
 
             # Save PM2 state
             pm2 save
