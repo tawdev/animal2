@@ -50,7 +50,7 @@ export default function AdminCategoriesPage() {
         if (!file) return;
         try {
             setIsUploadingImage(true);
-            const res = await api.uploadFile(file);
+            const res = await api.uploadImage(file);
             setFormData(prev => ({ ...prev, imageUrl: res.url }));
             showToast('Image téléversée avec succès !', 'success');
         } catch (err) {
