@@ -360,27 +360,8 @@ export default function Header() {
 
                     {/* Action Icons - Mobile only (desktop icons are in the sticky Navbar) */}
                     <div className="flex items-center gap-2 sm:gap-4">
-                        {/* Mobile Search Button */}
-                        <button
-                            className="md:hidden p-2 text-slate-700 hover:text-[#1A5319] transition-colors"
-                            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                        >
-                            {isMobileSearchOpen ? <X size={22} /> : <Search size={22} />}
-                        </button>
-
-                        {/* Mobile-only action icons */}
-                        <Link href="/compare" className="md:hidden group relative transition-all p-1">
-                            <GitCompare size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
-                            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
-                                {mounted ? compareCount : 0}
-                            </span>
-                        </Link>
-                        <Link href="/wishlist" className="md:hidden group relative transition-all p-1">
-                            <Heart size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
-                            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">{mounted ? wishlistCount : 0}</span>
-                        </Link>
                         <Link href="/cart" className="md:hidden group relative transition-all p-1">
-                            <ShoppingBag size={22} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
+                            <ShoppingBag size={24} strokeWidth={1.5} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
                             <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
                                 {mounted ? totalItems : 0}
                             </span>
