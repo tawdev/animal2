@@ -19,14 +19,14 @@ jobs:
             mkdir -p /var/www/animal2
             cd /var/www/animal2
 
-            # Check if git repository is initialized
+            # Check if git repository is initialized, clone if not
             if [ ! -d ".git" ]; then
-              echo "Error: /var/www/animal2 is not a git repository yet. Please clone your repo into /var/www/animal2 on the VPS first."
-              exit 1
+              echo "Repository not found in /var/www/animal2. Cloning repository..."
+              git clone https://github.com/tawdev/animal2.git .
+            else
+              echo "Pulling latest changes..."
+              git pull origin main
             fi
-
-            # Pull latest changes
-            git pull origin main
 
             # Update Backend
             cd backend/droguerie-backend
