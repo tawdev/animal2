@@ -181,7 +181,7 @@ export default function AdminCategoriesPage() {
                     <button
                         onClick={() => {
                             setEditingCategory(null);
-                            setFormData({ name: '', description: '', isActive: true, parentId: null });
+                            setFormData({ name: '', description: '', isActive: true, parentId: null, imageUrl: '' });
                             setIsModalOpen(true);
                         }}
                         className="bg-primary hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-[14px] flex items-center gap-2 shadow-lg shadow-primary/10 transition-all active:scale-95"
