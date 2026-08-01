@@ -166,7 +166,7 @@ export default function Header() {
                         </button>
 
                         <Link href="/" className="shrink-0 group">
-                            <div className="relative w-[110px] h-[48px] sm:w-[140px] sm:h-[56px] md:w-[160px] md:h-[64px]">
+                            <div className="relative w-[150px] h-[60px] sm:w-[210px] sm:h-[76px] md:w-[250px] md:h-[88px] lg:w-[280px] lg:h-[96px] flex items-center justify-start">
                                 {(!mounted || settingsLoading) ? (
                                     <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
                                 ) : (
@@ -174,10 +174,10 @@ export default function Header() {
                                         src={settings?.logoUrl || "/logo.png"}
                                         alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
                                         fill
-                                        style={{ objectFit: 'contain', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                        style={{ objectFit: 'contain', objectPosition: 'left center', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
                                         priority
                                         unoptimized={true}
-                                        sizes="(max-width: 640px) 110px, (max-width: 1024px) 140px, 160px"
+                                        sizes="(max-width: 640px) 150px, (max-width: 1024px) 210px, 280px"
                                     />
                                 )}
                             </div>
