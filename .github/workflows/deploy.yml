@@ -34,14 +34,16 @@ jobs:
             npm install
             rm -rf dist
             npm run build
-            pm2 restart animal-backend --update-env || pm2 start npm --name "animal-backend" -- run start:prod
+            pm2 delete animal-backend || true
+            pm2 start npm --name "animal-backend" --cwd /var/www/animal2/backend/droguerie-backend -- run start:prod
 
             # Update Frontend
-            cd ../..
+            cd /var/www/animal2
             npm install
             rm -rf .next
             npm run build
-            pm2 restart animal-frontend --update-env || pm2 start npm --name "animal-frontend" -- run start
+            pm2 delete animal-frontend || true
+            pm2 start npm --name "animal-frontend" --cwd /var/www/animal2 -- run start
 
             # Save PM2 state
             pm2 save
