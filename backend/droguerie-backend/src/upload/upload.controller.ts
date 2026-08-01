@@ -13,6 +13,7 @@ const UPLOADS_DIR = join(process.cwd(), 'uploads');
 mkdirSync(UPLOADS_DIR, { recursive: true });
 
 @Controller('upload')
+@UseGuards(JwtAuthGuard)
 export class UploadController {
     @Post()
     @UseInterceptors(
@@ -40,10 +41,10 @@ export class UploadController {
         if (!file) {
             throw new BadRequestException('File is required');
         }
-        
+
         const url = `/uploads/${file.filename}`;
         console.log(`[Upload] File saved. Returning relative URL: ${url}`);
-        
+
         return {
             url,
             filename: file.filename,
