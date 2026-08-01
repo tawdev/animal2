@@ -430,58 +430,61 @@ export default function HomeClient({
       </section>
 
       {/* HOW IT WORKS (REDESIGNED) */}
-      <section className="py-32 bg-white">
+      <section className="py-20 md:py-32 bg-white">
         <div className="mx-auto max-w-[1200px] px-6">
-          <div className="text-center mb-24">
-            <h2 className="text-[42px] md:text-[54px] font-black text-[#1A5319] leading-tight mb-4">La commande en toute simplicité</h2>
-            <p className="text-slate-500 text-lg">Trois étapes simples pour apporter le meilleur de la nutrition directement dans sa gamelle.</p>
+          <div className="text-center mb-16 md:mb-24">
+            <h2 className="text-[32px] sm:text-[42px] md:text-[54px] font-black text-[#1A5319] leading-tight mb-4">La commande en toute simplicité</h2>
+            <p className="text-slate-500 text-base md:text-lg max-w-xl mx-auto">Trois étapes simples pour apporter le meilleur de la nutrition directement dans sa gamelle.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
-            {[
-              {
-                step: '1',
-                title: 'Séléction Nutrition',
-                desc: 'Explorez nos recettes approuvées par des vétérinaires et sélectionnez le plan de repas parfait adapté à l\'âge et à la race de votre animal.',
-                icon: ShoppingBag
-              },
-              {
-                step: '2',
-                title: 'Préparation Premium',
-                desc: 'Nous préparons chaque commande avec des ingrédients 100% naturels et tracables. Aucun remplissage, jamais.',
-                icon: PawPrint
-              },
-              {
-                step: '3',
-                title: 'Livraison Express',
-                desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
-                icon: Truck
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group">
-                <div className="relative mb-12">
-                  {/* Outer Glow/Shadow */}
-                  <div className="absolute inset-0 bg-[#1A5319]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Slider container for mobile / Grid for desktop */}
+          <div className="relative">
+            <div className="flex md:grid md:grid-cols-3 gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 px-2 md:px-0 scroll-smooth">
+              {[
+                {
+                  step: '1',
+                  title: 'Séléction Nutrition',
+                  desc: 'Explorez nos recettes approuvées par des vétérinaires et sélectionnez le plan de repas parfait adapté à l\'âge et à la race de votre animal.',
+                  icon: ShoppingBag
+                },
+                {
+                  step: '2',
+                  title: 'Préparation Premium',
+                  desc: 'Nous préparons chaque commande avec des ingrédients 100% naturels et tracables. Aucun remplissage, jamais.',
+                  icon: PawPrint
+                },
+                {
+                  step: '3',
+                  title: 'Livraison Express',
+                  desc: 'Profitez d\'une expédition express directement à votre porte. La nutrition de votre animal est livrée fraîche et prête à servir.',
+                  icon: Truck
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="snap-center shrink-0 w-[85vw] sm:w-[340px] md:w-auto flex flex-col items-center text-center group bg-slate-50/70 md:bg-transparent rounded-3xl p-8 md:p-0 border border-slate-100 md:border-none shadow-sm md:shadow-none transition-transform">
+                  <div className="relative mb-8 md:mb-12">
+                    {/* Outer Glow/Shadow */}
+                    <div className="absolute inset-0 bg-[#1A5319]/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                  {/* Main Circle */}
-                  <div className="relative w-36 h-36 rounded-full bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] flex items-center justify-center border-[6px] border-slate-50 z-10 transition-all duration-500 group-hover:scale-110 group-hover:border-[#1A5319]/10">
-                    <item.icon size={48} className="text-[#1A5319]" strokeWidth={1.2} />
-                  </div>
+                    {/* Main Circle */}
+                    <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full bg-white shadow-[0_20px_50px_rgba(0,0,0,0.08)] flex items-center justify-center border-[5px] md:border-[6px] border-slate-50 z-10 transition-all duration-500 group-hover:scale-110 group-hover:border-[#1A5319]/10">
+                      <item.icon size={40} className="text-[#1A5319] md:w-12 md:h-12" strokeWidth={1.2} />
+                    </div>
 
-                  {/* Step Badge */}
-                  <div className="absolute top-0 -right-2 w-11 h-11 rounded-full bg-[#1A5319] flex items-center justify-center text-white font-black text-base shadow-xl z-20 border-4 border-white">
-                    {item.step}
+                    {/* Step Badge */}
+                    <div className="absolute top-0 -right-1 md:-right-2 w-9 h-9 md:w-11 md:h-11 rounded-full bg-[#1A5319] flex items-center justify-center text-white font-black text-sm md:text-base shadow-xl z-20 border-4 border-white">
+                      {item.step}
+                    </div>
                   </div>
+                  <h3 className="text-xl md:text-2xl font-black text-slate-900 mb-3 md:mb-4 uppercase tracking-tight italic">{item.title}</h3>
+                  <p className="text-slate-600 text-[14px] md:text-[16px] leading-relaxed max-w-[320px] font-medium opacity-80">
+                    {item.desc}
+                  </p>
                 </div>
-                <h3 className="text-2xl font-black text-slate-900 mb-4 uppercase tracking-tight italic">{item.title}</h3>
-                <p className="text-slate-600 text-[16px] leading-relaxed max-w-[320px] font-medium opacity-80">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="text-center mt-20">
+          <div className="text-center mt-12 md:mt-20">
             <Link href="/products" className="inline-flex items-center gap-2 text-[#1A5319] font-black uppercase tracking-widest text-sm border-b-2 border-[#1A5319] pb-1 hover:gap-4 transition-all">
               Composer ma première commande <ArrowRight size={16} />
             </Link>
