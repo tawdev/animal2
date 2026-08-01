@@ -298,35 +298,34 @@ export default function HomeClient({
               </div>
             </div>
 
-            <div className="flex-1 w-full lg:max-w-[550px] relative">
-              <div className="relative aspect-[4/5] w-full bg-white/5 rounded-[40px] border border-white/10 p-6 overflow-hidden">
+            <div className="flex-1 w-full lg:max-w-[360px] relative mx-auto lg:ml-auto">
+              <div className="relative aspect-[3/4] w-full bg-white/10 backdrop-blur-md rounded-[28px] border border-white/20 p-3 overflow-hidden shadow-2xl">
                 <AnimatePresence mode="wait">
                   {featuredProducts.length > 0 && (
                     <motion.div
                       key={featuredProducts[heroSlideIndex % featuredProducts.length]?.id}
-                      initial={{ opacity: 0, scale: 0.9, x: 50 }}
-                      animate={{ opacity: 1, scale: 1, x: 0 }}
-                      exit={{ opacity: 0, scale: 0.9, x: -50 }}
+                      initial={{ opacity: 0, scale: 0.92, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.92, y: -10 }}
+                      transition={{ duration: 0.4 }}
                       className="relative w-full h-full"
                     >
                       <Link
                         href={`/products/${featuredProducts[heroSlideIndex % featuredProducts.length]?.id}`}
-
-
-                        className="block w-full h-full relative rounded-[30px] overflow-hidden group"
+                        className="block w-full h-full relative rounded-[20px] overflow-hidden group bg-white/5"
                       >
                         <Image
                           src={featuredProducts[heroSlideIndex % featuredProducts.length]?.imageUrl || "/placeholder.png"}
                           alt={featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
                           fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="object-contain p-4 transition-transform duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6">
-                          <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter line-clamp-1">
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 className="text-sm font-extrabold text-white uppercase italic tracking-tight line-clamp-1">
                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.name}
                           </h3>
-                          <div className="text-2xl font-black text-[#EE8C2B] italic">
+                          <div className="text-base font-black text-[#EE8C2B] italic mt-0.5">
                             {featuredProducts[heroSlideIndex % featuredProducts.length]?.price} MAD
                           </div>
                         </div>
