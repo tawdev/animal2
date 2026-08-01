@@ -836,16 +836,16 @@ export default function HomeClient({
       </section>
 
       {/* ORDER TRACKING SECTION */}
-      <section className="py-32 bg-slate-50">
-        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
-          <div className="bg-white rounded-[60px] p-12 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
+      <section className="py-16 md:py-32 bg-slate-50">
+        <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-10">
+          <div className="bg-white rounded-[32px] md:rounded-[60px] p-6 sm:p-12 md:p-20 shadow-2xl border border-slate-100 relative overflow-hidden">
             {/* Background Decorative element */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#1A5319]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
 
-            <div className="relative z-10 text-center mb-16">
+            <div className="relative z-10 text-center mb-10 md:mb-16">
               <span className="text-[#1A5319] font-black uppercase tracking-[0.3em] text-xs mb-4 block">Expédition & Logistique</span>
-              <h2 className="text-5xl font-black text-slate-900 uppercase italic tracking-tighter mb-6">Suivez votre <span className="text-[#EE8C2B]">commande</span></h2>
-              <p className="text-slate-500 font-medium max-w-xl mx-auto">Entrez votre numéro de commande pour connaître l&apos;état d&apos;avancement de votre livraison en temps réel.</p>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 uppercase italic tracking-tighter mb-4 md:mb-6">Suivez votre <span className="text-[#EE8C2B]">commande</span></h2>
+              <p className="text-slate-500 font-medium text-sm md:text-base max-w-xl mx-auto">Entrez votre numéro de commande pour connaître l&apos;état d&apos;avancement de votre livraison en temps réel.</p>
             </div>
 
             <div className="max-w-2xl mx-auto">
@@ -981,39 +981,39 @@ export default function HomeClient({
       </section>
 
       {/* FINAL CONTACT CTA & DETAILS */}
-      <section className="py-24 bg-white px-6 lg:px-10">
-        <div className="mx-auto max-w-[1400px] mb-20">
-          <div className="bg-[#1A5319] rounded-[60px] p-12 md:p-24 flex flex-col lg:flex-row items-center justify-between text-white shadow-2xl overflow-hidden relative">
+      <section className="py-12 sm:py-24 bg-white px-4 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-[1400px] mb-10 md:mb-20">
+          <div className="bg-[#1A5319] rounded-[32px] md:rounded-[60px] p-6 sm:p-12 md:p-24 flex flex-col lg:flex-row items-center justify-between text-white shadow-2xl overflow-hidden relative">
             <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
               <div className="w-full h-full border-[100px] border-white rounded-full translate-x-1/2 -translate-y-1/2" />
             </div>
 
-            <div className="max-w-2xl relative z-10">
-              <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-10 leading-[0.85]">On reste en <span className="text-[#EE8C2B]">contact ?</span></h2>
-              <p className="text-white/70 text-xl font-medium mb-12 max-w-lg leading-relaxed">Questions sur une marque ? Conseil nutritionnel ? Notre équipe d&apos;experts est disponible pour vous 7j/7.</p>
-              <div className="flex flex-wrap gap-6">
-                <a href={`https://wa.me/${whatsappNumber}`} className="px-12 py-6 bg-[#25D366] text-white rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl hover:scale-105 transition-all flex items-center gap-4">
-                  <MessageCircle size={24} /> WhatsApp
+            <div className="max-w-2xl relative z-10 text-center lg:text-left">
+              <h2 className="text-3xl sm:text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-6 md:mb-10 leading-tight md:leading-[0.85]">On reste en <span className="text-[#EE8C2B]">contact ?</span></h2>
+              <p className="text-white/70 text-base md:text-xl font-medium mb-8 md:mb-12 max-w-lg leading-relaxed mx-auto lg:mx-0">Questions sur une marque ? Conseil nutritionnel ? Notre équipe d&apos;experts est disponible pour vous 7j/7.</p>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 w-full">
+                <a href={`https://wa.me/${whatsappNumber}`} className="px-8 sm:px-12 py-4 sm:py-6 bg-[#25D366] text-white rounded-2xl sm:rounded-3xl font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-xs sm:text-sm shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-3 shrink-0">
+                  <MessageCircle size={20} /> WhatsApp
                 </a>
-                <Link href="/contact" className="px-12 py-6 bg-white text-slate-900 rounded-3xl font-black uppercase tracking-[0.2em] text-sm shadow-xl hover:scale-105 transition-all">
+                <Link href="/contact" className="px-8 sm:px-12 py-4 sm:py-6 bg-white text-slate-900 rounded-2xl sm:rounded-3xl font-black uppercase tracking-[0.15em] sm:tracking-[0.2em] text-xs sm:text-sm shadow-xl hover:scale-105 transition-all text-center">
                   Formulaire
                 </Link>
               </div>
             </div>
 
-            <div className="w-full lg:w-1/3 mt-20 lg:mt-0 grid grid-cols-1 gap-10 relative z-10">
+            <div className="w-full lg:w-1/3 mt-10 lg:mt-0 grid grid-cols-1 gap-6 sm:gap-10 relative z-10">
               {[
                 { icon: MapPin, title: 'Boutique', desc: settings?.address || 'Boulevard Zerktouni, Casablanca' },
                 { icon: Phone, title: 'Téléphone', desc: settings?.phoneNumber || '+212 6 00 00 00 00' },
                 { icon: Headset, title: 'Support', desc: settings?.supportEmail || 'contact@animalfoodexpress.ma' }
               ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-6 group">
-                  <div className="w-16 h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-[#EE8C2B] transition-all">
-                    <item.icon size={28} />
+                <div key={idx} className="flex items-center gap-4 sm:gap-6 group">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-[#EE8C2B] transition-all shrink-0">
+                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-black uppercase tracking-widest text-white/50 mb-1">{item.title}</h4>
-                    <p className="text-lg font-bold">{item.desc}</p>
+                    <p className="text-sm sm:text-lg font-bold break-words">{item.desc}</p>
                   </div>
                 </div>
               ))}

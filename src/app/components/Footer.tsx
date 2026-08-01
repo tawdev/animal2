@@ -107,7 +107,7 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    <div className="flex w-full max-w-lg bg-white rounded-xl p-1.5 overflow-hidden shadow-xl">
+                    <div className="flex flex-col sm:flex-row w-full max-w-lg bg-white rounded-xl p-1.5 overflow-hidden shadow-xl gap-2 sm:gap-0">
                         <input
                             type="email"
                             placeholder={isSubscribed ? '✓ Inscription réussie !' : 'Votre adresse email…'}
@@ -115,11 +115,11 @@ export default function Footer() {
                             onChange={(e) => setEmail(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSubscribe()}
                             disabled={isSubscribed}
-                            className="flex-1 px-5 py-3 text-slate-900 font-medium text-sm outline-none border-none disabled:bg-white placeholder:text-slate-400"
+                            className="flex-1 px-4 sm:px-5 py-3 text-slate-900 font-medium text-sm outline-none border-none disabled:bg-white placeholder:text-slate-400 min-w-0"
                         />
                         <button
                             onClick={handleSubscribe}
-                            className={`${isSubscribed ? 'bg-green-500' : 'bg-[#EE8C2B] hover:bg-[#d97b1f]'} text-white px-7 py-3 rounded-lg font-black uppercase text-xs tracking-widest transition-all flex items-center gap-2 shrink-0`}
+                            className={`${isSubscribed ? 'bg-green-500' : 'bg-[#EE8C2B] hover:bg-[#d97b1f]'} text-white px-5 sm:px-7 py-3 rounded-lg font-black uppercase text-xs tracking-widest transition-all flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto`}
                         >
                             <Send size={14} />
                             {isSubscribed ? 'Merci !' : "S'inscrire"}

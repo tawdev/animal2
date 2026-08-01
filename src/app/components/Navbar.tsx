@@ -442,14 +442,7 @@ export default function Navbar() {
                     </div>
 
                     {/* Action Icons - Always visible since header is no longer sticky */}
-                    <div className="flex items-center gap-5 ml-auto mr-4">
-                        {/* Search icon - only shows when scrolled (header hidden) */}
-                        <Link
-                            href="/products"
-                            className={`group transition-all duration-300 ${isScrolled ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-                        >
-                            <Search size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
-                        </Link>
+                    <div className="hidden md:flex items-center gap-5 ml-auto mr-4">
                         <Link href="/compare" className="group relative transition-all">
                             <GitCompare size={20} className="text-slate-900 transition-colors group-hover:text-[#1A5319]" />
                             <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
