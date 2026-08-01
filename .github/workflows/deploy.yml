@@ -35,7 +35,7 @@ jobs:
             rm -rf dist
             npm run build
             pm2 delete animal-backend || true
-            pm2 start npm --name "animal-backend" --cwd /var/www/animal2/backend/droguerie-backend -- run start:prod
+            PORT=3021 pm2 start npm --name "animal-backend" --cwd /var/www/animal2/backend/droguerie-backend -- run start:prod
 
             # Update Frontend
             cd /var/www/animal2
