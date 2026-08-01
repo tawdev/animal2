@@ -91,6 +91,8 @@ export default function HomeClient({
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const stepsContainerRef = useRef<HTMLDivElement>(null);
+  const [productStepIndex, setProductStepIndex] = useState(0);
+  const productsContainerRef = useRef<HTMLDivElement>(null);
 
   // Default WhatsApp Number
   const whatsappNumber = (settings?.phoneNumber || '212600000000').replace(/\D/g, '');
@@ -577,13 +579,87 @@ export default function HomeClient({
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {isLoadingFeatured ? (
-              Array(6).fill(0).map((_, i) => <ProductSkeleton key={i} />)
-            ) : (
-              featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
+          <div className="relative">
+            {/* Left Arrow Button (<) - Vertically Centered on Product Card */}
+            <button
+              onClick={() => {
+                const prevIdx = Math.max(0, productStepIndex - 1);
+                setProductStepIndex(prevIdx);
+                if (productsContainerRef.current) {
+                  const cardWidth = productsContainerRef.current.clientWidth * 0.85;
+                  productsContainerRef.current.scrollTo({ left: prevIdx * cardWidth, behavior: 'smooth' });
+                }
+              }}
+              disabled={productStepIndex === 0}
+              className="md:hidden absolute -left-3 top-[42%] -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-20 disabled:pointer-events-none active:scale-95 transition-all"
+              aria-label="Produit précédent"
+            >
+              <ChevronLeft size={24} strokeWidth={2.5} />
+            </button>
+
+            {/* Right Arrow Button (>) - Vertically Centered on Product Card */}
+            <button
+              onClick={() => {
+                const nextIdx = Math.min(featuredProducts.length - 1, productStepIndex + 1);
+                setProductStepIndex(nextIdx);
+                if (productsContainerRef.current) {
+                  const cardWidth = productsContainerRef.current.clientWidth * 0.85;
+                  productsContainerRef.current.scrollTo({ left: nextIdx * cardWidth, behavior: 'smooth' });
+                }
+              }}
+              disabled={productStepIndex >= featuredProducts.length - 1}
+              className="md:hidden absolute -right-3 top-[42%] -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-slate-200 flex items-center justify-center text-[#1A5319] disabled:opacity-20 disabled:pointer-events-none active:scale-95 transition-all"
+              aria-label="Produit suivant"
+            >
+              <ChevronRight size={24} strokeWidth={2.5} />
+            </button>
+
+            {/* Product List: Mobile Slider vs Desktop Grid */}
+            <div
+              ref={productsContainerRef}
+              onScroll={(e) => {
+                const container = e.currentTarget;
+                const cardWidth = container.clientWidth * 0.85;
+                const newIndex = Math.round(container.scrollLeft / cardWidth);
+                if (newIndex !== productStepIndex && newIndex >= 0 && newIndex < featuredProducts.length) {
+                  setProductStepIndex(newIndex);
+                }
+              }}
+              className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-4 px-2 sm:px-0 scroll-smooth"
+            >
+              {isLoadingFeatured ? (
+                Array(6).fill(0).map((_, i) => (
+                  <div key={i} className="snap-center shrink-0 w-[85vw] sm:w-auto">
+                    <ProductSkeleton />
+                  </div>
+                ))
+              ) : (
+                featuredProducts.map((product) => (
+                  <div key={product.id} className="snap-center shrink-0 w-[85vw] sm:w-auto">
+                    <ProductCard product={product} />
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Mobile Pagination Dots */}
+            {featuredProducts.length > 1 && (
+              <div className="flex md:hidden items-center justify-center gap-2 mt-6">
+                {featuredProducts.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setProductStepIndex(i);
+                      if (productsContainerRef.current) {
+                        const cardWidth = productsContainerRef.current.clientWidth * 0.85;
+                        productsContainerRef.current.scrollTo({ left: i * cardWidth, behavior: 'smooth' });
+                      }
+                    }}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${productStepIndex === i ? 'w-8 bg-[#1A5319]' : 'w-2.5 bg-slate-300'}`}
+                    aria-label={`Produit ${i + 1}`}
+                  />
+                ))}
+              </div>
             )}
           </div>
         </div>
