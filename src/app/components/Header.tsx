@@ -150,39 +150,37 @@ export default function Header() {
 
             {/* Main Header */}
             <div className="py-3 sm:py-4 relative flex items-center">
-                <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-4 md:gap-10">
+                <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-4 md:gap-10 relative">
 
-                    {/* Mobile Menu Trigger & Logo */}
-                    <div className="flex items-center gap-3 my-auto">
-                        {/* Mobile Menu Button - Displayed on mobile only */}
-                        <button
-                            className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors"
-                            onClick={() => {
-                                // Trigger custom event for Navbar to open
-                                document.dispatchEvent(new CustomEvent('open-mobile-menu'));
-                            }}
-                        >
-                            <Menu size={24} />
-                        </button>
+                    {/* Mobile Menu Button - Displayed on mobile only */}
+                    <button
+                        className="md:hidden p-2 -ml-2 text-slate-700 hover:text-[#1A5319] transition-colors shrink-0"
+                        onClick={() => {
+                            // Trigger custom event for Navbar to open
+                            document.dispatchEvent(new CustomEvent('open-mobile-menu'));
+                        }}
+                    >
+                        <Menu size={24} />
+                    </button>
 
-                        <Link href="/" className="shrink-0 group flex items-center justify-center my-auto">
-                            <div className="relative w-[140px] h-[54px] sm:w-[190px] sm:h-[64px] md:w-[230px] md:h-[72px] lg:w-[260px] lg:h-[76px] flex items-center justify-center">
-                                {(!mounted || settingsLoading) ? (
-                                    <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
-                                ) : (
-                                    <Image
-                                        src={settings?.logoUrl || "/logo.png"}
-                                        alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
-                                        fill
-                                        style={{ objectFit: 'contain', objectPosition: 'center center', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
-                                        priority
-                                        unoptimized={true}
-                                        sizes="(max-width: 640px) 140px, (max-width: 1024px) 190px, 260px"
-                                    />
-                                )}
-                            </div>
-                        </Link>
-                    </div>
+                    {/* Logo - Centered on Mobile, Left-aligned on Desktop */}
+                    <Link href="/" className="shrink-0 group flex items-center justify-center my-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0">
+                        <div className="relative w-[140px] h-[54px] sm:w-[190px] sm:h-[64px] md:w-[230px] md:h-[72px] lg:w-[260px] lg:h-[76px] flex items-center justify-center">
+                            {(!mounted || settingsLoading) ? (
+                                <div className="w-full h-full bg-slate-50 animate-pulse rounded-lg" />
+                            ) : (
+                                <Image
+                                    src={settings?.logoUrl || "/logo.png"}
+                                    alt={settings?.storeName || "Animal Food Express – Votre animalerie en ligne"}
+                                    fill
+                                    style={{ objectFit: 'contain', objectPosition: 'center center', mixBlendMode: settings?.logoUrl ? 'normal' : 'multiply' }}
+                                    priority
+                                    unoptimized={true}
+                                    sizes="(max-width: 640px) 140px, (max-width: 1024px) 190px, 260px"
+                                />
+                            )}
+                        </div>
+                    </Link>
 
                     {/* Desktop Search Bar - Hidden on mobile, shown on md+ */}
                     <div className="hidden md:flex flex-1 max-w-[720px] relative" ref={searchContainerRef}>
