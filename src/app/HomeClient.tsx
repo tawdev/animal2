@@ -858,13 +858,13 @@ export default function HomeClient({
                     onChange={(e) => setTrackingNumber(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleTrack()}
                     placeholder="Ex: #AFE-2024-8892"
-                    className="w-full pl-14 pr-6 py-6 bg-slate-50 border border-slate-100 rounded-3xl text-lg font-bold text-slate-900 placeholder:text-slate-300 outline-none focus:bg-white focus:border-[#1A5319]/20 transition-all"
+                    className="w-full pl-14 pr-6 py-4 md:py-6 bg-slate-50 border border-slate-100 rounded-2xl md:rounded-3xl text-base md:text-lg font-bold text-slate-900 placeholder:text-slate-300 outline-none focus:bg-white focus:border-[#1A5319]/20 transition-all"
                   />
                 </div>
                 <button
                   onClick={handleTrack}
                   disabled={isTracking}
-                  className="px-10 py-6 bg-[#1A5319] text-white rounded-3xl font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+                  className="px-10 py-4 md:py-6 bg-[#1A5319] text-white rounded-2xl md:rounded-3xl font-black uppercase tracking-widest text-xs md:text-sm shadow-xl hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
                 >
                   {isTracking ? 'Recherche...' : 'Suivre'}
                 </button>
@@ -877,7 +877,7 @@ export default function HomeClient({
               )}
 
               {/* TIMELINE */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-4 gap-2 md:gap-4 my-8">
                 {[
                   { label: 'Confirmée', icon: CheckCircle, status: ['pending', 'confirmed', 'processing', 'shipped', 'completed'] },
                   { label: 'Préparation', icon: Package, status: ['processing', 'shipped', 'completed'] },
@@ -890,10 +890,10 @@ export default function HomeClient({
 
                   return (
                     <div key={i} className="flex flex-col items-center text-center group">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${isDone ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : isCurrent ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
-                        <step.icon size={28} />
+                      <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center mb-2 md:mb-4 transition-all duration-500 ${isDone ? 'bg-[#1A5319] text-white shadow-[0_10px_25px_rgba(26,83,25,0.3)]' : isCurrent ? 'bg-[#EE8C2B] text-white shadow-[0_10px_25px_rgba(238,140,43,0.3)]' : 'bg-slate-100 text-slate-300'}`}>
+                        <step.icon size={22} className="md:w-7 md:h-7" />
                       </div>
-                      <span className={`text-[11px] font-black uppercase tracking-widest ${isDone || isCurrent ? 'text-slate-900' : 'text-slate-300'}`}>{step.label}</span>
+                      <span className={`text-[9px] md:text-[11px] font-black uppercase tracking-tight md:tracking-widest ${isDone || isCurrent ? 'text-slate-900' : 'text-slate-300'}`}>{step.label}</span>
                     </div>
                   );
                 })}
