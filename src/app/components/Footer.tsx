@@ -150,13 +150,13 @@ export default function Footer() {
             </div>
 
             {/* ── Main Footer Body ─────────────────────────────────────── */}
-            <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12">
+            <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
 
                     {/* Brand Column */}
-                    <div className="lg:col-span-4">
+                    <div className="col-span-2 lg:col-span-4">
                         <Link href="/" className="inline-block mb-6">
-                            <div className="relative" style={{ width: 160, height: 64 }}>
+                            <div className="relative w-[200px] h-[68px] sm:w-[230px] sm:h-[76px]">
                                 {(!mounted || settingsLoading) ? (
                                     <div className="w-full h-full bg-slate-100 animate-pulse rounded-lg" />
                                 ) : (
@@ -164,20 +164,20 @@ export default function Footer() {
                                         src={logoSrc}
                                         alt={storeName}
                                         fill
-                                        style={{ objectFit: 'contain', objectPosition: 'left' }}
+                                        style={{ objectFit: 'contain', objectPosition: 'left center' }}
                                         unoptimized
-                                        sizes="160px"
+                                        sizes="230px"
                                     />
                                 )}
                             </div>
                         </Link>
 
-                        <p className="text-[14px] font-medium leading-relaxed text-slate-500 mb-8 max-w-sm">
+                        <p className="text-[13px] md:text-[14px] font-medium leading-relaxed text-slate-500 mb-6 max-w-sm">
                             {storeDesc}
                         </p>
 
                         {/* Contact Info */}
-                        <ul className="space-y-4 mb-8">
+                        <ul className="space-y-3 mb-6">
                             <li className="flex items-start gap-3">
                                 <MapPin size={17} className="text-[#1A5319] shrink-0 mt-0.5" />
                                 <span className="text-[13px] font-medium text-slate-600">{storeAddr}</span>
@@ -216,18 +216,15 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Spacer */}
-                    <div className="hidden lg:block lg:col-span-1" />
-
                     {/* Catégories */}
-                    <div className="lg:col-span-2">
-                        <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-6">Catégories</h4>
-                        <ul className="space-y-3">
+                    <div className="col-span-1 lg:col-span-2">
+                        <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-4 md:mb-6">Catégories</h4>
+                        <ul className="space-y-2.5">
                             {categories.length > 0
                                 ? categories.map((cat) => (
                                     <li key={cat.id}>
                                         <Link href={`/products?categoryId=${cat.id}`}
-                                            className="group flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
+                                            className="group flex items-center gap-1.5 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
                                             <ChevronRight size={13} className="text-[#1A5319]/40 group-hover:text-[#1A5319] transition-colors" />
                                             {cat.name}
                                         </Link>
@@ -236,7 +233,7 @@ export default function Footer() {
                                 : ['Chiens', 'Chats', 'Oiseaux', 'Rongeurs', 'Poissons', 'Accessoires'].map(name => (
                                     <li key={name}>
                                         <Link href={`/products?category=${name.toLowerCase()}`}
-                                            className="group flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
+                                            className="group flex items-center gap-1.5 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
                                             <ChevronRight size={13} className="text-[#1A5319]/40 group-hover:text-[#1A5319] transition-colors" />
                                             {name}
                                         </Link>
@@ -247,13 +244,13 @@ export default function Footer() {
                     </div>
 
                     {/* Service Client */}
-                    <div className="lg:col-span-2">
-                        <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-6">Service Client</h4>
-                        <ul className="space-y-3">
+                    <div className="col-span-1 lg:col-span-2">
+                        <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-4 md:mb-6">Service Client</h4>
+                        <ul className="space-y-2.5">
                             {serviceLinks.map(({ href, label }) => (
                                 <li key={href}>
                                     <Link href={href}
-                                        className="group flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
+                                        className="group flex items-center gap-1.5 text-[13px] font-semibold text-slate-600 hover:text-[#1A5319] transition-colors">
                                         <ChevronRight size={13} className="text-[#1A5319]/40 group-hover:text-[#1A5319] transition-colors" />
                                         {label}
                                     </Link>
@@ -263,7 +260,7 @@ export default function Footer() {
                     </div>
 
                     {/* Horaires + Quick Contact */}
-                    <div className="lg:col-span-3">
+                    <div className="col-span-2 lg:col-span-4">
                         <h4 className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-400 mb-6">Horaires d&apos;ouverture</h4>
                         <ul className="space-y-2 mb-8">
                             {[
