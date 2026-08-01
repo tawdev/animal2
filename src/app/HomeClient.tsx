@@ -368,12 +368,19 @@ export default function HomeClient({
                 <button
                   key={`${cat.id}-${idx}`}
                   onClick={() => setActiveCategoryId(cat.id)}
-
-
                   className="flex flex-col items-center gap-8 shrink-0 transition-transform hover:scale-105"
                 >
-                  <div className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] ${isActive ? 'border-[#EE8C2B]' : 'border-slate-50'} hover:border-[#EE8C2B] aspect-square overflow-hidden group/item`}>
-                    <Icon size={100} className={`transition-all duration-500 ${isActive ? 'text-[#EE8C2B] scale-110' : 'text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110'}`} />
+                  <div className={`w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white flex items-center justify-center transition-all shadow-[0_0_20px_rgba(0,0,0,0.03)] hover:shadow-2xl border-[3px] ${isActive ? 'border-[#EE8C2B]' : 'border-slate-50'} hover:border-[#EE8C2B] aspect-square overflow-hidden group/item relative`}>
+                    {cat.imageUrl ? (
+                      <Image
+                        src={cat.imageUrl}
+                        alt={cat.name}
+                        fill
+                        className={`object-cover transition-transform duration-500 ${isActive ? 'scale-110' : 'group-hover/item:scale-110'}`}
+                      />
+                    ) : (
+                      <Icon size={100} className={`transition-all duration-500 ${isActive ? 'text-[#EE8C2B] scale-110' : 'text-slate-200 group-hover/item:text-[#EE8C2B] group-hover/item:scale-110'}`} />
+                    )}
                   </div>
                   <h3 className={`text-sm sm:text-xl font-black uppercase tracking-[0.2em] italic transition-colors ${isActive ? 'text-[#EE8C2B]' : 'text-slate-800'}`}>{cat.name}</h3>
                 </button>

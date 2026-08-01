@@ -20,9 +20,11 @@ export default function AdminCategoriesPage() {
     // UI States
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-    const [formData, setFormData] = useState({ name: '', description: '', isActive: true, parentId: null as number | null });
+    const [formData, setFormData] = useState({ name: '', description: '', isActive: true, parentId: null as number | null, imageUrl: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const [isRemovingBg, setIsRemovingBg] = useState(false);
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +44,35 @@ export default function AdminCategoriesPage() {
     }, []);
 
     useEffect(() => { loadData(); }, [loadData]);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            setIsUploadingImage(true);
+            const res = await api.uploadFile(file);
+            setFormData(prev => ({ ...prev, imageUrl: res.url }));
+            showToast('Image téléversée avec succès !', 'success');
+        } catch (err) {
+            showToast('Échec du téléversement de l\'image', 'error');
+        } finally {
+            setIsUploadingImage(false);
+        }
+    };
+
+    const handleRemoveBackground = async () => {
+        if (!formData.imageUrl) return;
+        try {
+            setIsRemovingBg(true);
+            const res = await api.removeBackground(formData.imageUrl);
+            setFormData(prev => ({ ...prev, imageUrl: res.url }));
+            showToast('Arrière-plan supprimé avec succès !', 'success');
+        } catch (err) {
+            showToast('Échec de la suppression de l\'arrière-plan', 'error');
+        } finally {
+            setIsRemovingBg(false);
+        }
+    };
 
     const filteredCategories = useMemo(() => {
         return categories.filter(c =>
@@ -105,7 +136,7 @@ export default function AdminCategoriesPage() {
             }
             setIsModalOpen(false);
             setEditingCategory(null);
-            setFormData({ name: '', description: '', isActive: true, parentId: null });
+            setFormData({ name: '', description: '', isActive: true, parentId: null, imageUrl: '' });
             loadData();
         } catch (err) {
             showToast(`Échec de la ${editingCategory ? 'mise à jour' : 'création'} de la catégorie`, 'error');
@@ -120,7 +151,8 @@ export default function AdminCategoriesPage() {
             name: category.name,
             description: category.description || '',
             isActive: category.isActive,
-            parentId: category.parentId || null
+            parentId: category.parentId || null,
+            imageUrl: category.imageUrl || ''
         });
         setIsModalOpen(true);
     };
@@ -218,10 +250,17 @@ export default function AdminCategoriesPage() {
                                     paginatedCategories.map((category) => (
                                         <tr key={category.id} className="hover:bg-slate-50/50 transition-colors group">
                                             <td className="px-8 py-6">
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-3">
                                                     {[...Array(category.depth)].map((_, i) => (
                                                         <div key={i} className="w-6 border-l-2 border-slate-200 h-10 -mt-5 ml-2" />
                                                     ))}
+                                                    {category.imageUrl ? (
+                                                        <img src={category.imageUrl} alt={category.name} className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0" />
+                                                    ) : (
+                                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-xs shrink-0 border border-emerald-100">
+                                                            {category.name.substring(0, 2).toUpperCase()}
+                                                        </div>
+                                                    )}
                                                     <div className="flex flex-col">
                                                         <span className="text-[15px] font-bold text-slate-900 capitalize">{category.name}</span>
                                                         {category.parent && (
@@ -362,6 +401,48 @@ export default function AdminCategoriesPage() {
                                         className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all resize-none font-medium text-[14px]"
                                         placeholder="Describe the category..."
                                     />
+                                </div>
+                                <div>
+                                    <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Image de la Catégorie</label>
+                                    <div className="space-y-3">
+                                        {formData.imageUrl ? (
+                                            <div className="relative w-full h-36 rounded-2xl border border-slate-200 overflow-hidden bg-slate-50 group flex items-center justify-center">
+                                                <img src={formData.imageUrl} alt="Category Preview" className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleRemoveBackground}
+                                                        disabled={isRemovingBg}
+                                                        className="px-3 py-1.5 bg-amber-500 text-white rounded-xl text-xs font-bold hover:bg-amber-600 transition-all flex items-center gap-1 shadow-lg"
+                                                        title="Supprimer le fond avec IA"
+                                                    >
+                                                        {isRemovingBg ? 'Traitement...' : '✨ Supprimer fond'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setFormData({ ...formData, imageUrl: '' })}
+                                                        className="px-3 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-bold hover:bg-rose-600 transition-all shadow-lg"
+                                                    >
+                                                        Supprimer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={formData.imageUrl}
+                                                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                                className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-[13px]"
+                                                placeholder="https://... ou téléverser ci-contre"
+                                            />
+                                            <label className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-600 text-white hover:bg-emerald-700 rounded-xl font-bold text-xs cursor-pointer transition-all shrink-0 shadow-sm">
+                                                <span className="material-symbols-outlined text-[18px]">upload</span>
+                                                {isUploadingImage ? '...' : 'Téléverser'}
+                                                <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Parent Category (Optional)</label>
