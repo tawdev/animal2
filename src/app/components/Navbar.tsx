@@ -103,50 +103,51 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-500 print:hidden ${isScrolled ? 'py-2' : 'py-4 sm:py-6'}`} suppressHydrationWarning>
-            <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
-                {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
-                <div
-                    className={`md:hidden fixed top-0 left-0 right-0 h-[64px] bg-white shadow-[0_4px_25px_rgba(0,0,0,0.1)] border-b border-slate-100 flex items-center justify-between px-4 z-[9999] transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
-                    suppressHydrationWarning
+        <>
+            {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
+            <div
+                className={`md:hidden fixed top-0 left-0 right-0 h-[64px] bg-white shadow-[0_4px_25px_rgba(0,0,0,0.1)] border-b border-slate-100 flex items-center justify-between px-4 z-[9999] transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
+                suppressHydrationWarning
+            >
+                <button
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    className="p-2 text-slate-800 hover:text-[#1A5319] transition-colors"
                 >
-                    <button
-                        onClick={() => setIsMobileMenuOpen(true)}
-                        className="p-2 text-slate-800 hover:text-[#1A5319] transition-colors"
-                    >
-                        <Menu size={24} />
-                    </button>
+                    <Menu size={24} />
+                </button>
 
-                    <Link href="/" className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
-                        <div className="relative w-[110px] h-[44px]">
-                            {mounted && (
-                                <Image
-                                    src={settings?.logoUrl || '/logo.png'}
-                                    alt={settings?.storeName || 'Animal Food Express'}
-                                    fill
-                                    style={{ objectFit: 'contain' }}
-                                    unoptimized
-                                    priority
-                                />
-                            )}
-                        </div>
-                    </Link>
-
-                    <div className="flex items-center gap-1">
-                        <Link href="/products" className="p-2 text-slate-800 hover:text-[#1A5319]">
-                            <Search size={22} />
-                        </Link>
-                        <Link href="/cart" className="p-2 text-slate-800 hover:text-[#1A5319] relative">
-                            <ShoppingBag size={22} />
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
-                                {mounted ? totalItems : 0}
-                            </span>
-                        </Link>
+                <Link href="/" className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+                    <div className="relative w-[110px] h-[44px]">
+                        {mounted && (
+                            <Image
+                                src={settings?.logoUrl || '/logo.png'}
+                                alt={settings?.storeName || 'Animal Food Express'}
+                                fill
+                                style={{ objectFit: 'contain' }}
+                                unoptimized
+                                priority
+                            />
+                        )}
                     </div>
-                </div>
+                </Link>
 
-                {/* Desktop Navbar */}
-                <div className={`hidden md:flex items-center rounded-2xl transition-all duration-500 backdrop-blur-2xl border pr-6 shadow-2xl ${isScrolled ? 'h-[72px] p-2 bg-white/80 border-[#1A5319]/20 shadow-slate-200/50' : 'h-[92px] p-4 bg-white/40 border-white/30 shadow-none'}`}>
+                <div className="flex items-center gap-1">
+                    <Link href="/products" className="p-2 text-slate-800 hover:text-[#1A5319]">
+                        <Search size={22} />
+                    </Link>
+                    <Link href="/cart" className="p-2 text-slate-800 hover:text-[#1A5319] relative">
+                        <ShoppingBag size={22} />
+                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#1A5319] text-[9px] font-black text-white ring-2 ring-white">
+                            {mounted ? totalItems : 0}
+                        </span>
+                    </Link>
+                </div>
+            </div>
+
+            {/* Desktop Navbar */}
+            <nav className={`w-full hidden md:block sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-500 print:hidden ${isScrolled ? 'py-2' : 'py-4 sm:py-6'}`} suppressHydrationWarning>
+                <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
+                    <div className={`hidden md:flex items-center rounded-2xl transition-all duration-500 backdrop-blur-2xl border pr-6 shadow-2xl ${isScrolled ? 'h-[72px] p-2 bg-white/80 border-[#1A5319]/20 shadow-slate-200/50' : 'h-[92px] p-4 bg-white/40 border-white/30 shadow-none'}`}>
 
                     <AnimatePresence>
                         {isScrolled && (
@@ -474,5 +475,6 @@ export default function Navbar() {
                 </div>
             </div>
         </nav>
+    </>
     );
 }
