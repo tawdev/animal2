@@ -104,7 +104,7 @@ export default function Navbar() {
 
     return (
         <nav className={`w-full sticky top-0 ${isMobileMenuOpen || isScrolled ? 'z-[9999]' : 'z-[2000]'} transition-all duration-500 print:hidden ${isScrolled ? 'py-2' : 'py-4 sm:py-6'}`} suppressHydrationWarning>
-            <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-[1550px] px-4 sm:px-6 lg:px-8">
                 {/* Mobile Sticky Navbar - Fixed at top when scrolled */}
                 <div
                     className={`md:hidden fixed top-0 left-0 right-0 h-[64px] bg-white shadow-[0_4px_25px_rgba(0,0,0,0.1)] border-b border-slate-100 flex items-center justify-between px-4 z-[9999] transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'}`}
@@ -146,7 +146,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop Navbar */}
-                <div className={`hidden md:flex h-[76px] items-center rounded-2xl transition-all duration-500 backdrop-blur-2xl border p-3 pr-6 shadow-2xl ${isScrolled ? 'bg-white/80 border-[#1A5319]/20 shadow-slate-200/50' : 'bg-white/40 border-white/30 shadow-none'}`}>
+                <div className={`hidden md:flex items-center rounded-2xl transition-all duration-500 backdrop-blur-2xl border pr-6 shadow-2xl ${isScrolled ? 'h-[72px] p-2 bg-white/80 border-[#1A5319]/20 shadow-slate-200/50' : 'h-[92px] p-4 bg-white/40 border-white/30 shadow-none'}`}>
 
                     <AnimatePresence>
                         {isScrolled && (
@@ -181,7 +181,7 @@ export default function Navbar() {
                                 setHoveredCatId(null);
                                 setHoveredSubCatId(null);
                             }}
-                            className="flex items-center justify-between gap-4 bg-[#1A5319] px-5 h-[50px] text-white font-bold text-[13px] uppercase tracking-wider rounded-[8px] hover:bg-opacity-95 transition-all group min-w-[240px]"
+                            className={`flex items-center justify-between gap-4 bg-[#1A5319] px-5 ${isScrolled ? 'h-[44px]' : 'h-[50px]'} text-white font-bold text-[13px] uppercase tracking-wider rounded-[8px] hover:bg-opacity-95 transition-all group min-w-[240px]`}
                         >
                             TOUTES LES CATÉGO...
                             {isMenuOpen ? (
@@ -311,7 +311,7 @@ export default function Navbar() {
                                 <Link
                                     key={item.name}
                                     href={item.href}
-                                    className={`relative flex items-center gap-2.5 px-4 py-2 text-[14px] font-semibold transition-all rounded-lg
+                                    className={`relative flex items-center gap-2.5 px-4 ${isScrolled ? 'py-2' : 'py-2.5'} text-[14px] font-bold transition-all rounded-lg
                                         ${isActive ? 'text-[#1A5319]' : 'text-slate-800 hover:text-[#1A5319] hover:bg-slate-50'}`}
                                 >
                                     {isActive && (

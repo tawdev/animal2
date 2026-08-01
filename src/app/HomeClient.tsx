@@ -259,27 +259,24 @@ export default function HomeClient({
   return (
     <div className="flex-1 flex flex-col bg-white overflow-x-hidden">
       {/* HERO SECTION */}
-      <section className="relative min-h-screen md:min-h-[90vh] flex items-center overflow-hidden bg-[#0A0A0B]">
+      <section className="relative min-h-[100svh] md:min-h-screen flex items-center overflow-hidden bg-[#0A0A0B]">
+        {/* Background image — object-contain pour afficher TOUTE l'image sans crop */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/hero_animals_v3.png"
+            src="/heroimage2.png"
             alt="Animal Food Express Hero"
             fill
             priority
             className="object-cover"
           />
         </div>
+        {/* Overlay sombre léger pour garder le texte lisible */}
+        <div className="absolute inset-0 z-[1] bg-black/50" />
 
         <div className="mx-auto max-w-[1400px] w-full px-6 lg:px-10 relative z-10 py-20">
           <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-20">
             <div className="flex-1 space-y-10">
               <div className="space-y-4">
-                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-4 py-1.5 bg-[#EE8C2B] rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white">N°1 AU MAROC</span>
-                  </div>
-                </motion.div>
                 <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-6xl md:text-8xl xl:text-9xl font-black text-white leading-[0.85] tracking-tighter uppercase italic">
                   NUTRITION <br />
                   <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(255,255,255,0.8)' }}>& QUALITÉ</span> <br />
@@ -848,23 +845,20 @@ export default function HomeClient({
       </section>
 
       {/* SOS VETERINAIRE FLOATING BUTTON */}
-      <div className="fixed bottom-8 left-8 z-[100] group">
+      <div className="fixed bottom-8 right-8 z-[100] group">
         <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20 group-hover:opacity-40 transition-opacity" />
+        {/* Tooltip */}
+        <div className="absolute bottom-full right-0 mb-3 px-3 py-1.5 bg-slate-900 text-white text-[11px] font-black uppercase tracking-widest rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+          SOS Vétérinaire
+        </div>
         <a
           href={`https://wa.me/${whatsappNumber}?text=Bonjour,%20j'ai%20besoin%20d'un%20conseil%20vétérinaire%20urgent%20pour%20mon%20animal.`}
           target="_blank"
           rel="noopener noreferrer"
-
-
-          className="relative flex items-center gap-4 bg-white border-2 border-red-500 text-red-500 p-2 pr-6 rounded-full shadow-[0_20px_50px_rgba(239,68,68,0.3)] hover:bg-red-500 hover:text-white transition-all duration-500 group-hover:-translate-y-2"
+          aria-label="SOS Vétérinaire"
+          className="relative w-14 h-14 bg-red-500 text-white rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(239,68,68,0.45)] hover:bg-red-600 hover:scale-110 transition-all duration-300 group-hover:-translate-y-1"
         >
-          <div className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-            <Stethoscope size={24} strokeWidth={2.5} />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Besoin d&apos;aide ?</span>
-            <span className="text-sm font-black uppercase italic leading-none">SOS Vétérinaire</span>
-          </div>
+          <Stethoscope size={28} strokeWidth={2.5} />
         </a>
       </div>
     </div>

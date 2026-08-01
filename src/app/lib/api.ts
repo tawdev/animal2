@@ -239,22 +239,44 @@ import Cookies from 'js-cookie';
 
 /**
  * Converts a relative /uploads/... path to a full URL using the API base.
- * External URLs (http/https/data:) are returned as-is.
+ * Also rewrites stale absolute upload URLs (e.g. stored in DB with old port/host)
+ * so they point to the current backend server.
  */
 function normalizeImageUrl(url: string | null | undefined): string | null {
     if (!url) return null;
+
+    // Derive the backend origin from API_BASE (strip /api suffix)
+    const base = API_BASE.replace(/\/$/, '');
+    const backendOrigin = base.endsWith('/api') ? base.replace(/\/api$/, '') : base;
+
+    // Rewrite stale absolute /uploads/ URLs that point to a different origin
+    // (e.g. http://127.0.0.1:3002/uploads/... stored in DB from an old port)
+    if ((url.startsWith('http://') || url.startsWith('https://')) && url.includes('/uploads/')) {
+        try {
+            const parsed = new URL(url);
+            const currentOrigin = new URL(backendOrigin).origin;
+            if (parsed.origin !== currentOrigin) {
+                // Rewrite to current backend origin, keeping the path
+                return `${currentOrigin}${parsed.pathname}`;
+            }
+        } catch {
+            // Malformed URL — fall through and return as-is
+        }
+        return url;
+    }
+
+    // Other external URLs (http/https/data:) are returned as-is
     if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
         return url;
     }
-    
-    const base = API_BASE.replace(/\/$/, '');
+
     const path = url.replace(/^\//, '');
-    
+
     // If the path already starts with 'api/', don't prepend it if the base already ends with /api
     if (path.startsWith('api/') && base.endsWith('/api')) {
         return `${base.replace(/\/api$/, '')}/${path}`;
     }
-    
+
     return `${base}/${path}`;
 }
 
