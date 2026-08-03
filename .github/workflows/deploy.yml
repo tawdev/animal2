@@ -2,13 +2,11 @@ name: Deploy Animal Food Express
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -17,56 +15,36 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            set -e
+            # Ensure target directory exists
+            mkdir -p /var/www/animal2
+            cd /var/www/animal2
 
-            PROJECT_DIR=/home/animal/animal2
-
-            mkdir -p $PROJECT_DIR
-            cd $PROJECT_DIR
-
-            # Fix Git safe directory
-            git config --global --add safe.directory $PROJECT_DIR
-
-            # Clone or update repository
+            # Force sync git repository to origin/main
             if [ ! -d ".git" ]; then
-              echo "Cloning repository..."
+              echo "Repository not found in /var/www/animal2. Cloning repository..."
               git clone https://github.com/tawdev/animal2.git .
             else
-              echo "Updating repository..."
+              echo "Pulling latest changes from main..."
               git fetch origin main
               git reset --hard origin/main
             fi
 
-            ########################
-            # Backend
-            ########################
-            cd $PROJECT_DIR/backend/droguerie-backend
-
+            # Update Backend
+            cd backend/droguerie-backend
             npm install
             rm -rf dist
             npm run build
-
             pm2 delete animal-backend || true
+            PORT=3021 pm2 start npm --name "animal-backend" --cwd /var/www/animal2/backend/droguerie-backend -- run start:prod
 
-            PORT=3021 pm2 start npm \
-              --name animal-backend \
-              --cwd $PROJECT_DIR/backend/droguerie-backend \
-              -- run start:prod
-
-            ########################
-            # Frontend
-            ########################
-            cd $PROJECT_DIR
-
+            # Update Frontend
+            cd /var/www/animal2
             npm install
             rm -rf .next
             npm run build
-
             pm2 delete animal-frontend || true
+            pm2 start npm --name "animal-frontend" --cwd /var/www/animal2 -- run start
 
-            pm2 start npm \
-              --name animal-frontend \
-              --cwd $PROJECT_DIR \
-              -- run start
-
+            # Save PM2 state
             pm2 save
+
