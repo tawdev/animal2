@@ -2,7 +2,8 @@ name: Deploy Animal Food Express
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -18,9 +19,13 @@ jobs:
           script: |
             set -e
 
-            # Project directory
-            mkdir -p /home/animal/animal2
-            cd /home/animal/animal2
+            PROJECT_DIR=/home/animal/animal2
+
+            mkdir -p $PROJECT_DIR
+            cd $PROJECT_DIR
+
+            # Fix Git safe directory
+            git config --global --add safe.directory $PROJECT_DIR
 
             # Clone or update repository
             if [ ! -d ".git" ]; then
@@ -35,7 +40,7 @@ jobs:
             ########################
             # Backend
             ########################
-            cd /home/animal/animal2/backend/droguerie-backend
+            cd $PROJECT_DIR/backend/droguerie-backend
 
             npm install
             rm -rf dist
@@ -45,13 +50,13 @@ jobs:
 
             PORT=3021 pm2 start npm \
               --name animal-backend \
-              --cwd /home/animal/animal2/backend/droguerie-backend \
+              --cwd $PROJECT_DIR/backend/droguerie-backend \
               -- run start:prod
 
             ########################
             # Frontend
             ########################
-            cd /home/animal/animal2
+            cd $PROJECT_DIR
 
             npm install
             rm -rf .next
@@ -61,8 +66,7 @@ jobs:
 
             pm2 start npm \
               --name animal-frontend \
-              --cwd /home/animal/animal2 \
+              --cwd $PROJECT_DIR \
               -- run start
 
-            # Save PM2
             pm2 save
